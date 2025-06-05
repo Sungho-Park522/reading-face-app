@@ -780,11 +780,11 @@ const App = () => {
         </button>
         {showLanguageDropdown && (
           <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1">
-            <a href="#" onClick={(e) => {e.preventDefault(); selectLanguage('ko');}} className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">{translations.ko.languageKorean}</a>
-            <a href="#" onClick={(e) => {e.preventDefault(); selectLanguage('en');}} className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">{translations.en.languageEnglish}</a>
-            <a href="#" onClick={(e) => {e.preventDefault(); selectLanguage('ja');}} className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">{translations.ja.languageJapanese}</a>
-            <a href="#" onClick={(e) => {e.preventDefault(); selectLanguage('zh');}} className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">{translations.zh.languageChinese}</a>
-            <a href="#" onClick={(e) => {e.preventDefault(); selectLanguage('es');}} className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">{translations.es.languageSpanish}</a>
+            <a href="#" onClick={(e) => {e.preventDefault(); selectLanguage('ko');}} className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">{translations.ko.languageKorean}한국어</a>
+            <a href="#" onClick={(e) => {e.preventDefault(); selectLanguage('en');}} className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">{translations.en.languageEnglish}English</a>
+            <a href="#" onClick={(e) => {e.preventDefault(); selectLanguage('ja');}} className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">{translations.ja.languageJapanese}日本語</a>
+            <a href="#" onClick={(e) => {e.preventDefault(); selectLanguage('zh');}} className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">{translations.zh.languageChinese}中文</a>
+            <a href="#" onClick={(e) => {e.preventDefault(); selectLanguage('es');}} className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">{translations.es.languageSpanish}Español</a>
           </div>
         )}
       </div>
