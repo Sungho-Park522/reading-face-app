@@ -780,60 +780,41 @@ const App = () => {
         </button>
         {showLanguageDropdown && (
           <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1">
-            <a
-              href="javascript:void(0)"
-              onClick={(e) => {
-                e.preventDefault();
-                selectLanguage('ko');
-              }}
+            <button
+              type="button"
+              onClick={() => selectLanguage('ko')}
               className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
             >
               {translations.ko.languageKorean}한국어
-            </a>
-
-            <a
-              href="javascript:void(0)"
-              onClick={(e) => {
-                e.preventDefault();
-                selectLanguage('en');
-              }}
+            </button>
+            <button
+              type="button"
+              onClick={() => selectLanguage('en')}
               className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
             >
               {translations.en.languageEnglish}English
-            </a>
-
-            <a
-              href="javascript:void(0)"
-              onClick={(e) => {
-                e.preventDefault();
-                selectLanguage('ja');
-              }}
+            </button>
+            <button
+              type="button"
+              onClick={() => selectLanguage('ja')}
               className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
             >
               {translations.ja.languageJapanese}日本語
-            </a>
-
-            <a
-              href="javascript:void(0)"
-              onClick={(e) => {
-                e.preventDefault();
-                selectLanguage('zh');
-              }}
+            </button>
+            <button
+              type="button"
+              onClick={() => selectLanguage('zh')}
               className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
             >
               {translations.zh.languageChinese}中文
-            </a>
-
-            <a
-              href="javascript:void(0)"
-              onClick={(e) => {
-                e.preventDefault();
-                selectLanguage('es');
-              }}
+            </button>
+            <button
+              type="button"
+              onClick={() => selectLanguage('es')}
               className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
             >
               {translations.es.languageSpanish}Español
-            </a>
+            </button>
 
           </div>
         )}
