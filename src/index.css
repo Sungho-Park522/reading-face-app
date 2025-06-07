@@ -1,5 +1,6 @@
 /* Google Fonts에서 'Gaegu' 폰트 가져오기 */
 @import url('https://fonts.googleapis.com/css2?family=Gaegu:wght@300;400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap');
 
 /* Tailwind CSS 기본 스타일 지시어 */
 @tailwind base;

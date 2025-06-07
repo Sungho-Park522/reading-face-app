@@ -8,6 +8,7 @@ module.exports = {
     extend: {
       fontFamily: {
         gaegu: ['Gaegu', 'cursive'], // 'Gaegu' 폰트 추가
+        gowun: ['"Gowun Dodum"', 'sans-serif'],
       },
     },
   },

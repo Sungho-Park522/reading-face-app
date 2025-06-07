@@ -892,7 +892,7 @@ const App = () => {
         )}
 
         {showResults && analysisResult && (
-          <section className="bg-white/80 p-6 rounded-xl shadow-xl mt-8">
+          <section className="bg-white/80 p-6 rounded-xl shadow-xl mt-8 font-gowun text-lg">
             <h2 className="text-4xl font-bold text-center text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 mb-8 animate-bounce">{currentStrings.resultTitle}</h2>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
