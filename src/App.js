@@ -438,8 +438,8 @@ const App = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-400 via-purple-500 to-indigo-600 p-4 sm:p-6 lg:p-8 flex flex-col items-center font-gaegu text-gray-700">
-      <header className="w-full max-w-4xl mt-16 sm:mt-12 mb-8 text-center">
+    <div className="min-h-screen bg-gradient-to-br from-pink-400 via-purple-500 to-indigo-600 p-4 sm:p-6 lg:p-8 flex flex-col items-center font-gowun text-gray-700">
+      <header className="w-full max-w-4xl mt-16 sm:mt-12 mb-8 text-center font-gaegu">
         <h1 className="text-5xl sm:text-6xl font-bold text-white py-2 flex items-center justify-center drop-shadow-lg">
           <UsersIcon className="inline-block w-12 h-12 mr-3 text-pink-300" />
           {currentStrings.appTitle}
