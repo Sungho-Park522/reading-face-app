@@ -461,6 +461,6 @@ const App = () => {
       </footer>
     </div>
   );
-};
+}; // ㅇㅇㅇㅇ
 
 export default App;
