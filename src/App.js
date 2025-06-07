@@ -79,13 +79,16 @@ const translations = {
     resultNotFound: "앗! 해당 결과를 찾을 수 없어요. 주소가 올바른지 확인해주세요.",
     aiPrompt: { jsonFormatInstruction: "답변은 다음 JSON 형식으로 제공해주세요:", instruction: "두 분의 사진이 주어집니다. 각 인물의 전체적인 인상과 성격을 아주 재치 있고 성숙한 유머를 섞어, 마치 '인생 N회차 옆집 형/언니'가 핵심만 콕콕 짚어주듯 분석해주세요. 이때, 각 인물의 **가장 특징적인 이목구비 1~2가지만** 골라서, 그 관상학적 의미를 '아하!' 무릎을 탁 치게 만드는 비유나 유머로 풀어내고, 이것이 전체적인 성격 및 인생관과 어떻게 연결되는지 알려주세요. \"자, 어디 한번 볼까? 이분은 딱 보아하니~\" 같은 느낌으로요. 이 내용을 'overall_impression' 필드에 담아주세요. 분량은 각 사람당 3-4문장 정도로, 너무 가볍지도 무겁지도 않게! 그 후, 두 분의 궁합을 분석해주세요. 궁합 점수(0-100점)와 그 이유를 설명할 때는 \"긴장하시고~ 오늘의 커플 궁합 점수는 바로바로~!\" 처럼 기대감을 주면서도, 결과에 대해서는 '뼈 때리는' 한마디를 덧붙여주세요. 잘 맞는 점('good_points')과 서로 노력하면 좋을 점('areas_for_improvement')은 각각 2가지씩, 마치 '연애 고수'가 현실적인 팩폭과 따뜻한 응원을 동시에 날려주듯 작성해주세요. 예를 들어, '이것만 잘하면 할리우드 커플? 저리 가라 할 케미 폭발 각!' 이런 식으로요. 궁합 총평('overall_summary')은 한 편의 반전 있는 단편 영화 시놉시스처럼, 혹은 다음 화가 궁금해지는 인기 드라마의 명대사처럼 임팩트 있게 요약해주세요. 마지막으로 'advice' 필드에는 두 분이 함께하면 '이런 미친 짓까지 가능하다고?' 싶을 정도로 기상천외하고 재미있는 데이트 아이디어나, '이거 완전 우리 얘기잖아?' 싶은 관계 꿀팁 2가지를 제안해주세요. 모든 텍스트는 핵심을 찌르는 이모티콘(😏, 🔥, 🤣, 💡 등)을 적절히 사용하여 더욱 생동감 있게 만들어주세요!", person1NameExample: "첫 번째 분 별명 (예: 예측불가 자유영혼)", person1ImpressionExample: "오호~ 첫 번째 분, 딱 보니 보통내기가 아니시군요! 😏 자유분방함이 물씬 풍기는 눈빛과 살짝 올라간 입꼬리는 '내 사전에 불가능이란 없다!'를 외치는 듯한데요? 특히, 그 어디에도 얽매이지 않을 듯한 이마 라인은 '인생은 한 번뿐!' YOLO 정신을 제대로 보여줍니다. 덕분에 주변에 늘 신선한 영감을 주지만, 가끔 너무 즉흥적이라 '어디로 튈지 모르는 탱탱볼' 같다는 소리 좀 듣겠어요! 🤣", person2NameExample: "두 번째 분 별명 (예: 반전매력 철벽수비수)", person2ImpressionExample: "두 번째 분은 겉으로는 '접근금지' 아우라를 풍기는 철벽수비수 같지만, 알고 보면 속정이 깊은 반전매력의 소유자시네요! 🧐 반듯한 콧날과 다부진 입매는 '한번 마음먹은 건 끝까지 간다!'는 의지를 보여주지만, 의외의 순간에 보여주는 따뜻한 눈빛이 이분의 진짜 매력 포인트! 🔥 신중함도 좋지만, 가끔은 그 철벽, 살짝 내려놓고 달려보는 용기도 필요할 때가 있답니다!", compatibilityScoreReasonExample: "🎉 두구두구~ 이 커플, 궁합 점수는 무려 88점! 이거 완전 '환장의 커플'에서 '환상의 커플'로 진화 직전인데요?! 💕 서로 다른 매력이 만나 예상치 못한 시너지를 뿜어내는, 그야말로 '단짠단짠' 조합이랍니다! (근데 가끔 너무 짜거나 달아서 속 쓰릴 수 있음 주의! 😉)", goodPoint1Example: "첫 번째 분의 '일단 저지르고 보자!' 정신과 두 번째 분의 '돌다리도 부숴버릴 기세로 두드려보자!' 정신이 만나면? 세상에 없던 창조적인 결과물이 뙇! 어쩌면 세상을 바꿀지도? 💡", goodPoint2Example: "서로의 '덕질' 영역을 존중하다 못해 함께 빠져들다 보면, '어? 내가 이런 걸 좋아했었나?' 싶은 신세계를 경험하며 관계의 깊이가 남달라질 거예요! (단, 통장 잔고는 책임 못 짐 🤣)", improvementPoint1Example: "가끔 첫 번째 분이 너무 앞서나가서 두 번째 분이 '저기요, 잠깐만요!'를 외치기도 전에 저만치 가버리거나, 두 번째 분이 너무 신중해서 첫 번째 분이 '아, 속 터져! 내가 그냥 할게!'를 시전할 수 있어요. 서로의 '속도 조절' 능력 만렙 찍기가 시급합니다! 🚀", improvementPoint2Example: "표현 방식이 너무 달라서 '화성에서 온 남자, 금성에서 온 여자' 시즌2 찍을 뻔! 할 때가 있을 거예요. '척하면 척'도 좋지만, 가끔은 '말로 해야 압니다, 네?' 스킬도 장착해야 서로 오해 없이 오래오래 행복할 수 있어요! 💬", overallSummaryExample: "이 커플, 한마디로 '예측불가 롤러코스터'입니다! 🎢 조용할 날 없이 티격태격하면서도 서로 없이는 못 사는, 그런 애증(?)의 관계랄까요? 하지만 분명한 건, 두 분의 삶은 서로로 인해 훨씬 더 다채롭고 유쾌해질 거라는 사실! 지루함은 저 멀리 안드로메다로 보내버리고, 이 스릴 넘치는 여정을 마음껏 즐겨보시길! 🔥", advice1Example: "둘만의 '아무 말 대잔치 데이트'는 어때요? 하루 동안 서로에게 떠오르는 아무 말이나 필터 없이 던져보는 거예요! (단, 끝나고 뒤끝 없기! 🤙) 의외의 진심이나 빵 터지는 유머를 발견할지도 몰라요!", advice2Example: "서로의 '흑역사 배틀'을 열어보세요! 가장 창피했던 과거 사진이나 에피소드를 공유하며 누가 더 강력한 흑역사를 가졌는지 겨뤄보는 거죠! 웃다가 눈물 콧물 다 쏟아도 책임 안 집니다! 😂 이 과정을 통해 서로의 인간적인 매력에 더 깊이 빠져들 거예요!", languageInstructionSuffix: "모든 설명은 선택된 언어(한국어)로 매우 친근하고 재미있게, 유머와 긍정적인 에너지를 담아 작성해주세요." }
   },
-  en: { /* ... */ }, ja: { /* ... */ }, zh: { /* ... */ }, es: { /* ... */ }
+  en: { languageSelectLabel: "Change Language", languageKorean: "한국어", languageEnglish: "English", /* ... */ }, 
+  ja: { languageSelectLabel: "言語変更", languageKorean: "한국어", languageEnglish: "English", /* ... */ }, 
+  zh: { languageSelectLabel: "更改语言", languageKorean: "한국어", languageEnglish: "English", /* ... */ }, 
+  es: { languageSelectLabel: "Cambiar Idioma", languageKorean: "한국어", languageEnglish: "English", /* ... */ }
 };
 
 const getBase64 = (file) => new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result); // Base64 전체 문자열 반환 (data:image/png;base64,...)
+    reader.onload = () => resolve(reader.result);
     reader.onerror = (error) => reject(error);
 });
 
@@ -103,8 +106,7 @@ const App = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   
-  // 공유 및 결과 페이지 상태 추가
-  const [pageState, setPageState] = useState('main'); // 'main', 'loadingResult', 'resultView'
+  const [pageState, setPageState] = useState('main'); 
   const [resultId, setResultId] = useState(null);
 
   const [showInterstitialAd, setShowInterstitialAd] = useState(false);
@@ -113,12 +115,11 @@ const App = () => {
   const [isWatchingRewardedAd, setIsWatchingRewardedAd] = useState(false);
   const [copyStatus, setCopyStatus] = useState('');
 
-  // 페이지 로드 시 URL을 확인하여 공유된 결과인지 판별
   useEffect(() => {
     const path = window.location.pathname.split('/');
     if (path[1] === 'result' && path[2]) {
         const id = path[2];
-        setPageState('loadingResult'); // 결과 로딩 상태로 변경
+        setPageState('loadingResult'); 
         
         const fetchResult = async () => {
             try {
@@ -128,7 +129,6 @@ const App = () => {
 
                 if (docSnap.exists()) {
                     const resultData = docSnap.data();
-                    // Firestore에 저장된 언어로 앱 언어 설정 (선택적)
                     if (resultData.language && translations[resultData.language]) {
                         setLanguage(resultData.language);
                     }
@@ -151,16 +151,16 @@ const App = () => {
         fetchResult();
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // 이 useEffect는 처음 마운트될 때만 실행되어야 합니다.
+  }, []); 
 
   useEffect(() => {
     setCurrentStrings(translations[language]);
     resetPlaceholders(translations[language]);
-  }, [language]);
+  }, [language, person1ImageFile, person2ImageFile]);
 
   const resetPlaceholders = (strings) => {
-    if (!person1ImageFile) setPerson1ImagePreview(`https://placehold.co/400x400/e2e8f0/cbd5e0?text=${strings.placeholderImageText1}`);
-    if (!person2ImageFile) setPerson2ImagePreview(`https://placehold.co/400x400/e9d5ff/a855f7?text=${strings.placeholderImageText2}`);
+    if (!person1ImageFile) setPerson1ImagePreview(`https://placehold.co/400x400/e2e8f0/cbd5e0?text=${strings.placeholderImageText1.replace(/\+/g, '%20')}`);
+    if (!person2ImageFile) setPerson2ImagePreview(`https://placehold.co/400x400/e9d5ff/a855f7?text=${strings.placeholderImageText2.replace(/\+/g, '%20')}`);
   }
 
   const selectLanguage = (langCode) => {
@@ -169,7 +169,6 @@ const App = () => {
   };
   
   const resetAllStates = () => {
-    // URL을 메인으로 변경
     window.history.pushState({}, '', '/');
 
     setPerson1ImageFile(null);
@@ -184,7 +183,6 @@ const App = () => {
     setIsLoading(false);
     setPageState('main');
     setResultId(null);
-    resetPlaceholders(currentStrings);
   };
 
   const handleImageChange = (event, person) => {
@@ -218,8 +216,8 @@ const App = () => {
               analysis,
               person1Image,
               person2Image,
-              language: lang, // 결과 생성 시 언어 저장
-              createdAt: serverTimestamp() // TTL을 위한 타임스탬프
+              language: lang,
+              createdAt: serverTimestamp()
           });
           return docRef.id;
       } catch (e) {
@@ -254,7 +252,7 @@ const App = () => {
       
       const currentPromptStrings = currentStrings.aiPrompt;
       const langName = language === 'ko' ? '한국어' : language === 'en' ? 'English' : language === 'ja' ? '日本語' : language === 'zh' ? '中文' : 'Español';
-      const prompt = `${currentPromptStrings.instruction}\n\n${currentPromptStrings.jsonFormatInstruction}\n{\n  "person1_analysis": {\n    "name": "${currentPromptStrings.person1NameExample}", \n    "overall_impression": "${currentPromptStrings.person1ImpressionExample}"\n  },\n  "person2_analysis": {\n    "name": "${currentPromptStrings.person2NameExample}",\n    "overall_impression": "${currentPromptStrings.person2ImpressionExample}"\n  },\n  "compatibility": {\n    "score": 88, \n    "score_reason": "${currentPromptStrings.compatibilityScoreReasonExample}",\n    "good_points": [\n      "${currentPromptStrings.goodPoint1Example}",\n      "${currentPromptStrings.goodPoint2Example}"\n    ],\n    "areas_for_improvement": [\n      "${currentPromptStrings.improvementPoint1Example}",\n      "${currentPromptStrings.improvementPoint2Example}"\n    ],\n    "overall_summary": "${currentPromptStrings.overallSummaryExample}",\n    "advice": [\n      "${currentPromptStrings.advice1Example}",\n      "${currentPromptStrings.advice2Example}"\n    ]\n  }\n}\n${currentPromptStrings.languageInstructionSuffix.replace(/\(([^)]+)\)/, `(${langName})`)}`;
+      const prompt = `${currentPromptStrings.instruction}\n\n${currentPromptStrings.jsonFormatInstruction}\n${JSON.stringify({ person1_analysis: { name: currentPromptStrings.person1NameExample, overall_impression: currentPromptStrings.person1ImpressionExample }, person2_analysis: { name: currentPromptStrings.person2NameExample, overall_impression: currentPromptStrings.person2ImpressionExample }, compatibility: { score: 88, score_reason: currentPromptStrings.compatibilityScoreReasonExample, good_points: [currentPromptStrings.goodPoint1Example, currentPromptStrings.goodPoint2Example], areas_for_improvement: [currentPromptStrings.improvementPoint1Example, currentPromptStrings.improvementPoint2Example], overall_summary: currentPromptStrings.overallSummaryExample, advice: [currentPromptStrings.advice1Example, currentPromptStrings.advice2Example] } }, null, 2)}\n${currentPromptStrings.languageInstructionSuffix.replace(/\(([^)]+)\)/, `(${langName})`)}`;
 
       const payload = {
         contents: [ { role: "user", parts: [ { text: prompt }, { inlineData: { mimeType: mimeType1, data: base64Image1 } }, { inlineData: { mimeType: mimeType2, data: base64Image2 } } ] } ],
@@ -363,7 +361,6 @@ const App = () => {
                 {currentStrings.watchAdButton}
             </button>
         )}
-        {error && <p className="text-red-500 bg-red-100 border border-red-300 rounded-md p-4 text-md mt-4 max-w-md mx-auto shadow-md animate-shake">{error}</p>}
       </section>
     </>
   );
@@ -440,6 +437,22 @@ const App = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-400 via-purple-500 to-indigo-600 p-4 sm:p-6 lg:p-8 flex flex-col items-center font-gowun text-gray-700">
       <header className="w-full max-w-4xl mt-16 sm:mt-12 mb-8 text-center font-gaegu">
+        <div className="absolute top-4 right-4 z-20">
+          <button onClick={() => setShowLanguageDropdown(!showLanguageDropdown)} className="flex items-center bg-white/30 text-white px-3 py-2 rounded-lg hover:bg-white/50 transition-colors duration-300 shadow-md">
+            <GlobeIcon className="w-5 h-5 mr-2" />
+            {currentStrings.languageSelectLabel}
+            <ChevronDownIcon className={`w-5 h-5 ml-1 transform transition-transform duration-200 ${showLanguageDropdown ? 'rotate-180' : ''}`} />
+          </button>
+          {showLanguageDropdown && (
+            <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 ring-1 ring-black ring-opacity-5">
+              {Object.keys(translations).map((langKey) => (
+                <button key={langKey} type="button" onClick={() => selectLanguage(langKey)} className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900" >
+                  {translations[langKey][`language${langKey.charAt(0).toUpperCase() + langKey.slice(1)}`]}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
         <h1 className="text-5xl sm:text-6xl font-bold text-white py-2 flex items-center justify-center drop-shadow-lg">
           <UsersIcon className="inline-block w-12 h-12 mr-3 text-pink-300" />
           {currentStrings.appTitle}
@@ -450,10 +463,13 @@ const App = () => {
       </header>
       
       <main className="w-full max-w-4xl bg-white/95 backdrop-blur-md shadow-2xl rounded-xl p-6 sm:p-8">
+        {showInterstitialAd && <div className="fixed inset-0 bg-black bg-opacity-75 flex flex-col items-center justify-center z-50 p-4"><div className="bg-white p-6 sm:p-10 rounded-lg shadow-2xl text-center max-w-md w-full"><h3 className="text-2xl font-bold text-purple-600 mb-4">{currentStrings.interstitialAdTitle}</h3><p className="text-gray-700 mb-2">{currentStrings.interstitialAdBody1}</p><p className="text-gray-500 text-sm mb-6">{currentStrings.interstitialAdBody2}</p><div className="animate-pulse"><div className="w-16 h-16 border-4 border-purple-500 border-t-transparent rounded-full mx-auto animate-spin"></div><p className="text-purple-600 mt-3 font-semibold">{currentStrings.interstitialAdLoadingText}</p></div></div></div>}
+        {isWatchingRewardedAd && <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"><div className="bg-white p-8 rounded-lg shadow-xl text-center max-w-sm w-full"><h3 className="text-xl font-semibold text-indigo-600 mb-3">{currentStrings.rewardedAdTitle}</h3><p className="text-gray-600 mb-5">{currentStrings.rewardedAdBody}</p><div className="w-full bg-gray-200 rounded-full h-2.5 mb-4"><div className="bg-indigo-600 h-2.5 rounded-full animate-pulse" style={{ width: "75%" }}></div></div><p className="text-sm text-gray-500">{currentStrings.rewardedAdFooter}</p></div></div>}
+        
         {pageState === 'loadingResult' && <p className="text-center text-xl text-purple-700 font-semibold">{currentStrings.resultLoading}</p>}
         {pageState === 'main' && <MainPageComponent />}
         {pageState === 'resultView' && analysisResult && <ResultPageComponent />}
-        {pageState === 'main' && error && <p className="text-red-500 bg-red-100 border border-red-300 rounded-md p-4 text-md mt-4 max-w-md mx-auto shadow-md animate-shake">{error}</p>}
+        {error && <p className="text-red-500 bg-red-100 border border-red-300 rounded-md p-4 text-md mt-4 max-w-md mx-auto shadow-md animate-shake">{error}</p>}
       </main>
 
       <footer className="w-full max-w-4xl mt-12 text-center">
@@ -461,6 +477,6 @@ const App = () => {
       </footer>
     </div>
   );
-}; // ㅇㅇㅇㅇ
+};
 
 export default App;
