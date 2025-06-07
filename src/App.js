@@ -792,28 +792,28 @@ const App = () => {
               onClick={() => selectLanguage('en')}
               className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
             >
-              {translations.en.languageEnglish}English
+              {translations.en.languageEnglish}
             </button>
             <button
               type="button"
               onClick={() => selectLanguage('ja')}
               className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
             >
-              {translations.ja.languageJapanese}日本語
+              {translations.ja.languageJapanese}
             </button>
             <button
               type="button"
               onClick={() => selectLanguage('zh')}
               className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
             >
-              {translations.zh.languageChinese}中文
+              {translations.zh.languageChinese}
             </button>
             <button
               type="button"
               onClick={() => selectLanguage('es')}
               className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
             >
-              {translations.es.languageSpanish}Español
+              {translations.es.languageSpanish}
             </button>
 
           </div>
