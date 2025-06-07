@@ -79,7 +79,7 @@ const translations = {
     resultNotFound: "앗! 해당 결과를 찾을 수 없어요. 주소가 올바른지 확인해주세요.",
     aiPrompt: { jsonFormatInstruction: "답변은 다음 JSON 형식으로 제공해주세요:", instruction: "두 분의 사진이 주어집니다. 각 인물의 전체적인 인상과 성격을 아주 재치 있고 성숙한 유머를 섞어, 마치 '인생 N회차 옆집 형/언니'가 핵심만 콕콕 짚어주듯 분석해주세요. 이때, 각 인물의 **가장 특징적인 이목구비 1~2가지만** 골라서, 그 관상학적 의미를 '아하!' 무릎을 탁 치게 만드는 비유나 유머로 풀어내고, 이것이 전체적인 성격 및 인생관과 어떻게 연결되는지 알려주세요. \"자, 어디 한번 볼까? 이분은 딱 보아하니~\" 같은 느낌으로요. 이 내용을 'overall_impression' 필드에 담아주세요. 분량은 각 사람당 3-4문장 정도로, 너무 가볍지도 무겁지도 않게! 그 후, 두 분의 궁합을 분석해주세요. 궁합 점수(0-100점)와 그 이유를 설명할 때는 \"긴장하시고~ 오늘의 커플 궁합 점수는 바로바로~!\" 처럼 기대감을 주면서도, 결과에 대해서는 '뼈 때리는' 한마디를 덧붙여주세요. 잘 맞는 점('good_points')과 서로 노력하면 좋을 점('areas_for_improvement')은 각각 2가지씩, 마치 '연애 고수'가 현실적인 팩폭과 따뜻한 응원을 동시에 날려주듯 작성해주세요. 예를 들어, '이것만 잘하면 할리우드 커플? 저리 가라 할 케미 폭발 각!' 이런 식으로요. 궁합 총평('overall_summary')은 한 편의 반전 있는 단편 영화 시놉시스처럼, 혹은 다음 화가 궁금해지는 인기 드라마의 명대사처럼 임팩트 있게 요약해주세요. 마지막으로 'advice' 필드에는 두 분이 함께하면 '이런 미친 짓까지 가능하다고?' 싶을 정도로 기상천외하고 재미있는 데이트 아이디어나, '이거 완전 우리 얘기잖아?' 싶은 관계 꿀팁 2가지를 제안해주세요. 모든 텍스트는 핵심을 찌르는 이모티콘(😏, 🔥, 🤣, 💡 등)을 적절히 사용하여 더욱 생동감 있게 만들어주세요!", person1NameExample: "첫 번째 분 별명 (예: 예측불가 자유영혼)", person1ImpressionExample: "오호~ 첫 번째 분, 딱 보니 보통내기가 아니시군요! 😏 자유분방함이 물씬 풍기는 눈빛과 살짝 올라간 입꼬리는 '내 사전에 불가능이란 없다!'를 외치는 듯한데요? 특히, 그 어디에도 얽매이지 않을 듯한 이마 라인은 '인생은 한 번뿐!' YOLO 정신을 제대로 보여줍니다. 덕분에 주변에 늘 신선한 영감을 주지만, 가끔 너무 즉흥적이라 '어디로 튈지 모르는 탱탱볼' 같다는 소리 좀 듣겠어요! 🤣", person2NameExample: "두 번째 분 별명 (예: 반전매력 철벽수비수)", person2ImpressionExample: "두 번째 분은 겉으로는 '접근금지' 아우라를 풍기는 철벽수비수 같지만, 알고 보면 속정이 깊은 반전매력의 소유자시네요! 🧐 반듯한 콧날과 다부진 입매는 '한번 마음먹은 건 끝까지 간다!'는 의지를 보여주지만, 의외의 순간에 보여주는 따뜻한 눈빛이 이분의 진짜 매력 포인트! 🔥 신중함도 좋지만, 가끔은 그 철벽, 살짝 내려놓고 달려보는 용기도 필요할 때가 있답니다!", compatibilityScoreReasonExample: "🎉 두구두구~ 이 커플, 궁합 점수는 무려 88점! 이거 완전 '환장의 커플'에서 '환상의 커플'로 진화 직전인데요?! 💕 서로 다른 매력이 만나 예상치 못한 시너지를 뿜어내는, 그야말로 '단짠단짠' 조합이랍니다! (근데 가끔 너무 짜거나 달아서 속 쓰릴 수 있음 주의! 😉)", goodPoint1Example: "첫 번째 분의 '일단 저지르고 보자!' 정신과 두 번째 분의 '돌다리도 부숴버릴 기세로 두드려보자!' 정신이 만나면? 세상에 없던 창조적인 결과물이 뙇! 어쩌면 세상을 바꿀지도? 💡", goodPoint2Example: "서로의 '덕질' 영역을 존중하다 못해 함께 빠져들다 보면, '어? 내가 이런 걸 좋아했었나?' 싶은 신세계를 경험하며 관계의 깊이가 남달라질 거예요! (단, 통장 잔고는 책임 못 짐 🤣)", improvementPoint1Example: "가끔 첫 번째 분이 너무 앞서나가서 두 번째 분이 '저기요, 잠깐만요!'를 외치기도 전에 저만치 가버리거나, 두 번째 분이 너무 신중해서 첫 번째 분이 '아, 속 터져! 내가 그냥 할게!'를 시전할 수 있어요. 서로의 '속도 조절' 능력 만렙 찍기가 시급합니다! 🚀", improvementPoint2Example: "표현 방식이 너무 달라서 '화성에서 온 남자, 금성에서 온 여자' 시즌2 찍을 뻔! 할 때가 있을 거예요. '척하면 척'도 좋지만, 가끔은 '말로 해야 압니다, 네?' 스킬도 장착해야 서로 오해 없이 오래오래 행복할 수 있어요! 💬", overallSummaryExample: "이 커플, 한마디로 '예측불가 롤러코스터'입니다! 🎢 조용할 날 없이 티격태격하면서도 서로 없이는 못 사는, 그런 애증(?)의 관계랄까요? 하지만 분명한 건, 두 분의 삶은 서로로 인해 훨씬 더 다채롭고 유쾌해질 거라는 사실! 지루함은 저 멀리 안드로메다로 보내버리고, 이 스릴 넘치는 여정을 마음껏 즐겨보시길! 🔥", advice1Example: "둘만의 '아무 말 대잔치 데이트'는 어때요? 하루 동안 서로에게 떠오르는 아무 말이나 필터 없이 던져보는 거예요! (단, 끝나고 뒤끝 없기! 🤙) 의외의 진심이나 빵 터지는 유머를 발견할지도 몰라요!", advice2Example: "서로의 '흑역사 배틀'을 열어보세요! 가장 창피했던 과거 사진이나 에피소드를 공유하며 누가 더 강력한 흑역사를 가졌는지 겨뤄보는 거죠! 웃다가 눈물 콧물 다 쏟아도 책임 안 집니다! 😂 이 과정을 통해 서로의 인간적인 매력에 더 깊이 빠져들 거예요!", languageInstructionSuffix: "모든 설명은 선택된 언어(한국어)로 매우 친근하고 재미있게, 유머와 긍정적인 에너지를 담아 작성해주세요." }
   },
-  en: { languageSelectLabel: "Change Language", languageKorean: "한국어", languageEnglish: "English", languageJapanese: "日本語", languageChinese: "中文", languageSpanish: "Español", appTitle: "AI Couple Face Reading Compatibility", appSubtitle: "Just upload photos! AI will hilariously analyze your fateful encounter! 😉", appDisclaimer: "(Just for fun, you know? Wink~☆)", physiognomyIntroTitle: "✨ What is 'Face Reading' (Physiognomy)?", physiognomyIntroText: "'Face Reading' (Physiognomy) is a traditional Eastern practice of discerning a person's character or destiny from their facial features. This app combines the idea of physiognomy with modern AI for fun! Please focus on the playful interpretations rather than scientific accuracy!", person1Title: "First Protagonist", person2Title: "Second Protagonist", uploadInstruction: "Please upload clear front-facing photos<br/>where facial features are distinct!", uploadButton: "Upload Photo!", fileLoaded: "(Loaded!)", analyzeButton: "Analyze Destiny's Compatibility!", loadingMessage: "AI is working hard! 🔥 Almost there!", watchAdButton: "Watch Ad to See Results! (Exciting!)", errorMessageDefault: "Please upload photos of both individuals. Clearer photos with distinct facial features lead to more accurate analysis!", apiErrorGeneric: "API request failed", apiErrorResponseFormat: "AI couldn't prepare a response. 😥 The response format is incorrect. Please try again shortly!", apiErrorJsonParse: "Oops! The AI got a bit too excited and made a slight mistake with the response format. 😂 Please wait a moment and try again, and it'll surely show you the proper results this time!", apiErrorNetwork: "An unexpected error occurred during analysis. 😭 Please check your network connection and try again!", resultTitle: "💖 AI Fun Face Reading Compatibility Results 💖", personAnalysisTitleSuffix: "'s Face Reading Analysis! 🧐", compatibilityTitle: "What's The Overall Compatibility?! 💕", scoreUnit: "Points!!!", scoreDefaultReason: "AI says: This score... is destiny! ✨", goodPointsTitle: "These Points Are a Perfect Match! 👍", improvementPointsTitle: "Just Be Careful With This, and You're Set for Life! ⚠️", overallCommentTitle: "✨ AI's Overall Comment ✨", defaultOverallComment: "AI says: You two, just get married! (Not kidding 😉)", adviceTitle: "💡 AI's Super Fun Date Secrets! 💡", copyButton: "Copy Results & Show Off!", shareTwitterButton: "Spread the Word on Twitter!", shareFacebookButton: "Tell Facebook Friends Too!", retryButton: "Start Over!", copySuccessMessage: "Content copied! Go ahead and boast to your friends! 💌", copyErrorMessage: "Oops! To use the copy feature, you might need to allow clipboard access in your browser settings! 😅", footerText: "© {year} AI Couple Face Reading Compatibility (Fun Edition). The creator had fun too! 😉", interstitialAdTitle: "Just a Moment! 🚀", interstitialAdBody1: "AI is analyzing your fateful compatibility at the speed of light!", interstitialAdBody2: "(An awesome ad might pop up on this cool screen 😉)", interstitialAdLoadingText: "Analyzing destiny...", rewardedAdTitle: "✨ Special Results Unveiling Soon! ✨", rewardedAdBody: "Once the ad finishes, your amazing compatibility results will be revealed! (Heart-pounding!)", rewardedAdFooter: "No skipping ads! Results will appear with a fanfare soon! Boom! 🎉", placeholderImageText1: "Person+1+Photo", placeholderImageText2: "Person+2+Photo", placeholderImageError: "Oops!+Image+Error!", adPlaceholderBannerText: "Fun+Ad+Banner", adPlaceholderInterstitialText: "Exciting+Interstitial+Ad", adPlaceholderRewardedText: "Fun+Rewarded+Ad", shareMessage: "Curious about our couple's face reading compatibility? Click to see the results! 👇", resultLoading: "Loading results...", resultNotFound: "Oops! We couldn't find the results. Please check if the link is correct.", aiPrompt: { /* ... */ } },
+  en: { languageSelectLabel: "Change Language", languageKorean: "한국어", languageEnglish: "English", languageJapanese: "日本語", languageChinese: "中文", languageSpanish: "Español", appTitle: "AI Couple Face Reading Compatibility", /* ... */ },
   ja: { languageSelectLabel: "言語変更", languageKorean: "한국어", languageEnglish: "English", languageJapanese: "日本語", languageChinese: "中文", languageSpanish: "Español", appTitle: "AIカップル観相相性診断", /* ... */ },
   zh: { languageSelectLabel: "更改语言", languageKorean: "한국어", languageEnglish: "English", languageJapanese: "日本語", languageChinese: "中文", languageSpanish: "Español", appTitle: "AI情侣面相八字合婚", /* ... */ },
   es: { languageSelectLabel: "Cambiar Idioma", languageKorean: "한국어", languageEnglish: "English", languageJapanese: "日本語", languageChinese: "中文", languageSpanish: "Español", appTitle: "IA Compatibilidad de Parejas por Lectura Facial", /* ... */ }
@@ -110,7 +110,7 @@ const App = () => {
   const [resultId, setResultId] = useState(null);
 
   const [showInterstitialAd, setShowInterstitialAd] = useState(false);
-  const [isAdWatched, setIsAdWatched] = useState(false);
+  // ★ 빌드 에러 수정 1: 사용하지 않는 isAdWatched 상태 변수 제거
   const [showResults, setShowResults] = useState(false);
   const [isWatchingRewardedAd, setIsWatchingRewardedAd] = useState(false);
   const [copyStatus, setCopyStatus] = useState('');
@@ -153,15 +153,16 @@ const App = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); 
 
+  // ★ 빌드 에러 수정 2: resetPlaceholders 함수를 useCallback으로 감싸고, useEffect 의존성 배열 수정
+  const resetPlaceholders = useCallback((strings) => {
+    if (!person1ImageFile) setPerson1ImagePreview(`https://placehold.co/400x400/e2e8f0/cbd5e0?text=${strings.placeholderImageText1.replace(/\+/g, '%20')}`);
+    if (!person2ImageFile) setPerson2ImagePreview(`https://placehold.co/400x400/e9d5ff/a855f7?text=${strings.placeholderImageText2.replace(/\+/g, '%20')}`);
+  }, [person1ImageFile, person2ImageFile]);
+
   useEffect(() => {
     setCurrentStrings(translations[language]);
     resetPlaceholders(translations[language]);
-  }, [language, person1ImageFile, person2ImageFile]);
-
-  const resetPlaceholders = (strings) => {
-    if (!person1ImageFile) setPerson1ImagePreview(`https://placehold.co/400x400/e2e8f0/cbd5e0?text=${strings.placeholderImageText1.replace(/\+/g, '%20')}`);
-    if (!person2ImageFile) setPerson2ImagePreview(`https://placehold.co/400x400/e9d5ff/a855f7?text=${strings.placeholderImageText2.replace(/\+/g, '%20')}`);
-  }
+  }, [language, resetPlaceholders]);
 
   const selectLanguage = (langCode) => {
     setLanguage(langCode);
@@ -176,7 +177,6 @@ const App = () => {
     setAnalysisResult(null);
     setError('');
     setShowInterstitialAd(false);
-    setIsAdWatched(false);
     setShowResults(false);
     setIsWatchingRewardedAd(false);
     setCopyStatus('');
@@ -200,7 +200,6 @@ const App = () => {
       setAnalysisResult(null);
       setError('');
       setShowInterstitialAd(false);
-      setIsAdWatched(false);
       setShowResults(false);
       setIsWatchingRewardedAd(false);
       setCopyStatus('');
@@ -239,7 +238,7 @@ const App = () => {
     }
 
     setIsLoading(true); setShowInterstitialAd(true);
-    setError(''); setAnalysisResult(null); setIsAdWatched(false); setShowResults(false);
+    setError(''); setAnalysisResult(null); setShowResults(false);
 
     try {
       const base64Image1Data = await getBase64(person1ImageFile);
@@ -297,7 +296,7 @@ const App = () => {
   const handleWatchRewardedAd = () => {
     setIsWatchingRewardedAd(true);
     setTimeout(() => {
-      setIsAdWatched(true);
+      // isAdWatched를 사용하지 않으므로 제거
       setShowResults(true);
       setIsWatchingRewardedAd(false);
       setPageState('resultView');
@@ -327,19 +326,18 @@ const App = () => {
   );
   
   const MainPageComponent = () => (
-    // ★ 폰트 문제 해결: 메인 페이지 컴포넌트에 직접 폰트 클래스 적용
     <div className="font-gowun">
       <section className="mb-8 p-4 bg-indigo-50 rounded-lg shadow">
-        <h3 className="text-xl font-bold text-indigo-700 mb-2 text-center">{currentStrings.physiognomyIntroTitle}</h3>
+        <h3 className="text-xl font-bold text-indigo-700 mb-2 text-center font-gaegu">{currentStrings.physiognomyIntroTitle}</h3>
         <p className="text-sm text-gray-600 leading-relaxed text-center">{currentStrings.physiognomyIntroText}</p>
       </section>
       <section className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
         {[1, 2].map(personNum => (
           <div key={personNum} className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors flex flex-col items-center ${personNum === 1 ? 'border-rose-300 hover:border-rose-500 bg-rose-50/50' : 'border-fuchsia-300 hover:border-fuchsia-500 bg-fuchsia-50/50'}`}>
-            <h2 className="text-2xl font-bold mb-3">{personNum === 1 ? currentStrings.person1Title : currentStrings.person2Title} 👑</h2>
+            <h2 className="text-2xl font-bold mb-3 font-gaegu">{personNum === 1 ? currentStrings.person1Title : currentStrings.person2Title} 👑</h2>
             <p className="text-sm text-gray-600 mb-3" dangerouslySetInnerHTML={{ __html: currentStrings.uploadInstruction }}></p>
             <img src={personNum === 1 ? person1ImagePreview : person2ImagePreview} alt={`${personNum === 1 ? currentStrings.person1Title : currentStrings.person2Title}`} className="w-48 h-48 md:w-56 md:h-56 object-cover mx-auto rounded-full shadow-xl mb-4 border-4 border-white" onError={(e) => { e.target.onerror = null; e.target.src = `https://placehold.co/400x400/f87171/fecaca?text=${currentStrings.placeholderImageError.replace(/\+/g, '%20')}`; }}/>
-            <label htmlFor={`person${personNum}ImageUpload`} className={`cursor-pointer inline-flex items-center justify-center px-6 py-3 text-white font-bold rounded-lg shadow-lg transition-transform transform hover:scale-105 mt-auto text-lg ${personNum === 1 ? 'bg-rose-500 hover:bg-rose-600' : 'bg-fuchsia-500 hover:bg-fuchsia-600'}`}>
+            <label htmlFor={`person${personNum}ImageUpload`} className={`cursor-pointer inline-flex items-center justify-center px-6 py-3 text-white font-bold rounded-lg shadow-lg transition-transform transform hover:scale-105 mt-auto text-lg font-gaegu ${personNum === 1 ? 'bg-rose-500 hover:bg-rose-600' : 'bg-fuchsia-500 hover:bg-fuchsia-600'}`}>
               <UploadCloudIcon className="w-6 h-6 mr-2" />
               {currentStrings.uploadButton}
             </label>
@@ -350,14 +348,14 @@ const App = () => {
       </section>
       <section className="mb-8 text-center">
         {!analysisResult && !isLoading && (
-          <button onClick={handleAnalysis} disabled={!person1ImageFile || !person2ImageFile} className="px-12 py-5 bg-gradient-to-r from-purple-600 to-indigo-700 hover:from-purple-700 hover:to-indigo-800 text-white font-bold text-2xl rounded-lg shadow-xl transition-all duration-300 ease-in-out transform hover:scale-105 disabled:opacity-60 disabled:cursor-not-allowed disabled:scale-100">
+          <button onClick={handleAnalysis} disabled={!person1ImageFile || !person2ImageFile} className="px-12 py-5 bg-gradient-to-r from-purple-600 to-indigo-700 hover:from-purple-700 hover:to-indigo-800 text-white font-bold text-2xl rounded-lg shadow-xl transition-all duration-300 ease-in-out transform hover:scale-105 disabled:opacity-60 disabled:cursor-not-allowed disabled:scale-100 font-gaegu">
             <HeartIcon className="inline-block w-8 h-8 mr-2 animate-ping" filled={true} />
             {currentStrings.analyzeButton}
           </button>
         )}
-        {isLoading && (<p className="text-xl text-purple-700 font-semibold animate-bounce">{currentStrings.loadingMessage}</p>)}
+        {isLoading && (<p className="text-xl text-purple-700 font-semibold animate-bounce font-gaegu">{currentStrings.loadingMessage}</p>)}
         {analysisResult && !isLoading && !showResults && (
-            <button onClick={handleWatchRewardedAd} className="px-10 py-5 bg-gradient-to-r from-teal-500 to-cyan-600 hover:from-teal-600 hover:to-cyan-700 text-white font-bold text-xl rounded-lg shadow-xl transition-all duration-300 ease-in-out transform hover:scale-105 flex items-center justify-center mx-auto">
+            <button onClick={handleWatchRewardedAd} className="px-10 py-5 bg-gradient-to-r from-teal-500 to-cyan-600 hover:from-teal-600 hover:to-cyan-700 text-white font-bold text-xl rounded-lg shadow-xl transition-all duration-300 ease-in-out transform hover:scale-105 flex items-center justify-center mx-auto font-gaegu">
                 <PlayCircleIcon className="w-7 h-7 mr-2" />
                 {currentStrings.watchAdButton}
             </button>
@@ -368,16 +366,16 @@ const App = () => {
 
   const ResultPageComponent = () => (
     <section className="bg-white/80 p-6 rounded-xl shadow-xl mt-8 font-gowun text-lg">
-      <h2 className="text-4xl font-bold text-center text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 mb-8 animate-bounce">{currentStrings.resultTitle}</h2>
+      <h2 className="text-4xl font-bold text-center text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 mb-8 animate-bounce font-gaegu">{currentStrings.resultTitle}</h2>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
           <div className="flex flex-col items-center">
             <img src={person1ImagePreview} alt={currentStrings.person1Title} className="w-48 h-48 md:w-56 md:h-56 object-cover mx-auto rounded-full shadow-xl border-4 border-white"/>
-            <h3 className="text-2xl font-bold mt-4 text-rose-600">{analysisResult.person1_analysis?.name || currentStrings.person1Title}</h3>
+            <h3 className="text-2xl font-bold mt-4 text-rose-600 font-gaegu">{analysisResult.person1_analysis?.name || currentStrings.person1Title}</h3>
           </div>
           <div className="flex flex-col items-center">
             <img src={person2ImagePreview} alt={currentStrings.person2Title} className="w-48 h-48 md:w-56 md:h-56 object-cover mx-auto rounded-full shadow-xl border-4 border-white"/>
-            <h3 className="text-2xl font-bold mt-4 text-fuchsia-600">{analysisResult.person2_analysis?.name || currentStrings.person2Title}</h3>
+            <h3 className="text-2xl font-bold mt-4 text-fuchsia-600 font-gaegu">{analysisResult.person2_analysis?.name || currentStrings.person2Title}</h3>
           </div>
       </div>
       
@@ -386,34 +384,34 @@ const App = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
               {[analysisResult.person1_analysis, analysisResult.person2_analysis].map((person, personIndex) => (
                 <div key={personIndex} className={`p-6 rounded-xl shadow-lg transform hover:scale-105 transition-transform duration-300 ${personIndex === 0 ? 'bg-gradient-to-br from-rose-100 to-pink-200 border-rose-300' : 'bg-gradient-to-br from-fuchsia-100 to-purple-200 border-fuchsia-300'} border-2`}>
-                  <h3 className={`text-3xl font-bold mb-4 text-center ${personIndex === 0 ? 'text-rose-600' : 'text-fuchsia-600'}`}>{(person?.name || (personIndex === 0 ? currentStrings.person1Title : currentStrings.person2Title))} {currentStrings.personAnalysisTitleSuffix}</h3>
+                  <h3 className={`text-3xl font-bold mb-4 text-center font-gaegu ${personIndex === 0 ? 'text-rose-600' : 'text-fuchsia-600'}`}>{(person?.name || (personIndex === 0 ? currentStrings.person1Title : currentStrings.person2Title))} {currentStrings.personAnalysisTitleSuffix}</h3>
                   <div className="relative"><p className="text-md leading-relaxed whitespace-pre-line p-4 bg-white/70 rounded-lg shadow-inner">{person?.overall_impression || "..."}</p></div>
                 </div>
               ))}
             </div>
 
             <div className="bg-gradient-to-br from-indigo-100 to-blue-200 p-6 rounded-xl shadow-xl border-2 border-indigo-300">
-              <h3 className="text-3xl font-bold text-indigo-700 mb-6 text-center">{currentStrings.compatibilityTitle}</h3>
+              <h3 className="text-3xl font-bold text-indigo-700 mb-6 text-center font-gaegu">{currentStrings.compatibilityTitle}</h3>
               <div className="flex justify-center mb-4">{renderHearts(analysisResult.compatibility?.score || 0)}</div>
-              <p className="text-5xl font-bold text-indigo-600 mb-2 text-center animate-pulse">{analysisResult.compatibility?.score || 0}{currentStrings.scoreUnit}</p>
+              <p className="text-5xl font-bold text-indigo-600 mb-2 text-center animate-pulse font-gaegu">{analysisResult.compatibility?.score || 0}{currentStrings.scoreUnit}</p>
               <p className="text-md text-gray-700 mb-6 italic text-center p-2 bg-white/50 rounded-md">{analysisResult.compatibility?.score_reason || currentStrings.scoreDefaultReason}</p>
               <div className="text-left space-y-6">
                 {analysisResult.compatibility?.good_points?.length > 0 && (
-                  <div><h4 className="text-xl font-bold text-green-700 mb-2 flex items-center"><ThumbsUpIcon className="w-6 h-6 mr-2 text-green-500" /> {currentStrings.goodPointsTitle}</h4>
+                  <div><h4 className="text-xl font-bold text-green-700 mb-2 flex items-center font-gaegu"><ThumbsUpIcon className="w-6 h-6 mr-2 text-green-500" /> {currentStrings.goodPointsTitle}</h4>
                     {analysisResult.compatibility.good_points.map((point, index) => (<p key={index} className="text-md text-gray-800 mb-1 p-3 bg-green-100 rounded-lg shadow-sm">- {point}</p>))}</div>
                 )}
                 {analysisResult.compatibility?.areas_for_improvement?.length > 0 && (
-                  <div><h4 className="text-xl font-bold text-red-700 mb-2 flex items-center"><ThumbsDownIcon className="w-6 h-6 mr-2 text-red-500" /> {currentStrings.improvementPointsTitle}</h4>
+                  <div><h4 className="text-xl font-bold text-red-700 mb-2 flex items-center font-gaegu"><ThumbsDownIcon className="w-6 h-6 mr-2 text-red-500" /> {currentStrings.improvementPointsTitle}</h4>
                     {analysisResult.compatibility.areas_for_improvement.map((area, index) => (<p key={index} className="text-md text-gray-800 mb-1 p-3 bg-red-100 rounded-lg shadow-sm">- {area}</p>))}</div>
                 )}
               </div>
-              <h4 className="text-2xl font-bold text-indigo-700 mt-8 mb-3 text-center">{currentStrings.overallCommentTitle}</h4>
+              <h4 className="text-2xl font-bold text-indigo-700 mt-8 mb-3 text-center font-gaegu">{currentStrings.overallCommentTitle}</h4>
               <p className="text-md text-gray-800 leading-relaxed whitespace-pre-line p-4 bg-white/70 rounded-lg shadow-inner mb-8">{analysisResult.compatibility?.overall_summary || currentStrings.defaultOverallComment}</p>
-              <h4 className="text-2xl font-bold text-indigo-700 mt-8 mb-3 text-center">{currentStrings.adviceTitle}</h4>
+              <h4 className="text-2xl font-bold text-indigo-700 mt-8 mb-3 text-center font-gaegu">{currentStrings.adviceTitle}</h4>
               {analysisResult.compatibility?.advice?.map((adv, index) => (<p key={index} className="text-md text-gray-800 mb-2 p-3 bg-indigo-100 rounded-lg shadow-sm">- {adv}</p>))}
             </div>
 
-            <div className="mt-10 pt-6 border-t border-gray-300 flex flex-col sm:flex-row items-center justify-center gap-4">
+            <div className="mt-10 pt-6 border-t border-gray-300 flex flex-col sm:flex-row items-center justify-center gap-4 font-gaegu">
               <button onClick={handleCopyToClipboard} className="w-full sm:w-auto flex items-center justify-center px-5 py-3 bg-green-500 hover:bg-green-600 text-white font-bold rounded-lg shadow-lg transition-colors text-md">
                 <LinkIcon className="w-5 h-5 mr-2" /> {currentStrings.copyButton}
               </button>
