@@ -4,20 +4,25 @@ import { initializeApp, getApps } from "firebase/app";
 import { getFirestore, collection, addDoc, doc, getDoc, serverTimestamp } from "firebase/firestore";
 import { getAuth, signInAnonymously } from "firebase/auth";
 
-// ★★★ API 키 설정 영역 ★★★
+// ★★★ API 키 설정 영역 (수정됨) ★★★
 
-// --- Firebase 설정 ---
-// [미리보기 테스트용] 아래 코드에 실제 키를 넣고, 아래쪽 [Netlify 배포용] 코드를 주석 처리하여 테스트하세요.
-// const firebaseConfig = {
-//   apiKey: "여기에-실제-파이어베이스-apiKey-붙여넣기",
-//   authDomain: "여기에-실제-파이어베이스-authDomain-붙여넣기",
-//   projectId: "여기에-실제-파이어베이스-projectId-붙여넣기",
-//   storageBucket: "여기에-실제-파이어베이스-storageBucket-붙여넣기",
-//   messagingSenderId: "여기에-실제-파이어베이스-messagingSenderId-붙여넣기",
-//   appId: "여기에-실제-파이어베이스-appId-붙여넣기"
-// };
+// --- [미리보기 테스트용] ---
+// 아래 코드의 'YOUR_..._KEY' 부분을 실제 키로 바꾸고,
+// 바로 아래 [Netlify 배포용] 코드를 주석 처리하면 미리보기에서 테스트할 수 있습니다.
+/*
+const firebaseConfig = {
+  apiKey: "YOUR_FIREBASE_API_KEY",
+  authDomain: "YOUR_FIREBASE_AUTH_DOMAIN",
+  projectId: "YOUR_FIREBASE_PROJECT_ID",
+  storageBucket: "YOUR_FIREBASE_STORAGE_BUCKET",
+  messagingSenderId: "YOUR_FIREBASE_MESSAGING_SENDER_ID",
+  appId: "YOUR_FIREBASE_APP_ID"
+};
+const GEMINI_API_KEY = "YOUR_GEMINI_API_KEY";
+*/
 
-// [Netlify 배포용] 실제 배포 시에는 이 코드를 활성화하고, 위 [미리보기 테스트용] 코드를 주석 처리하세요.
+// --- [Netlify 배포용] ---
+// 실제 배포 시에는 이 코드를 활성화하고, 위 [미리보기 테스트용] 코드를 주석 처리하세요.
 const firebaseConfig = {
   apiKey: typeof process !== 'undefined' ? process.env.REACT_APP_FIREBASE_API_KEY : undefined,
   authDomain: typeof process !== 'undefined' ? process.env.REACT_APP_FIREBASE_AUTH_DOMAIN : undefined,
@@ -26,6 +31,7 @@ const firebaseConfig = {
   messagingSenderId: typeof process !== 'undefined' ? process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID : undefined,
   appId: typeof process !== 'undefined' ? process.env.REACT_APP_FIREBASE_APP_ID : undefined,
 };
+const GEMINI_API_KEY = typeof process !== 'undefined' ? process.env.REACT_APP_GEMINI_API_KEY : undefined;
 
 
 // Firebase 앱 초기화 및 서비스 가져오기
@@ -33,11 +39,9 @@ let app, db, auth;
 // 모든 설정값이 유효한 경우에만 Firebase를 초기화합니다.
 if (Object.values(firebaseConfig).every(v => v)) {
     try {
-        // 이미 초기화되었는지 확인
         if (!getApps().length) {
             app = initializeApp(firebaseConfig);
             auth = getAuth(app);
-            // 익명으로 로그인하여 Firestore 규칙을 통과
             signInAnonymously(auth).catch((error) => {
                 console.error("Anonymous sign-in failed:", error);
             });
@@ -80,16 +84,6 @@ const getBase64 = (file) => new Promise((resolve, reject) => {
 });
 
 const App = () => {
-  // ★★★ 디버깅 코드 추가 ★★★
-  // 앱이 실제로 어떤 환경 변수를 보고 있는지 확인하기 위해 콘솔에 출력합니다.
-  useEffect(() => {
-    console.log("--- 환경 변수 디버깅 시작 ---");
-    console.log("Gemini API Key (Type):", typeof process.env.REACT_APP_GEMINI_API_KEY);
-    console.log("Gemini API Key (Exists):", !!process.env.REACT_APP_GEMINI_API_KEY);
-    console.log("Firebase Project ID (Exists):", !!process.env.REACT_APP_FIREBASE_PROJECT_ID);
-    console.log("--------------------------");
-  }, []); // 이 코드는 앱이 처음 로드될 때 한 번만 실행됩니다.
-  
   const [language, setLanguage] = useState('ko');
   const [currentStrings, setCurrentStrings] = useState(translations.ko);
   const [showLanguageDropdown, setShowLanguageDropdown] = useState(false);
@@ -224,8 +218,9 @@ const App = () => {
       setError(currentStrings.errorMessageDefault);
       return;
     }
-
-    const apiKey = typeof process !== 'undefined' ? process.env.REACT_APP_GEMINI_API_KEY : undefined;
+    
+    // API 키를 전역 상수로 선언된 GEMINI_API_KEY 에서 가져옵니다.
+    const apiKey = GEMINI_API_KEY;
 
     if (!apiKey) {
         setError("API Key is not configured. Please contact the administrator.");
