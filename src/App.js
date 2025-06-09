@@ -1,12 +1,12 @@
 import React, { useState, useCallback, useEffect } from 'react';
-// Firebase SDK import 추가
+// Firebase SDK import 수정
 import { initializeApp, getApps } from "firebase/app";
 import { getFirestore, collection, addDoc, doc, getDoc, serverTimestamp } from "firebase/firestore";
 import { getAuth, signInAnonymously } from "firebase/auth";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 // ★★★ API 키 설정 영역 ★★★
 // Netlify 빌드 과정에서 process.env.REACT_APP_* 값으로 자동 교체됩니다.
-// '미리보기'에서는 이 값들이 비어있으므로, 코드 내에서 분기 처리하여 키 없이 분석을 수행합니다.
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
   authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
@@ -19,7 +19,7 @@ const GEMINI_API_KEY = process.env.REACT_APP_GEMINI_API_KEY;
 
 
 // Firebase 앱 초기화 및 서비스 가져오기
-let app, db, auth;
+let app, db, auth, storage;
 if (Object.values(firebaseConfig).every(v => v)) {
     try {
         if (!getApps().length) {
@@ -33,11 +33,11 @@ if (Object.values(firebaseConfig).every(v => v)) {
             auth = getAuth(app);
         }
         db = getFirestore(app);
+        storage = getStorage(app); // Storage 서비스 초기화
     } catch (error) {
         console.error("Firebase initialization failed:", error);
     }
 } else {
-    // 이 메시지는 '미리보기' 환경에서 정상적으로 나타날 수 있습니다.
     console.warn("Firebase configuration is missing. Database features will be disabled in the Preview environment.");
 }
 
@@ -56,7 +56,7 @@ const ChevronDownIcon = ({ className }) => ( <svg xmlns="http://www.w3.org/2000/
 
 // 다국어 텍스트 객체 (전체)
 const translations = {
-  ko: { 
+  ko: {
     languageSelectLabel: "언어 변경", languageKorean: "한국어", languageEnglish: "English", languageJapanese: "日本語", languageChinese: "中文", languageSpanish: "Español", 
     appTitle: "AI 커플 관상 궁합", appSubtitle: "사진만 올려봐! AI가 두 분의 운명적인 만남, 꿀잼으로 풀어드림! 😉", appDisclaimer: "(재미로 보는 거 알죠? 찡긋~☆)", 
     physiognomyIntroTitle: "✨ '관상'이란 무엇일까요?", physiognomyIntroText: "'관상'은 얼굴 생김새를 통해 그 사람의 성격이나 운명을 파악하려는 동양의 전통적인 방법이에요. 이 앱은 재미를 위해 현대적인 AI 기술과 관상의 아이디어를 결합했답니다! 과학적 근거보다는 유쾌한 해석에 집중해주세요!", 
@@ -70,70 +70,49 @@ const translations = {
     overallCommentTitle: "✨ AI의 종합 코멘트 ✨", defaultOverallComment: "AI 왈: 두 분, 그냥 결혼하세요! (농담 아님 😉)", adviceTitle: "💡 AI의 핵꿀잼 데이트 비법 전수! 💡", 
     shareTwitterButton: "트위터에 소문내기!", shareFacebookButton: "페북에도 알려주기!", retryButton: "첨부터 다시!", 
     footerText: "© {year} AI 커플 관상 궁합 (꿀잼 총평판). 만든이도 꿀잼! 😉", 
-    interstitialAdTitle: "잠시만요! 🚀", interstitialAdBody1: "AI가 두 분의 운명적인 궁합을 빛의 속도로 분석 중이에요!", interstitialAdBody2: "(이 멋진 화면에 광고가 뿅! 나올 수도 있답니다 😉)", interstitialAdLoadingText: "운명의 데스티니 분석 중...", 
+    interstitialAdTitle: "잠시만요! 🚀", interstitialAdBody1: "AI가 두 분의 운명적인 만남을 빛의 속도로 분석 중이에요!", interstitialAdBody2: "(이 멋진 화면에 광고가 뿅! 나올 수도 있답니다 😉)", interstitialAdLoadingText: "운명의 데스티니 분석 중...", 
     rewardedAdTitle: "✨ 특별한 결과 공개 임박! ✨", rewardedAdBody: "잠시 후 광고가 끝나면, 두 분의 놀라운 궁합 결과가 공개됩니다! (두근두근)", rewardedAdFooter: "광고는 스킵 없이! 곧 결과가 팡파레와 함께 등장! 팡! 🎉", 
     placeholderImageText1: "첫+번째+분+사진", placeholderImageText2: "두+번째+분+사진", placeholderImageError: "앗!+사진이...+뿅!", 
     adPlaceholderBannerText: "꿀잼+광고+배너", adPlaceholderInterstitialText: "두근두근+전면+광고", adPlaceholderRewardedText: "꿀잼+보상형+광고", 
     copyButton: "공유 링크 복사하기!", copySuccessMessage: "공유 링크가 복사되었어요! 친구들에게 마구마구 자랑하세요! 💌", copyErrorMessage: "앗! 클립보드 복사에 실패했어요. 😅", 
     shareMessage: "우리의 커플 관상 궁합 결과가 궁금하다면? 클릭해서 확인해봐! 👇", 
     resultLoading: "결과를 불러오는 중입니다...", resultNotFound: "앗! 해당 결과를 찾을 수 없어요. 주소가 올바른지 확인해주세요.", 
-    aiPrompt: { 
+    aiPrompt: {
       instruction: "먼저, 주어진 두 이미지에 선명한 사람의 얼굴이 각각 포함되어 있는지 확인해주세요. 만약 한쪽이라도 얼굴이 아니거나, 얼굴을 인식하기 어렵다면, 다른 필드는 모두 비워두고 JSON 객체에 'error': 'NO_FACE_DETECTED' 필드만 포함하여 응답해주세요. 두 사진 모두에 얼굴이 선명하게 보인다면, 'error' 필드 없이 아래의 지시에 따라 분석을 진행해주세요. \n\n 두 분의 사진이 주어집니다. 각 인물의 전체적인 인상과 성격을 아주 재치 있고 성숙한 유머를 섞어, 마치 '인생 N회차 옆집 형/언니'가 핵심만 콕콕 짚어주듯 분석해주세요. 이때, 각 인물의 **가장 특징적인 이목구비 1~2가지만** 골라서, 그 관상학적 의미를 '아하!' 무릎을 탁 치게 만드는 비유나 유머로 풀어내고, 이것이 전체적인 성격 및 인생관과 어떻게 연결되는지 알려주세요. \"자, 어디 한번 볼까? 이분은 딱 보아하니~\" 같은 느낌으로요. 이 내용을 'overall_impression' 필드에 담아주세요. 분량은 각 사람당 3-4문장 정도로, 너무 가볍지도 무겁지도 않게! 그 후, 두 분의 궁합을 분석해주세요. 궁합 점수(0-100점)와 그 이유를 설명할 때는 \"긴장하시고~ 오늘의 커플 궁합 점수는 바로바로~!\" 처럼 기대감을 주면서도, 결과에 대해서는 '뼈 때리는' 한마디를 덧붙여주세요. 잘 맞는 점('good_points')과 서로 노력하면 좋을 점('areas_for_improvement')은 각각 2가지씩, 마치 '연애 고수'가 현실적인 팩폭과 따뜻한 응원을 동시에 날려주듯 작성해주세요. 예를 들어, '이것만 잘하면 할리우드 커플? 저리 가라 할 케미 폭발 각!' 이런 식으로요. 궁합 총평('overall_summary')은 한 편의 반전 있는 단편 영화 시놉시스처럼, 혹은 다음 화가 궁금해지는 인기 드라마의 명대사처럼 임팩트 있게 요약해주세요. 마지막으로 'advice' 필드에는 두 분이 함께하면 '이런 미친 짓까지 가능하다고?' 싶을 정도로 기상천외하고 재미있는 데이트 아이디어나, '이거 완전 우리 얘기잖아?' 싶은 관계 꿀팁 2가지를 제안해주세요. 모든 텍스트는 핵심을 찌르는 이모티콘(😏, 🔥, 🤣, 💡 등)을 적절히 사용하여 더욱 생동감 있게 만들어주세요!",
       jsonFormatInstruction: "답변은 다음 JSON 형식으로 제공해주세요:", person1NameExample: "첫 번째 분 별명 (예: 예측불가 자유영혼)", person1ImpressionExample: "오호~ 첫 번째 분, 딱 보니 보통내기가 아니시군요! 😏 자유분방함이 물씬 풍기는 눈빛과 살짝 올라간 입꼬리는 '내 사전에 불가능이란 없다!'를 외치는 듯한데요? 특히, 그 어디에도 얽매이지 않을 듯한 이마 라인은 '인생은 한 번뿐!' YOLO 정신을 제대로 보여줍니다. 덕분에 주변에 늘 신선한 영감을 주지만, 가끔 너무 즉흥적이라 '어디로 튈지 모르는 탱탱볼' 같다는 소리 좀 듣겠어요! 🤣", person2NameExample: "두 번째 분 별명 (예: 반전매력 철벽수비수)", person2ImpressionExample: "두 번째 분은 겉으로는 '접근금지' 아우라를 풍기는 철벽수비수 같지만, 알고 보면 속정이 깊은 반전매력의 소유자시네요! 🧐 반듯한 콧날과 다부진 입매는 '한번 마음먹은 건 끝까지 간다!'는 의지를 보여주지만, 의외의 순간에 보여주는 따뜻한 눈빛이 이분의 진짜 매력 포인트! 🔥 신중함도 좋지만, 가끔은 그 철벽, 살짝 내려놓고 달려보는 용기도 필요할 때가 있답니다!", compatibilityScoreReasonExample: "🎉 두구두구~ 이 커플, 궁합 점수는 무려 88점! 이거 완전 '환장의 커플'에서 '환상의 커플'로 진화 직전인데요?! 💕 서로 다른 매력이 만나 예상치 못한 시너지를 뿜어내는, 그야말로 '단짠단짠' 조합이랍니다! (근데 가끔 너무 짜거나 달아서 속 쓰릴 수 있음 주의! 😉)", goodPoint1Example: "첫 번째 분의 '일단 저지르고 보자!' 정신과 두 번째 분의 '돌다리도 부숴버릴 기세로 두드려보자!' 정신이 만나면? 세상에 없던 창조적인 결과물이 뙇! 어쩌면 세상을 바꿀지도? 💡", goodPoint2Example: "서로의 '덕질' 영역을 존중하다 못해 함께 빠져들다 보면, '어? 내가 이런 걸 좋아했었나?' 싶은 신세계를 경험하며 관계의 깊이가 남달라질 거예요! (단, 통장 잔고는 책임 못 짐 🤣)", improvementPoint1Example: "가끔 첫 번째 분이 너무 앞서나가서 두 번째 분이 '저기요, 잠깐만요!'를 외치기도 전에 저만치 가버리거나, 두 번째 분이 너무 신중해서 첫 번째 분이 '아, 속 터져! 내가 그냥 할게!'를 시전할 수 있어요. 서로의 '속도 조절' 능력 만렙 찍기가 시급합니다! 🚀", improvementPoint2Example: "표현 방식이 너무 달라서 '화성에서 온 남자, 금성에서 온 여자' 시즌2 찍을 뻔! 할 때가 있을 거예요. '척하면 척'도 좋지만, 가끔은 '말로 해야 압니다, 네?' 스킬도 장착해야 서로 오해 없이 오래오래 행복할 수 있어요! 💬", overallSummaryExample: "이 커플, 한마디로 '예측불가 롤러코스터'입니다! 🎢 조용할 날 없이 티격태격하면서도 서로 없이는 못 사는, 그런 애증(?)의 관계랄까요? 하지만 분명한 건, 두 분의 삶은 서로로 인해 훨씬 더 다채롭고 유쾌해질 거라는 사실! 지루함은 저 멀리 안드로메다로 보내버리고, 이 스릴 넘치는 여정을 마음껏 즐겨보시길! 🔥", advice1Example: "둘만의 '아무 말 대잔치 데이트'는 어때요? 하루 동안 서로에게 떠오르는 아무 말이나 필터 없이 던져보는 거예요! (단, 끝나고 뒤끝 없기! 🤙) 의외의 진심이나 빵 터지는 유머를 발견할지도 몰라요!", advice2Example: "서로의 '흑역사 배틀'을 열어보세요! 가장 창피했던 과거 사진이나 에피소드를 공유하며 누가 더 강력한 흑역사를 가졌는지 겨뤄보는 거죠! 웃다가 눈물 콧물 다 쏟아도 책임 안 집니다! 😂 이 과정을 통해 서로의 인간적인 매력에 더 깊이 빠져들 거예요!", languageInstructionSuffix: "모든 설명은 선택된 언어(한국어)로 매우 친근하고 재미있게, 유머와 긍정적인 에너지를 담아 작성해주세요." }
   },
-  en: { /* ... */ }, ja: { /* ... */ }, zh: { /* ... */ }, es: { /* ... */ }
+  en: {},
+  ja: {},
+  zh: {},
+  es: {},
 };
 
-// ★★★ 추가된 기능 ★★★
-// 이미지 리사이징 헬퍼 함수
-const resizeImage = (file, maxSize = 1024) => new Promise((resolve, reject) => {
+const getBase64 = (file) => new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.readAsDataURL(file);
-    reader.onload = (event) => {
-        const img = new Image();
-        img.src = event.target.result;
-        img.onload = () => {
-            const canvas = document.createElement('canvas');
-            let { width, height } = img;
-
-            if (width > height) {
-                if (width > maxSize) {
-                    height *= maxSize / width;
-                    width = maxSize;
-                }
-            } else {
-                if (height > maxSize) {
-                    width *= maxSize / height;
-                    height = maxSize;
-                }
-            }
-            canvas.width = width;
-            canvas.height = height;
-            const ctx = canvas.getContext('2d');
-            ctx.drawImage(img, 0, 0, width, height);
-            
-            // 리사이징된 이미지를 base64 데이터 URL로 반환
-            resolve(canvas.toDataURL(file.type));
-        };
-        img.onerror = reject;
-    };
-    reader.onerror = reject;
+    reader.onload = () => resolve(reader.result.split(',')[1]);
+    reader.onerror = (error) => reject(error);
 });
 
+// Firebase Storage에 이미지를 업로드하고 URL을 반환하는 함수
+const uploadImageToStorage = async (file) => {
+    if (!storage) throw new Error("Firebase Storage is not initialized.");
+    const fileName = `face-images/${Date.now()}-${file.name}`;
+    const storageRef = ref(storage, fileName);
+    const snapshot = await uploadBytes(storageRef, file);
+    const downloadURL = await getDownloadURL(snapshot.ref);
+    return downloadURL;
+};
 
 const App = () => {
   const [language, setLanguage] = useState('ko');
   const [currentStrings, setCurrentStrings] = useState(translations.ko);
   const [showLanguageDropdown, setShowLanguageDropdown] = useState(false);
 
-  // person1ImageFile, person2ImageFile 은 이제 사용하지 않으므로 상태 제거
+  const [person1ImageFile, setPerson1ImageFile] = useState(null);
   const [person1ImagePreview, setPerson1ImagePreview] = useState(null);
+  const [person2ImageFile, setPerson2ImageFile] = useState(null);
   const [person2ImagePreview, setPerson2ImagePreview] = useState(null);
-  
-  // 리사이징된 이미지 데이터(Base64)를 저장할 상태 추가
-  const [resizedPerson1Image, setResizedPerson1Image] = useState(null);
-  const [resizedPerson2Image, setResizedPerson2Image] = useState(null);
-
 
   const [analysisResult, setAnalysisResult] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -148,13 +127,13 @@ const App = () => {
   const [copyStatus, setCopyStatus] = useState('');
 
   const resetPlaceholders = useCallback((strings) => {
-    if (strings && strings.placeholderImageText1 && !resizedPerson1Image) {
+    if (strings && strings.placeholderImageText1 && !person1ImageFile) {
       setPerson1ImagePreview(`https://placehold.co/400x400/e2e8f0/cbd5e0?text=${strings.placeholderImageText1.replace(/\+/g, '%20')}`);
     }
-    if (strings && strings.placeholderImageText2 && !resizedPerson2Image) {
+    if (strings && strings.placeholderImageText2 && !person2ImageFile) {
       setPerson2ImagePreview(`https://placehold.co/400x400/e9d5ff/a855f7?text=${strings.placeholderImageText2.replace(/\+/g, '%20')}`);
     }
-  }, [resizedPerson1Image, resizedPerson2Image]);
+  }, [person1ImageFile, person2ImageFile]);
 
   useEffect(() => {
     const path = window.location.pathname.split('/');
@@ -164,7 +143,7 @@ const App = () => {
         
         const fetchResult = async () => {
             try {
-                if (!db) throw new Error("Firestore is not initialized. Please check API Key configuration.");
+                if (!db) throw new Error("Firestore is not initialized.");
                 const docRef = doc(db, "results", id);
                 const docSnap = await getDoc(docRef);
 
@@ -174,8 +153,8 @@ const App = () => {
                         setLanguage(resultData.language);
                     }
                     setAnalysisResult(resultData.analysis);
-                    setPerson1ImagePreview(resultData.person1Image);
-                    setPerson2ImagePreview(resultData.person2Image);
+                    setPerson1ImagePreview(resultData.person1ImageURL);
+                    setPerson2ImagePreview(resultData.person2ImageURL);
                     setResultId(id);
                     setPageState('resultView');
                     setShowResults(true);
@@ -206,8 +185,8 @@ const App = () => {
   
   const resetAllStates = () => {
     window.history.pushState({}, '', '/');
-    setResizedPerson1Image(null);
-    setResizedPerson2Image(null);
+    setPerson1ImageFile(null);
+    setPerson2ImageFile(null);
     setAnalysisResult(null);
     setError('');
     setShowInterstitialAd(false);
@@ -219,24 +198,16 @@ const App = () => {
     setResultId(null);
   };
 
-  // ★★★ 수정된 부분 ★★★
-  // 이미지 변경 시 리사이징을 먼저 수행합니다.
   const handleImageChange = async (event, person) => {
     const file = event.target.files[0];
     if (file) {
-      try {
-        const resizedBase64 = await resizeImage(file);
-        if (person === 1) {
-          setResizedPerson1Image(resizedBase64);
-          setPerson1ImagePreview(resizedBase64);
-        } else {
-          setResizedPerson2Image(resizedBase64);
-          setPerson2ImagePreview(resizedBase64);
-        }
-      } catch (e) {
-        console.error("Image resize failed:", e);
-        setError("이미지 처리 중 오류가 발생했습니다.");
-        return;
+      const previewUrl = URL.createObjectURL(file);
+      if (person === 1) {
+        setPerson1ImageFile(file);
+        setPerson1ImagePreview(previewUrl);
+      } else {
+        setPerson2ImageFile(file);
+        setPerson2ImagePreview(previewUrl);
       }
       
       setAnalysisResult(null);
@@ -248,16 +219,15 @@ const App = () => {
     }
   };
 
-
-  const saveResultToFirestore = async (analysis, person1Image, person2Image, lang) => {
+  const saveResultToFirestore = async (analysis, person1ImageURL, person2ImageURL, lang) => {
       if (!db) {
-          throw new Error("Firestore is not initialized. Check Firebase config and connection.");
+          throw new Error("Firestore is not initialized.");
       }
       try {
           const docRef = await addDoc(collection(db, "results"), {
               analysis,
-              person1Image,
-              person2Image,
+              person1ImageURL,
+              person2ImageURL,
               language: lang,
               createdAt: serverTimestamp()
           });
@@ -269,8 +239,7 @@ const App = () => {
   };
   
   const handleAnalysis = useCallback(async () => {
-    // 이제 파일이 아닌 리사이징된 이미지 데이터를 확인합니다.
-    if (!resizedPerson1Image || !resizedPerson2Image) {
+    if (!person1ImageFile || !person2ImageFile) {
       setError(currentStrings.errorMessageDefault);
       return;
     }
@@ -285,19 +254,27 @@ const App = () => {
     setShowResults(false);
 
     try {
-      // 리사이징된 Base64 데이터를 직접 사용합니다.
-      const base64Image1Data = resizedPerson1Image;
-      const base64Image2Data = resizedPerson2Image;
-      
-      const base64Image1 = base64Image1Data.split(',')[1];
-      const mimeType1 = base64Image1Data.match(/:(.*?);/)[1];
-      const base64Image2 = base64Image2Data.split(',')[1];
-      const mimeType2 = base64Image2Data.match(/:(.*?);/)[1];
+      const base64Image1 = await getBase64(person1ImageFile);
+      const mimeType1 = person1ImageFile.type;
+      const base64Image2 = await getBase64(person2ImageFile);
+      const mimeType2 = person2ImageFile.type;
       
       const currentPromptStrings = translations[language].aiPrompt;
-      const langName = language === 'ko' ? '한국어' : language === 'en' ? 'English' : language === 'ja' ? '日本語' : language === 'zh' ? '中文' : 'Español';
+      const langName = language === 'ko' ? '한국어' : 'English';
       
-      const jsonExample = { person1_analysis: { name: currentPromptStrings.person1NameExample, overall_impression: currentPromptStrings.person1ImpressionExample }, person2_analysis: { name: currentPromptStrings.person2NameExample, overall_impression: currentPromptStrings.person2ImpressionExample }, compatibility: { score: 88, score_reason: currentPromptStrings.compatibilityScoreReasonExample, good_points: [currentPromptStrings.goodPoint1Example, currentPromptStrings.goodPoint2Example], areas_for_improvement: [currentPromptStrings.improvementPoint1Example, currentPromptStrings.improvementPoint2Example], overall_summary: currentPromptStrings.overallSummaryExample, advice: [currentPromptStrings.advice1Example, currentPromptStrings.advice2Example] } };
+      const jsonExample = {
+        person1_analysis: { name: currentPromptStrings.person1NameExample, overall_impression: currentPromptStrings.person1ImpressionExample },
+        person2_analysis: { name: currentPromptStrings.person2NameExample, overall_impression: currentPromptStrings.person2ImpressionExample },
+        compatibility: { 
+          score: 88, 
+          score_reason: currentPromptStrings.compatibilityScoreReasonExample, 
+          good_points: [currentPromptStrings.goodPoint1Example, currentPromptStrings.goodPoint2Example], 
+          areas_for_improvement: [currentPromptStrings.improvementPoint1Example, currentPromptStrings.improvementPoint2Example], 
+          overall_summary: currentPromptStrings.overallSummaryExample, 
+          advice: [currentPromptStrings.advice1Example, currentPromptStrings.advice2Example] 
+        }
+      };
+
       const languageInstruction = currentPromptStrings.languageInstructionSuffix ? currentPromptStrings.languageInstructionSuffix.replace(/\(([^)]+)\)/, `(${langName})`) : "";
       
       const prompt = `${currentPromptStrings.instruction}\n\n${currentPromptStrings.jsonFormatInstruction}\n${JSON.stringify(jsonExample, null, 2)}\n\n${languageInstruction}`;
@@ -317,7 +294,6 @@ const App = () => {
 
       if (!response.ok) {
         const errorData = await response.json();
-        console.error('API Error:', errorData);
         throw new Error(`${currentStrings.apiErrorGeneric}: ${errorData.error?.message || response.statusText}`);
       }
       
@@ -332,8 +308,10 @@ const App = () => {
 
           setAnalysisResult(parsedJson);
 
-          if(!isPreview && db) {
-            const newResultId = await saveResultToFirestore(parsedJson, base64Image1Data, base64Image2Data, language);
+          if(!isPreview && db && storage) {
+            const person1URL = await uploadImageToStorage(person1ImageFile);
+            const person2URL = await uploadImageToStorage(person2ImageFile);
+            const newResultId = await saveResultToFirestore(parsedJson, person1URL, person2URL, language);
             setResultId(newResultId);
             window.history.pushState({}, '', `/result/${newResultId}`);
           }
@@ -350,7 +328,7 @@ const App = () => {
       setIsLoading(false); 
       setShowInterstitialAd(false);
     }
-  }, [resizedPerson1Image, resizedPerson2Image, language, currentStrings]);
+  }, [person1ImageFile, person2ImageFile, language, currentStrings]);
   
   const handleWatchRewardedAd = () => {
     setIsWatchingRewardedAd(true);
@@ -424,7 +402,7 @@ const App = () => {
       
       <section className="mb-8 text-center">
         {!analysisResult && !isLoading && (
-          <button onClick={handleAnalysis} disabled={!resizedPerson1Image || !resizedPerson2Image} className="px-12 py-5 bg-gradient-to-r from-purple-600 to-indigo-700 hover:from-purple-700 hover:to-indigo-800 text-white font-bold text-2xl rounded-lg shadow-xl transition-all duration-300 ease-in-out transform hover:scale-105 disabled:opacity-60 disabled:cursor-not-allowed disabled:scale-100 font-gaegu">
+          <button onClick={handleAnalysis} disabled={!person1ImageFile || !person2ImageFile} className="px-12 py-5 bg-gradient-to-r from-purple-600 to-indigo-700 hover:from-purple-700 hover:to-indigo-800 text-white font-bold text-2xl rounded-lg shadow-xl transition-all duration-300 ease-in-out transform hover:scale-105 disabled:opacity-60 disabled:cursor-not-allowed disabled:scale-100 font-gaegu">
             <HeartIcon className="inline-block w-8 h-8 mr-2 animate-ping" filled={true} />
             {currentStrings.analyzeButton}
           </button>
