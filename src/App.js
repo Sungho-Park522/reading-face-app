@@ -289,12 +289,13 @@ const App = () => {
   }, []);
 
   useEffect(() => {
-    // 결과 페이지 로드 시 언어가 설정된 후 currentStrings를 다시 설정
-    if (pageState !== 'loadingResult') {
-      setCurrentStrings(translations[language]);
+    setCurrentStrings(translations[language]);
+    // 메인 페이지일 때만 플레이스홀더 이미지로 리셋합니다.
+    // 이렇게 하면 결과 페이지에서 실제 이미지를 덮어쓰는 문제를 방지할 수 있습니다.
+    if (pageState === 'main') {
       resetPlaceholders(translations[language]);
     }
-  }, [language, resetPlaceholders, pageState]);
+  }, [language, pageState, resetPlaceholders]);
 
   const selectLanguage = (langCode) => {
     setLanguage(langCode);
