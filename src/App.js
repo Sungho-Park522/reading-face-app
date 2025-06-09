@@ -7,8 +7,8 @@ import { getAuth, signInAnonymously } from "firebase/auth";
 // ★★★ API 키 설정 영역 (수정됨) ★★★
 
 // --- [미리보기 테스트용] ---
-// 아래 코드의 'YOUR_..._KEY' 부분을 실제 키로 바꾸고,
-// 바로 아래 [Netlify 배포용] 코드를 주석 처리하면 미리보기에서 테스트할 수 있습니다.
+// 아래 코드의 'YOUR_..._KEY' 부분을 실제 키로 바꾸면 미리보기에서 테스트할 수 있습니다.
+// Netlify 배포 시에는 이 블록 전체를 주석 처리해주세요.
 // const firebaseConfig = {
 //   apiKey: "YOUR_FIREBASE_API_KEY",
 //   authDomain: "YOUR_FIREBASE_AUTH_DOMAIN",
@@ -21,7 +21,7 @@ import { getAuth, signInAnonymously } from "firebase/auth";
 
 
 // --- [Netlify 배포용] ---
-// 실제 배포 시에는 이 코드를 주석 처리하고, 아래 코드를 활성화하세요.
+// 실제 배포 시에는 이 코드를 활성화하고, 위 [미리보기 테스트용] 코드를 주석 처리하세요.
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -38,7 +38,7 @@ const GEMINI_API_KEY = process.env.REACT_APP_GEMINI_API_KEY;
 // Firebase 앱 초기화 및 서비스 가져오기
 let app, db, auth;
 // 모든 설정값이 유효하고, 플레이스홀더가 아닌 경우에만 Firebase를 초기화합니다.
-if (Object.values(firebaseConfig).every(v => v && !v.includes('YOUR_'))) {
+if (firebaseConfig.apiKey && !firebaseConfig.apiKey.includes('YOUR_')) {
     try {
         if (!getApps().length) {
             app = initializeApp(firebaseConfig);
@@ -107,8 +107,12 @@ const App = () => {
   const [copyStatus, setCopyStatus] = useState('');
 
   const resetPlaceholders = useCallback((strings) => {
-    if (!person1ImageFile) setPerson1ImagePreview(`https://placehold.co/400x400/e2e8f0/cbd5e0?text=${strings.placeholderImageText1.replace(/\+/g, '%20')}`);
-    if (!person2ImageFile) setPerson2ImagePreview(`https://placehold.co/400x400/e9d5ff/a855f7?text=${strings.placeholderImageText2.replace(/\+/g, '%20')}`);
+    if (strings && strings.placeholderImageText1 && !person1ImageFile) {
+      setPerson1ImagePreview(`https://placehold.co/400x400/e2e8f0/cbd5e0?text=${strings.placeholderImageText1.replace(/\+/g, '%20')}`);
+    }
+    if (strings && strings.placeholderImageText2 && !person2ImageFile) {
+      setPerson2ImagePreview(`https://placehold.co/400x400/e9d5ff/a855f7?text=${strings.placeholderImageText2.replace(/\+/g, '%20')}`);
+    }
   }, [person1ImageFile, person2ImageFile]);
 
   useEffect(() => {
@@ -119,7 +123,7 @@ const App = () => {
         
         const fetchResult = async () => {
             try {
-                if (!db) throw new Error("Firestore is not initialized.");
+                if (!db) throw new Error("Firestore is not initialized. Please check API Key configuration.");
                 const docRef = doc(db, "results", id);
                 const docSnap = await getDoc(docRef);
 
@@ -223,7 +227,7 @@ const App = () => {
     const apiKey = GEMINI_API_KEY;
 
     if (!apiKey || apiKey.includes('YOUR_')) {
-        setError("API Key is not configured. Please fill in YOUR_..._KEY values for testing.");
+        setError("API Key가 설정되지 않았습니다. '미리보기'에서는 코드에 직접 키를 입력해야 분석이 가능합니다.");
         return;
     }
 
