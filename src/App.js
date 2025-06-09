@@ -9,35 +9,36 @@ import { getAuth, signInAnonymously } from "firebase/auth";
 // --- [미리보기 테스트용] ---
 // 아래 코드의 'YOUR_..._KEY' 부분을 실제 키로 바꾸고,
 // 바로 아래 [Netlify 배포용] 코드를 주석 처리하면 미리보기에서 테스트할 수 있습니다.
-/*
-const firebaseConfig = {
-  apiKey: "YOUR_FIREBASE_API_KEY",
-  authDomain: "YOUR_FIREBASE_AUTH_DOMAIN",
-  projectId: "YOUR_FIREBASE_PROJECT_ID",
-  storageBucket: "YOUR_FIREBASE_STORAGE_BUCKET",
-  messagingSenderId: "YOUR_FIREBASE_MESSAGING_SENDER_ID",
-  appId: "YOUR_FIREBASE_APP_ID"
-};
-const GEMINI_API_KEY = "YOUR_GEMINI_API_KEY";
-*/
+// const firebaseConfig = {
+//   apiKey: "YOUR_FIREBASE_API_KEY",
+//   authDomain: "YOUR_FIREBASE_AUTH_DOMAIN",
+//   projectId: "YOUR_FIREBASE_PROJECT_ID",
+//   storageBucket: "YOUR_FIREBASE_STORAGE_BUCKET",
+//   messagingSenderId: "YOUR_FIREBASE_MESSAGING_SENDER_ID",
+//   appId: "YOUR_FIREBASE_APP_ID"
+// };
+// const GEMINI_API_KEY = "YOUR_GEMINI_API_KEY";
+
 
 // --- [Netlify 배포용] ---
-// 실제 배포 시에는 이 코드를 활성화하고, 위 [미리보기 테스트용] 코드를 주석 처리하세요.
+// 실제 배포 시에는 이 코드를 주석 처리하고, 아래 코드를 활성화하세요.
+
 const firebaseConfig = {
-  apiKey: typeof process !== 'undefined' ? process.env.REACT_APP_FIREBASE_API_KEY : undefined,
-  authDomain: typeof process !== 'undefined' ? process.env.REACT_APP_FIREBASE_AUTH_DOMAIN : undefined,
-  projectId: typeof process !== 'undefined' ? process.env.REACT_APP_FIREBASE_PROJECT_ID : undefined,
-  storageBucket: typeof process !== 'undefined' ? process.env.REACT_APP_FIREBASE_STORAGE_BUCKET : undefined,
-  messagingSenderId: typeof process !== 'undefined' ? process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID : undefined,
-  appId: typeof process !== 'undefined' ? process.env.REACT_APP_FIREBASE_APP_ID : undefined,
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.REACT_APP_FIREBASE_APP_ID,
 };
-const GEMINI_API_KEY = typeof process !== 'undefined' ? process.env.REACT_APP_GEMINI_API_KEY : undefined;
+const GEMINI_API_KEY = process.env.REACT_APP_GEMINI_API_KEY;
+
 
 
 // Firebase 앱 초기화 및 서비스 가져오기
 let app, db, auth;
-// 모든 설정값이 유효한 경우에만 Firebase를 초기화합니다.
-if (Object.values(firebaseConfig).every(v => v)) {
+// 모든 설정값이 유효하고, 플레이스홀더가 아닌 경우에만 Firebase를 초기화합니다.
+if (Object.values(firebaseConfig).every(v => v && !v.includes('YOUR_'))) {
     try {
         if (!getApps().length) {
             app = initializeApp(firebaseConfig);
@@ -54,7 +55,7 @@ if (Object.values(firebaseConfig).every(v => v)) {
         console.error("Firebase initialization failed:", error);
     }
 } else {
-    console.warn("Firebase configuration is missing or incomplete. Database features will be disabled.");
+    console.warn("Firebase configuration is missing or incomplete. Please fill in YOUR_..._KEY values for testing. Database features will be disabled.");
 }
 
 
@@ -219,11 +220,10 @@ const App = () => {
       return;
     }
     
-    // API 키를 전역 상수로 선언된 GEMINI_API_KEY 에서 가져옵니다.
     const apiKey = GEMINI_API_KEY;
 
-    if (!apiKey) {
-        setError("API Key is not configured. Please contact the administrator.");
+    if (!apiKey || apiKey.includes('YOUR_')) {
+        setError("API Key is not configured. Please fill in YOUR_..._KEY values for testing.");
         return;
     }
 
