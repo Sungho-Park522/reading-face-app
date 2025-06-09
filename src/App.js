@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useEffect } from 'react';
 // Firebase SDK import 수정
 import { initializeApp, getApps } from "firebase/app";
-import { getFirestore, collection, addDoc, doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
+import { getFirestore, collection, doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
 import { getAuth, signInAnonymously } from "firebase/auth";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
