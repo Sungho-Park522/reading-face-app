@@ -3,7 +3,11 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { initializeApp, getApps } from "firebase/app";
 import { getFirestore, collection, doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
 import { getAuth, signInAnonymously } from "firebase/auth";
-import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import {
+  getStorage, ref, uploadBytes, getDownloadURL,
+  listAll, getMetadata, deleteObject  // 이 부분 추가
+} from "firebase/storage";
+
 
 // ★★★ API 키 설정 영역 ★★★
 // Netlify 빌드 과정에서 process.env.REACT_APP_* 값으로 자동 교체됩니다.
@@ -359,6 +363,116 @@ const App = () => {
     }
   };
 
+  // Firestore 문서 정리
+  const cleanupFirestoreDocuments = async (imageName) => {
+    if (!db) return;
+
+    try {
+      const q = query(
+        collection(db, 'results'),
+        orderBy('createdAt', 'desc'),
+        limit(100)
+      );
+
+      const querySnapshot = await getDocs(q);
+
+      for (const docSnapshot of querySnapshot.docs) {
+        const data = docSnapshot.data();
+        const person1URL = data.person1ImageURL || '';
+        const person2URL = data.person2ImageURL || '';
+
+        if (person1URL.includes(imageName) || person2URL.includes(imageName)) {
+          await deleteDoc(docSnapshot.ref);
+          console.log(`Firestore 문서 삭제: ${docSnapshot.id}`);
+        }
+      }
+    } catch (error) {
+      console.error('Firestore 정리 실패:', error);
+    }
+  };
+
+  // 업로드 전에 용량 체크하고 정리하는 함수
+  const cleanupStorageIfNeeded = async () => {
+    if (!storage) return;
+
+    try {
+      console.log('Storage 용량 확인 중...');
+
+      const storageRef = ref(storage, 'face-images');
+      const listResult = await listAll(storageRef);
+
+      if (listResult.items.length === 0) return;
+
+      // 파일 메타데이터 수집
+      const fileInfos = await Promise.all(
+        listResult.items.map(async (itemRef) => {
+          try {
+            const metadata = await getMetadata(itemRef);
+            return {
+              ref: itemRef,
+              name: itemRef.name,
+              size: parseInt(metadata.size),
+              created: new Date(metadata.timeCreated)
+            };
+          } catch (error) {
+            console.error('메타데이터 가져오기 실패:', itemRef.name, error);
+            return null;
+          }
+        })
+      );
+
+      const validFileInfos = fileInfos.filter(info => info !== null);
+
+      // 전체 용량 계산
+      const totalSize = validFileInfos.reduce((sum, info) => sum + info.size, 0);
+      const maxSize = 800 * 1024 * 1024; // 800MB
+
+      console.log(`현재 용량: ${(totalSize / 1024 / 1024).toFixed(2)}MB`);
+
+      if (totalSize <= maxSize) {
+        console.log('용량 충분, 정리 불필요');
+        return;
+      }
+
+      // 오래된 순으로 정렬
+      validFileInfos.sort((a, b) => a.created - b.created);
+
+      let deletedSize = 0;
+      const filesToDelete = [];
+
+      // 목표 용량까지 파일 선택
+      for (const fileInfo of validFileInfos) {
+        filesToDelete.push(fileInfo);
+        deletedSize += fileInfo.size;
+
+        if (totalSize - deletedSize <= maxSize * 0.8) { // 80%까지만 사용
+          break;
+        }
+      }
+
+      console.log(`${filesToDelete.length}개 파일 삭제 예정`);
+
+      // 파일 삭제
+      for (const fileInfo of filesToDelete) {
+        try {
+          await deleteObject(fileInfo.ref);
+          console.log(`삭제 완료: ${fileInfo.name}`);
+
+          // 관련 Firestore 문서도 정리
+          await cleanupFirestoreDocuments(fileInfo.name);
+
+        } catch (error) {
+          console.error(`삭제 실패: ${fileInfo.name}`, error);
+        }
+      }
+
+      console.log(`정리 완료: ${(deletedSize / 1024 / 1024).toFixed(2)}MB 확보`);
+
+    } catch (error) {
+      console.error('Storage 정리 실패:', error);
+    }
+  };
+
   const handleAnalysis = useCallback(async () => {
     if (!person1ImageFile || !person2ImageFile) {
       setError(currentStrings.errorMessageDefault);
@@ -375,6 +489,8 @@ const App = () => {
     setShowResults(false);
 
     try {
+      await cleanupStorageIfNeeded();
+
       const base64Image1 = await getBase64(person1ImageFile);
       const mimeType1 = person1ImageFile.type;
       const base64Image2 = await getBase64(person2ImageFile);
