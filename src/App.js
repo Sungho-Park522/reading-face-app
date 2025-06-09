@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react';
-// Firebase SDK import 수정
+// Firebase SDK import
 import { initializeApp, getApps } from "firebase/app";
 import { getFirestore, collection, doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
 import { getAuth, signInAnonymously } from "firebase/auth";
@@ -53,6 +53,8 @@ const PlayCircleIcon = ({ className }) => (<svg xmlns="http://www.w3.org/2000/sv
 const RefreshCwIcon = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"></path><path d="M21 3v5h-5"></path><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"></path><path d="M3 21v-5h5"></path></svg>);
 const GlobeIcon = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>);
 const ChevronDownIcon = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polyline points="6 9 12 15 18 9"></polyline></svg>);
+const LinkedInIcon = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" className={className}><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>);
+const InstagramIcon = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" className={className}><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.85s-.011 3.584-.069 4.85c-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07s-3.584-.012-4.85-.07c-3.252-.148-4.771-1.691-4.919-4.919-.058-1.265-.069-1.645-.069-4.85s.011-3.584.069-4.85c.149-3.225 1.664-4.771 4.919-4.919 1.266-.058 1.644-.07 4.85-.07zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948s.014 3.667.072 4.947c.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072s3.667-.014 4.947-.072c4.358-.2 6.78-2.618 6.98-6.98.059-1.281.073-1.689.073-4.948s-.014-3.667-.072-4.947c-.2-4.358-2.618-6.78-6.98-6.98-1.281-.059-1.689-.073-4.948-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.162 6.162 6.162 6.162-2.759 6.162-6.162-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4s1.791-4 4-4 4 1.79 4 4-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44 1.441-.645 1.441-1.44-.645-1.44-1.441-1.44z"/></svg>);
 
 // 다국어 텍스트 객체 (전체)
 const translations = {
@@ -68,13 +70,14 @@ const translations = {
     resultTitle: "💖 AI 꿀잼 관상 궁합 결과 💖", personAnalysisTitleSuffix: "님의 관상 총평! 🧐", compatibilityTitle: "두 분의 종합 궁합은 과연?! 💕", scoreUnit: "점!!!",
     scoreDefaultReason: "AI 왈: 이 점수는... 운명입니다! ✨", goodPointsTitle: "이런 점이 완전 찰떡궁합! 👍", improvementPointsTitle: "요것만 조심하면 백년해로 각! ⚠️",
     overallCommentTitle: "✨ AI의 종합 코멘트 ✨", defaultOverallComment: "AI 왈: 두 분, 그냥 결혼하세요! (농담 아님 😉)", adviceTitle: "💡 AI의 핵꿀잼 데이트 비법 전수! 💡",
-    shareTwitterButton: "트위터에 소문내기!", shareFacebookButton: "페북에도 알려주기!", retryButton: "첨부터 다시!",
+    shareTwitterButton: "트위터에 공유!", shareFacebookButton: "페북에 공유!", retryButton: "처음부터 다시하기",
+    shareLinkedInButton: "링크드인에 공유", shareInstagramButton: "인스타 스토리로!",
     footerText: "© {year} AI 커플 관상 궁합 (꿀잼 총평판). 만든이도 꿀잼! 😉",
     interstitialAdTitle: "잠시만요! 🚀", interstitialAdBody1: "AI가 두 분의 운명적인 만남을 빛의 속도로 분석 중이에요!", interstitialAdBody2: "(이 멋진 화면에 광고가 뿅! 나올 수도 있답니다 😉)", interstitialAdLoadingText: "운명의 데스티니 분석 중...",
     rewardedAdTitle: "✨ 특별한 결과 공개 임박! ✨", rewardedAdBody: "잠시 후 광고가 끝나면, 두 분의 놀라운 궁합 결과가 공개됩니다! (두근두근)", rewardedAdFooter: "광고는 스킵 없이! 곧 결과가 팡파레와 함께 등장! 팡! 🎉",
     placeholderImageText1: "첫+번째+분+사진", placeholderImageText2: "두+번째+분+사진", placeholderImageError: "앗!+사진이...+뿅!",
     adPlaceholderBannerText: "꿀잼+광고+배너", adPlaceholderInterstitialText: "두근두근+전면+광고", adPlaceholderRewardedText: "꿀잼+보상형+광고",
-    copyButton: "공유 링크 복사하기!", copySuccessMessage: "공유 링크가 복사되었어요! 친구들에게 마구마구 자랑하세요! 💌", copyErrorMessage: "앗! 클립보드 복사에 실패했어요. 😅",
+    copyButton: "공유 링크 복사", copySuccessMessage: "공유 링크가 복사되었어요! 친구들에게 마구마구 자랑하세요! 💌", copyErrorMessage: "앗! 클립보드 복사에 실패했어요. 😅",
     shareMessage: "우리의 커플 관상 궁합 결과가 궁금하다면? 클릭해서 확인해봐! 👇",
     resultLoading: "결과를 불러오는 중입니다...", resultNotFound: "앗! 해당 결과를 찾을 수 없어요. 주소가 올바른지 확인해주세요.",
     aiPrompt: {
@@ -150,8 +153,10 @@ const App = () => {
 
           if (docSnap.exists()) {
             const resultData = docSnap.data();
+            // 결과 데이터에 언어 설정이 있으면 해당 언어로 변경
             if (resultData.language && translations[resultData.language]) {
               setLanguage(resultData.language);
+              setCurrentStrings(translations[resultData.language]);
             }
             setAnalysisResult(resultData.analysis);
             setPerson1ImagePreview(resultData.person1ImageURL);
@@ -171,13 +176,16 @@ const App = () => {
       };
       fetchResult();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
-    setCurrentStrings(translations[language]);
-    resetPlaceholders(translations[language]);
-  }, [language, resetPlaceholders]);
+    // 결과 페이지 로드 시 언어가 설정된 후 currentStrings를 다시 설정
+    if (pageState !== 'loadingResult') {
+        setCurrentStrings(translations[language]);
+        resetPlaceholders(translations[language]);
+    }
+  }, [language, resetPlaceholders, pageState]);
 
   const selectLanguage = (langCode) => {
     setLanguage(langCode);
@@ -219,7 +227,7 @@ const App = () => {
       setCopyStatus('');
     }
   };
-
+  
   const saveResultToFirestore = async (analysis, person1ImageURL, person2ImageURL, lang) => {
     if (!db) {
       throw new Error("Firestore is not initialized.");
@@ -344,17 +352,21 @@ const App = () => {
 
   const handleCopyToClipboard = () => {
     if (!resultId) {
-      setCopyStatus("링크 공유는 배포된 환경에서만 가능합니다.");
-      setTimeout(() => setCopyStatus(''), 3000);
-      return;
+      const shareUrl = window.location.href;
+      navigator.clipboard.writeText(shareUrl).then(() => {
+        setCopyStatus(currentStrings.copySuccessMessage);
+      }).catch(err => {
+        setCopyStatus(currentStrings.copyErrorMessage);
+      });
+    } else {
+       const shareUrl = `${window.location.origin}/result/${resultId}`;
+       navigator.clipboard.writeText(shareUrl).then(() => {
+        setCopyStatus(currentStrings.copySuccessMessage);
+      }).catch(err => {
+        setCopyStatus(currentStrings.copyErrorMessage);
+        console.error('클립보드 복사 실패:', err);
+      });
     }
-    const shareUrl = `${window.location.origin}/result/${resultId}`;
-    navigator.clipboard.writeText(shareUrl).then(() => {
-      setCopyStatus(currentStrings.copySuccessMessage);
-    }).catch(err => {
-      setCopyStatus(currentStrings.copyErrorMessage);
-      console.error('클립보드 복사 실패:', err);
-    });
     setTimeout(() => setCopyStatus(''), 3000);
   };
 
@@ -468,23 +480,35 @@ const App = () => {
             {analysisResult.compatibility?.advice?.map((adv, index) => (<p key={index} className="text-md text-gray-800 mb-2 p-3 bg-indigo-100 rounded-lg shadow-sm">- {adv}</p>))}
           </div>
 
-          <div className="mt-10 pt-6 border-t border-gray-300 flex flex-col sm:flex-row items-center justify-center gap-4 font-gaegu">
-            <button onClick={handleCopyToClipboard} disabled={!resultId} className="w-full sm:w-auto flex items-center justify-center px-5 py-3 bg-green-500 hover:bg-green-600 text-white font-bold rounded-lg shadow-lg transition-colors text-md disabled:bg-gray-400 disabled:cursor-not-allowed">
-              <LinkIcon className="w-5 h-5 mr-2" /> {currentStrings.copyButton}
-            </button>
-            <a href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(generateShareText())}&url=${window.location.origin}/result/${resultId}`} target="_blank" rel="noopener noreferrer" className={`w-full sm:w-auto flex items-center justify-center px-5 py-3 bg-sky-500 hover:bg-sky-600 text-white font-bold rounded-lg shadow-lg transition-colors text-md ${!resultId ? 'pointer-events-none bg-gray-400' : ''}`}>
-              <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path></svg>
-              {currentStrings.shareTwitterButton}
-            </a>
-            <a href={`https://www.facebook.com/sharer/sharer.php?u=${window.location.origin}/result/${resultId}`} target="_blank" rel="noopener noreferrer" className={`w-full sm:w-auto flex items-center justify-center px-5 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg shadow-lg transition-colors text-md ${!resultId ? 'pointer-events-none bg-gray-400' : ''}`}>
-              <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fillRule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12Z" clipRule="evenodd"></path></svg>
-              {currentStrings.shareFacebookButton}
-            </a>
-            <button onClick={resetAllStates} className="w-full sm:w-auto flex items-center justify-center px-5 py-3 bg-gray-500 hover:bg-gray-600 text-white font-bold rounded-lg shadow-lg transition-colors text-md">
-              <RefreshCwIcon className="w-5 h-5 mr-2" /> {currentStrings.retryButton}
-            </button>
+          <div className="mt-10 pt-6 border-t border-gray-300">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 font-gaegu text-sm">
+              <button onClick={handleCopyToClipboard} disabled={!resultId} className="w-full flex items-center justify-center px-4 py-3 bg-gray-600 hover:bg-gray-700 text-white font-bold rounded-lg shadow-lg transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed">
+                <LinkIcon className="w-5 h-5 mr-2" /> {currentStrings.copyButton}
+              </button>
+              <a href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(generateShareText())}&url=${window.location.origin}/result/${resultId}`} target="_blank" rel="noopener noreferrer" className={`w-full flex items-center justify-center px-4 py-3 bg-black hover:bg-gray-800 text-white font-bold rounded-lg shadow-lg transition-colors ${!resultId ? 'pointer-events-none bg-gray-400' : ''}`}>
+                <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path></svg>
+                {currentStrings.shareTwitterButton}
+              </a>
+              <a href={`https://www.facebook.com/sharer/sharer.php?u=${window.location.origin}/result/${resultId}`} target="_blank" rel="noopener noreferrer" className={`w-full flex items-center justify-center px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg shadow-lg transition-colors ${!resultId ? 'pointer-events-none bg-gray-400' : ''}`}>
+                <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fillRule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12Z" clipRule="evenodd"></path></svg>
+                {currentStrings.shareFacebookButton}
+              </a>
+              <a href={`https://www.linkedin.com/sharing/share-offsite/?url=${window.location.origin}/result/${resultId}`} target="_blank" rel="noopener noreferrer" className={`w-full flex items-center justify-center px-4 py-3 bg-blue-700 hover:bg-blue-800 text-white font-bold rounded-lg shadow-lg transition-colors ${!resultId ? 'pointer-events-none bg-gray-400' : ''}`}>
+                  <LinkedInIcon className="w-5 h-5 mr-2" />
+                  {currentStrings.shareLinkedInButton}
+              </a>
+              <button onClick={handleCopyToClipboard} className={`w-full flex items-center justify-center px-4 py-3 text-white font-bold rounded-lg shadow-lg transition-colors bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 hover:from-purple-600 hover:to-pink-600 ${!resultId ? 'opacity-50 cursor-not-allowed' : ''}`}>
+                  <InstagramIcon className="w-5 h-5 mr-2" />
+                  {currentStrings.shareInstagramButton}
+              </button>
+            </div>
+            <div className="mt-8 text-center">
+                <button onClick={resetAllStates} className="w-auto flex items-center justify-center px-8 py-4 bg-gray-500 hover:bg-gray-600 text-white font-bold rounded-lg shadow-lg transition-colors text-lg">
+                    <RefreshCwIcon className="w-6 h-6 mr-3" /> {currentStrings.retryButton}
+                </button>
+            </div>
+            {copyStatus && <p className="text-center text-md text-green-700 mt-4 font-semibold animate-bounce">{copyStatus}</p>}
           </div>
-          {copyStatus && <p className="text-center text-md text-green-700 mt-4 font-semibold animate-bounce">{copyStatus}</p>}
         </>
       )}
     </section>
@@ -493,22 +517,24 @@ const App = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-400 via-purple-500 to-indigo-600 p-4 sm:p-6 lg:p-8 flex flex-col items-center">
       <header className="w-full max-w-4xl mt-16 sm:mt-12 mb-8 text-center font-gaegu">
-        <div className="absolute top-4 right-4 z-20">
-          <button onClick={() => setShowLanguageDropdown(!showLanguageDropdown)} className="flex items-center bg-white/30 text-white px-3 py-2 rounded-lg hover:bg-white/50 transition-colors duration-300 shadow-md">
-            <GlobeIcon className="w-5 h-5 mr-2" />
-            {currentStrings.languageSelectLabel}
-            <ChevronDownIcon className={`w-5 h-5 ml-1 transform transition-transform duration-200 ${showLanguageDropdown ? 'rotate-180' : ''}`} />
-          </button>
-          {showLanguageDropdown && (
-            <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 ring-1 ring-black ring-opacity-5">
-              {Object.keys(translations).map((langKey) => (
-                <button key={langKey} type="button" onClick={() => selectLanguage(langKey)} className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900" >
-                  {translations[langKey][`language${langKey.charAt(0).toUpperCase() + langKey.slice(1)}`]}
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
+        {pageState === 'main' && (
+          <div className="absolute top-4 right-4 z-20">
+            <button onClick={() => setShowLanguageDropdown(!showLanguageDropdown)} className="flex items-center bg-white/30 text-white px-3 py-2 rounded-lg hover:bg-white/50 transition-colors duration-300 shadow-md">
+              <GlobeIcon className="w-5 h-5 mr-2" />
+              {currentStrings.languageSelectLabel}
+              <ChevronDownIcon className={`w-5 h-5 ml-1 transform transition-transform duration-200 ${showLanguageDropdown ? 'rotate-180' : ''}`} />
+            </button>
+            {showLanguageDropdown && (
+              <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 ring-1 ring-black ring-opacity-5">
+                {Object.keys(translations).map((langKey) => (
+                  <button key={langKey} type="button" onClick={() => selectLanguage(langKey)} className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900" >
+                    {translations[langKey][`language${langKey.charAt(0).toUpperCase() + langKey.slice(1)}`]}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
         <h1 className="text-5xl sm:text-6xl font-bold text-white py-2 flex items-center justify-center drop-shadow-lg">
           <UsersIcon className="inline-block w-12 h-12 mr-3 text-pink-300" />
           {currentStrings.appTitle}
