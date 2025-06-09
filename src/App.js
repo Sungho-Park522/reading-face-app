@@ -391,51 +391,74 @@ const App = () => {
     }
   };
 
-  // 업로드 전에 용량 체크하고 정리하는 함수
   const cleanupStorageIfNeeded = async () => {
-    if (!storage) return;
+    console.log('🔥 cleanupStorageIfNeeded 함수 시작!');
+
+    if (!storage) {
+      console.log('❌ Storage가 초기화되지 않았습니다.');
+      return;
+    }
+
+    console.log('✅ Storage 객체 확인됨:', storage);
 
     try {
-      console.log('Storage 용량 확인 중...');
+      console.log('🔍 Storage 용량 확인 시작...');
 
       const storageRef = ref(storage, 'face-images');
+      console.log('📁 Storage reference 생성:', storageRef);
+
       const listResult = await listAll(storageRef);
+      console.log('📋 파일 목록 가져오기 완료');
+      console.log(`📁 총 파일 개수: ${listResult.items.length}개`);
 
-      if (listResult.items.length === 0) return;
+      if (listResult.items.length === 0) {
+        console.log('📂 삭제할 파일이 없습니다.');
+        return;
+      }
 
-      // 파일 메타데이터 수집
+      // 파일 정보 수집
+      console.log('📊 파일 정보 수집 중...');
       const fileInfos = await Promise.all(
-        listResult.items.map(async (itemRef) => {
+        listResult.items.map(async (itemRef, index) => {
           try {
+            console.log(`📄 파일 ${index + 1} 정보 가져오는 중: ${itemRef.name}`);
             const metadata = await getMetadata(itemRef);
-            return {
+            const info = {
               ref: itemRef,
               name: itemRef.name,
               size: parseInt(metadata.size),
               created: new Date(metadata.timeCreated)
             };
+            console.log(`📄 파일 ${index + 1}: ${info.name} (${(info.size / 1024 / 1024).toFixed(2)}MB, ${info.created.toLocaleDateString()})`);
+            return info;
           } catch (error) {
-            console.error('메타데이터 가져오기 실패:', itemRef.name, error);
+            console.error(`❌ 메타데이터 실패: ${itemRef.name}`, error);
             return null;
           }
         })
       );
 
       const validFileInfos = fileInfos.filter(info => info !== null);
+      console.log(`✅ 유효한 파일: ${validFileInfos.length}개`);
 
       // 전체 용량 계산
       const totalSize = validFileInfos.reduce((sum, info) => sum + info.size, 0);
       const maxSize = 800 * 1024 * 1024; // 800MB
 
-      console.log(`현재 용량: ${(totalSize / 1024 / 1024).toFixed(2)}MB`);
+      console.log(`📈 현재 총 용량: ${(totalSize / 1024 / 1024).toFixed(2)}MB`);
+      console.log(`🎯 목표 용량: ${(maxSize / 1024 / 1024).toFixed(2)}MB`);
+      console.log(`📊 용량 사용률: ${((totalSize / maxSize) * 100).toFixed(1)}%`);
 
       if (totalSize <= maxSize) {
-        console.log('용량 충분, 정리 불필요');
+        console.log('✅ 용량이 충분합니다. 정리가 필요하지 않습니다.');
         return;
       }
 
+      console.log('🚨 용량 초과! 정리를 시작합니다...');
+
       // 오래된 순으로 정렬
       validFileInfos.sort((a, b) => a.created - b.created);
+      console.log('📅 파일을 생성일 기준으로 정렬했습니다.');
 
       let deletedSize = 0;
       const filesToDelete = [];
@@ -445,32 +468,45 @@ const App = () => {
         filesToDelete.push(fileInfo);
         deletedSize += fileInfo.size;
 
-        if (totalSize - deletedSize <= maxSize * 0.8) { // 80%까지만 사용
+        console.log(`🗑️ 삭제 대상 추가: ${fileInfo.name} (${fileInfo.created.toLocaleDateString()})`);
+
+        if (totalSize - deletedSize <= maxSize * 0.8) {
           break;
         }
       }
 
-      console.log(`${filesToDelete.length}개 파일 삭제 예정`);
+      console.log(`📋 삭제 예정: ${filesToDelete.length}개 파일, ${(deletedSize / 1024 / 1024).toFixed(2)}MB`);
+      console.log(`📈 정리 후 예상 용량: ${((totalSize - deletedSize) / 1024 / 1024).toFixed(2)}MB`);
 
       // 파일 삭제
+      let successCount = 0;
+      let failCount = 0;
+
       for (const fileInfo of filesToDelete) {
         try {
           await deleteObject(fileInfo.ref);
-          console.log(`삭제 완료: ${fileInfo.name}`);
+          console.log(`✅ 삭제 성공: ${fileInfo.name}`);
+          successCount++;
 
           // 관련 Firestore 문서도 정리
           await cleanupFirestoreDocuments(fileInfo.name);
 
         } catch (error) {
-          console.error(`삭제 실패: ${fileInfo.name}`, error);
+          console.error(`❌ 삭제 실패: ${fileInfo.name}`, error);
+          failCount++;
         }
       }
 
-      console.log(`정리 완료: ${(deletedSize / 1024 / 1024).toFixed(2)}MB 확보`);
+      console.log(`🎉 정리 완료!`);
+      console.log(`   ✅ 성공: ${successCount}개`);
+      console.log(`   ❌ 실패: ${failCount}개`);
+      console.log(`   💾 확보된 용량: ${(deletedSize / 1024 / 1024).toFixed(2)}MB`);
 
     } catch (error) {
-      console.error('Storage 정리 실패:', error);
+      console.error('❌ Storage 정리 중 오류:', error);
     }
+
+    console.log('🏁 cleanupStorageIfNeeded 함수 종료');
   };
 
   const handleAnalysis = useCallback(async () => {
@@ -489,7 +525,10 @@ const App = () => {
     setShowResults(false);
 
     try {
+      // 용량 정리 먼저 실행
+      console.log('🧹 용량 정리 시작...');
       await cleanupStorageIfNeeded();
+      console.log('🧹 용량 정리 완료, 이제 분석 시작...');
 
       const base64Image1 = await getBase64(person1ImageFile);
       const mimeType1 = person1ImageFile.type;
