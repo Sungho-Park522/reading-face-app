@@ -368,6 +368,7 @@ const App = () => {
     }
   }, [person1ImageFile, person2ImageFile]);
 
+  // 새로운 코드 (이 코드를 붙여넣으세요)
   useEffect(() => {
     const path = window.location.pathname.split('/');
     if (path[1] === 'result' && path[2]) {
@@ -376,16 +377,19 @@ const App = () => {
 
       const fetchResult = async () => {
         try {
-          if (!db) throw new Error("Firestore is not initialized.");
+          // Firebase 초기화를 기다리는 간단한 로직 추가
+          if (!db) {
+            setTimeout(fetchResult, 300); // 0.3초 후 재시도
+            return;
+          }
           const docRef = doc(db, "results", id);
           const docSnap = await getDoc(docRef);
 
           if (docSnap.exists()) {
             const resultData = docSnap.data();
-            if (resultData.language && translations[resultData.language]) {
-              setLanguage(resultData.language);
-              setCurrentStrings(translations[resultData.language]);
-            }
+            const resultLang = resultData.language || 'ko'; // 데이터에 저장된 언어 사용
+
+            setLanguage(resultLang); // 언어 상태만 변경합니다.
             setAnalysisResult(resultData.analysis);
             setPerson1ImagePreview(resultData.person1ImageURL);
             setPerson2ImagePreview(resultData.person2ImageURL);
@@ -393,18 +397,23 @@ const App = () => {
             setPageState('resultView');
             setShowResults(true);
           } else {
-            setError(currentStrings.resultNotFound);
+            // 결과가 없을 경우, 초기에 감지된 브라우저 언어로 에러 메시지 설정
+            const initialLang = getInitialLanguage();
+            setError(translations[initialLang].resultNotFound);
             setPageState('main');
           }
         } catch (e) {
           console.error("Error fetching result:", e);
-          setError(currentStrings.resultNotFound);
+          const initialLang = getInitialLanguage();
+          setError(translations[initialLang].resultNotFound);
           setPageState('main');
         }
       };
+
       fetchResult();
     }
-  }, [currentStrings.resultNotFound]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // 의존성 배열을 비워 이 로직이 페이지 로드 시 단 한 번만 실행되도록 강제합니다.
 
   useEffect(() => {
     setCurrentStrings(translations[language]);
