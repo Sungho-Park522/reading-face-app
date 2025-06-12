@@ -604,7 +604,7 @@ const App = () => {
       setIsLoading(false);
       setShowInterstitialAd(false);
     }
-  }, [person1ImageFile, person2ImageFile, language, currentStrings]);
+  }, [person1ImageFile, person2ImageFile, language, currentStrings, cleanupStorageIfNeeded]);
 
   const handleWatchRewardedAd = () => {
     setIsWatchingRewardedAd(true);
