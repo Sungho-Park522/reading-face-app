@@ -389,7 +389,7 @@ const App = () => {
     } catch (error) {
       console.error('Firestore 정리 실패:', error);
     }
-  }, [db]);
+  }, []);
 
   const cleanupStorageIfNeeded = useCallback(async () => {
     console.log('🔥 cleanupStorageIfNeeded 함수 시작!');
@@ -507,7 +507,7 @@ const App = () => {
     }
 
     console.log('🏁 cleanupStorageIfNeeded 함수 종료');
-  }, [storage, cleanupFirestoreDocuments]);
+  }, [cleanupFirestoreDocuments]);
 
   const handleAnalysis = useCallback(async () => {
     if (!person1ImageFile || !person2ImageFile) {
