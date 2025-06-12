@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useEffect } from 'react';
 // Firebase SDK import
 import { initializeApp, getApps } from "firebase/app";
-import { getFirestore, collection, doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
+import { getFirestore, collection, doc, getDoc, setDoc, serverTimestamp, query, orderBy, limit, getDocs, deleteDoc } from "firebase/firestore";
 import { getAuth, signInAnonymously } from "firebase/auth";
 import {
   getStorage, ref, uploadBytes, getDownloadURL,
