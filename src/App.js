@@ -274,7 +274,7 @@ const App = () => {
   const [person2ImagePreview, setPerson2ImagePreview] = useState(null);
 
   const [analysisResult, setAnalysisResult] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
+  // const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
   const [pageState, setPageState] = useState('main');
@@ -554,9 +554,7 @@ const App = () => {
       return;
     }
 
-    const apiKey = GEMINI_API_KEY;
-    const isPreview = !apiKey;
-
+    // 로딩 시작
     setIsLoading(true);
     setError('');
     setAnalysisResult(null);
@@ -590,21 +588,15 @@ const App = () => {
       };
 
       const languageInstruction = currentPromptStrings.languageInstructionSuffix ? currentPromptStrings.languageInstructionSuffix.replace(/\(([^)]+)\)/, `(${langName})`) : "";
-
-      const prompt = `${currentPromptStrings.instruction}\n\n${currentPromptStrings.jsonFormatInstruction}\n${JSON.stringify(jsonExample, null, 2)}\n\n${languageInstruction}`;
+      const prompt = `<span class="math-inline">\{currentStrings\.instruction\}\\n\\n</span>{currentStrings.jsonFormatInstruction}\n${JSON.stringify(jsonExample, null, 2)}\n\n${languageInstruction}`;
 
       const payload = {
         contents: [{ role: "user", parts: [{ text: prompt }, { inlineData: { mimeType: mimeType1, data: base64Image1 } }, { inlineData: { mimeType: mimeType2, data: base64Image2 } }] }],
         generationConfig: { responseMimeType: "application/json" }
       };
 
-      const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
-
-      const response = await fetch(apiUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      });
+      const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
+      const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
 
       if (!response.ok) {
         const errorData = await response.json();
@@ -615,13 +607,12 @@ const App = () => {
 
       if (result.candidates && result.candidates[0].content && result.candidates[0].content.parts[0]) {
         const parsedJson = JSON.parse(result.candidates[0].content.parts[0].text);
-
         if (parsedJson.error && parsedJson.error === 'NO_FACE_DETECTED') {
           throw new Error(currentStrings.noFaceDetectedError);
         }
-
         setAnalysisResult(parsedJson);
 
+        const isPreview = !GEMINI_API_KEY;
         if (!isPreview && db && storage) {
           const person1URL = await uploadImageToStorage(person1ImageFile);
           const person2URL = await uploadImageToStorage(person2ImageFile);
@@ -633,14 +624,14 @@ const App = () => {
         throw new Error(currentStrings.apiErrorResponseFormat);
       }
 
+      // 성공 시 로딩 종료
       setIsLoading(false);
-      // setShowInterstitialAd(false);
 
     } catch (err) {
       console.error('분석 또는 저장 중 오류 발생:', err);
       setError(`${err.message}`);
+      // 실패 시 로딩 종료
       setIsLoading(false);
-      // setShowInterstitialAd(false);
     }
   }, [person1ImageFile, person2ImageFile, language, currentStrings, cleanupStorageIfNeeded]);
 
