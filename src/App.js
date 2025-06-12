@@ -222,7 +222,12 @@ const uploadImageToStorage = async (file) => {
 };
 
 const App = () => {
-  const [language, setLanguage] = useState('ko');
+  const getInitialLanguage = () => {
+    const browserLang = navigator.language || navigator.userLanguage; // 브라우저 언어 가져오기
+    const langCode = browserLang.split('-')[0]; // 'ko-KR' -> 'ko'
+    // 지원하는 언어 목록에 포함되어 있으면 해당 언어로, 아니면 영어(en)를 기본값으로 사용
+    return translations[langCode] ? langCode : 'en';
+  };
   const [currentStrings, setCurrentStrings] = useState(translations.ko);
   const [showLanguageDropdown, setShowLanguageDropdown] = useState(false);
 
