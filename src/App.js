@@ -695,7 +695,11 @@ const App = () => {
             {showLanguageDropdown && (<div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 ring-1 ring-black ring-opacity-5">{Object.keys(translations).map((langKey) => (<button key={langKey} type="button" onClick={() => selectLanguage(langKey)} className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900" >{translations[langKey].languageName}</button>))}</div>)}
           </div>
         )}
-        <h1 className="text-5xl sm:text-6xl font-bold text-white py-2 flex items-center justify-center drop-shadow-lg">{currentStrings.appTitle}<HeartIcon className="inline-block w-12 h-12 ml-3 text-red-400 animate-pulse" filled={true} /></h1>
+        <h1 className="text-5xl sm:text-6xl font-bold text-white py-2 flex items-center justify-center drop-shadow-lg">
+          <UsersIcon className="inline-block w-12 h-12 mr-3 text-pink-300" />
+          {currentStrings.appTitle}
+          <HeartIcon className="inline-block w-12 h-12 ml-3 text-red-400 animate-pulse" filled={true} />
+        </h1>
         <p className="text-xl text-white mt-3 drop-shadow-md">{currentStrings.appSubtitle}</p>
         <p className="text-sm text-white/80 mt-1 drop-shadow-sm">{currentStrings.appDisclaimer}</p>
       </header>
