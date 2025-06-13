@@ -707,7 +707,7 @@ const App = () => {
         {isLoading && <AnalysisLoadingComponent image1={person1ImagePreview} image2={person2ImagePreview} strings={currentStrings} />}
         {isWatchingRewardedAd && <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"><div className="bg-white p-8 rounded-lg shadow-xl text-center max-w-sm w-full"><h3 className="text-xl font-semibold text-indigo-600 mb-3">{currentStrings.rewardedAdTitle}</h3><p className="text-gray-600 mb-5">{currentStrings.rewardedAdBody}</p><div className="w-full bg-gray-200 rounded-full h-2.5 mb-4"><div className="bg-indigo-600 h-2.5 rounded-full animate-pulse" style={{ width: "75%" }}></div></div><p className="text-sm text-gray-500">{currentStrings.rewardedAdFooter}</p></div></div>}
         {pageState === 'loadingResult' && <p className="text-center text-xl text-purple-700 font-semibold">{currentStrings.resultLoading}</p>}
-        {!isLoading && pageState === 'main' && <MainPageComponent />}
+        {pageState === 'main' && <MainPageComponent />}
         {!isLoading && pageState === 'resultView' && analysisResult && <ResultPageComponent />}
         {error && <p className="text-red-500 bg-red-100 border border-red-300 rounded-md p-4 text-md mt-4 max-w-md mx-auto shadow-md animate-shake">{error}</p>}
       </main>
