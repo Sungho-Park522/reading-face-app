@@ -691,6 +691,7 @@ const App = () => {
     const sectionHidden = "opacity-0 transform -translate-y-5";
     const getSectionClass = (isVisible) => isVisible ? 'opacity-100 translate-y-0' : sectionHidden;
 
+    // 데이터가 없는 경우를 대비하여 기본값 설정
     const compatibility = analysisResult.compatibility || {};
     const person1Analysis = analysisResult.person1_analysis || {};
     const person2Analysis = analysisResult.person2_analysis || {};
@@ -714,7 +715,6 @@ const App = () => {
           </div>
         </div>
 
-        {/* ▼▼▼ '조심해야 할 부분'을 표시하는 새로운 섹션입니다. ▼▼▼ */}
         <div className={`${sectionTransition} ${getSectionClass(sectionsVisible.problems)} mt-8 p-6 bg-white rounded-xl shadow-lg`}>
           {compatibility.potential_problems && (
             <div>
@@ -735,21 +735,22 @@ const App = () => {
           <p className="text-md text-gray-800 leading-relaxed whitespace-pre-line p-4 bg-white/70 rounded-lg shadow-inner mb-8">{compatibility.overall_summary || currentStrings.defaultOverallComment}</p>
         </div>
 
+        {/* ▼▼▼ 중략되었던 '공유 및 다시하기 버튼' 전체 코드입니다. ▼▼▼ */}
         <div className="mt-10 pt-6 border-t border-gray-300">
-          {<div className="mt-10 pt-6 border-t border-gray-300">
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 font-gaegu text-sm">
-              <button onClick={handleCopyToClipboard} disabled={!resultId} className="w-full flex items-center justify-center px-4 py-3 bg-gray-600 hover:bg-gray-700 text-white font-bold rounded-lg shadow-lg transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"><LinkIcon className="w-5 h-5 mr-2" /> {currentStrings.copyButton}</button>
-              <a href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(currentStrings.shareMessage)}&url=${window.location.origin}/result/${resultId}`} target="_blank" rel="noopener noreferrer" className={`w-full flex items-center justify-center px-4 py-3 bg-black hover:bg-gray-800 text-white font-bold rounded-lg shadow-lg transition-colors ${!resultId ? 'pointer-events-none bg-gray-400' : ''}`}><svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path></svg>{currentStrings.shareTwitterButton}</a>
-              <a href={`https://www.facebook.com/sharer/sharer.php?u=${window.location.origin}/result/${resultId}`} target="_blank" rel="noopener noreferrer" className={`w-full flex items-center justify-center px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg shadow-lg transition-colors ${!resultId ? 'pointer-events-none bg-gray-400' : ''}`}><svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fillRule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12Z" clipRule="evenodd"></path></svg>{currentStrings.shareFacebookButton}</a>
-              <a href={`https://www.linkedin.com/sharing/share-offsite/?url=${window.location.origin}/result/${resultId}`} target="_blank" rel="noopener noreferrer" className={`w-full flex items-center justify-center px-4 py-3 bg-blue-700 hover:bg-blue-800 text-white font-bold rounded-lg shadow-lg transition-colors ${!resultId ? 'pointer-events-none bg-gray-400' : ''}`}><LinkedInIcon className="w-5 h-5 mr-2" />{currentStrings.shareLinkedInButton}</a>
-              <button onClick={handleCopyToClipboard} className={`w-full flex items-center justify-center px-4 py-3 text-white font-bold rounded-lg shadow-lg transition-colors bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 hover:from-purple-600 hover:to-pink-600 ${!resultId ? 'opacity-50 cursor-not-allowed' : ''}`}><InstagramIcon className="w-5 h-5 mr-2" />{currentStrings.shareInstagramButton}</button>
-            </div>
-            <div className="mt-8 text-center"><button onClick={resetAllStates} className="w-auto flex items-center justify-center px-8 py-4 bg-gray-500 hover:bg-gray-600 text-white font-bold rounded-lg shadow-lg transition-colors text-lg"><RefreshCwIcon className="w-6 h-6 mr-3" /> {currentStrings.retryButton}</button></div>{copyStatus && <p className="text-center text-md text-green-700 mt-4 font-semibold animate-bounce">{copyStatus}</p>}
-          </div>}
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 font-gaegu text-sm">
+            <button onClick={handleCopyToClipboard} disabled={!resultId} className="w-full flex items-center justify-center px-4 py-3 bg-gray-600 hover:bg-gray-700 text-white font-bold rounded-lg shadow-lg transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"><LinkIcon className="w-5 h-5 mr-2" /> {currentStrings.copyButton}</button>
+            <a href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(currentStrings.shareMessage)}&url=${window.location.origin}/result/${resultId}`} target="_blank" rel="noopener noreferrer" className={`w-full flex items-center justify-center px-4 py-3 bg-black hover:bg-gray-800 text-white font-bold rounded-lg shadow-lg transition-colors ${!resultId ? 'pointer-events-none bg-gray-400' : ''}`}><svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path></svg>{currentStrings.shareTwitterButton}</a>
+            <a href={`https://www.facebook.com/sharer/sharer.php?u=${window.location.origin}/result/${resultId}`} target="_blank" rel="noopener noreferrer" className={`w-full flex items-center justify-center px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg shadow-lg transition-colors ${!resultId ? 'pointer-events-none bg-gray-400' : ''}`}><svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fillRule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12Z" clipRule="evenodd"></path></svg>{currentStrings.shareFacebookButton}</a>
+            <a href={`https://www.linkedin.com/sharing/share-offsite/?url=${window.location.origin}/result/${resultId}`} target="_blank" rel="noopener noreferrer" className={`w-full flex items-center justify-center px-4 py-3 bg-blue-700 hover:bg-blue-800 text-white font-bold rounded-lg shadow-lg transition-colors ${!resultId ? 'pointer-events-none bg-gray-400' : ''}`}><LinkedInIcon className="w-5 h-5 mr-2" />{currentStrings.shareLinkedInButton}</a>
+            <button onClick={handleCopyToClipboard} className={`w-full flex items-center justify-center px-4 py-3 text-white font-bold rounded-lg shadow-lg transition-colors bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 hover:from-purple-600 hover:to-pink-600 ${!resultId ? 'opacity-50 cursor-not-allowed' : ''}`}><InstagramIcon className="w-5 h-5 mr-2" />{currentStrings.shareInstagramButton}</button>
+          </div>
+          <div className="mt-8 text-center"><button onClick={resetAllStates} className="w-auto flex items-center justify-center px-8 py-4 bg-gray-500 hover:bg-gray-600 text-white font-bold rounded-lg shadow-lg transition-colors text-lg"><RefreshCwIcon className="w-6 h-6 mr-3" /> {currentStrings.retryButton}</button></div>{copyStatus && <p className="text-center text-md text-green-700 mt-4 font-semibold animate-bounce">{copyStatus}</p>}
         </div>
+        {/* ▲▲▲ '공유 및 다시하기 버튼' 전체 코드 끝 ▲▲▲ */}
       </section>
     );
   };
+
 
 
 
