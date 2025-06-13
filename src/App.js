@@ -572,15 +572,15 @@ const App = () => {
       const langName = translations[language].languageName;
 
       const jsonExample = {
-        person1_analysis: { name: currentPromptStrings.person1NameExample, overall_impression: currentPromptStrings.person1ImpressionExample },
-        person2_analysis: { name: currentPromptStrings.person2NameExample, overall_impression: currentPromptStrings.person2ImpressionExample },
+        person1_analysis: { name: currentPromptStrings.person1NameExample, physiognomy_analysis: currentPromptStrings.person1ImpressionExample },
+        person2_analysis: { name: currentPromptStrings.person2NameExample, physiognomy_analysis: currentPromptStrings.person2ImpressionExample },
         compatibility: {
           score: 88,
           score_reason: currentPromptStrings.compatibilityScoreReasonExample,
           good_points: [currentPromptStrings.goodPoint1Example, currentPromptStrings.goodPoint2Example],
-          areas_for_improvement: [currentPromptStrings.improvementPoint1Example, currentPromptStrings.improvementPoint2Example],
+          potential_problems: currentPromptStrings.potentialProblemsExample,
+          prevention_tips: currentPromptStrings.preventionTipsExample,
           overall_summary: currentPromptStrings.overallSummaryExample,
-          advice: [currentPromptStrings.advice1Example, currentPromptStrings.advice2Example]
         }
       };
       const languageInstruction = currentPromptStrings.languageInstructionSuffix ? currentPromptStrings.languageInstructionSuffix.replace(/\(([^)]+)\)/, `(${langName})`) : "";
