@@ -705,7 +705,11 @@ const App = () => {
         </div>
 
         <div className={`${sectionTransition} ${getSectionClass(sectionsVisible.details)} grid grid-cols-1 md:grid-cols-2 gap-6 mb-10`}>
-          {[person1Analysis, person2Analysis].map((person, personIndex) => (<div key={personIndex} className={`p-6 rounded-xl shadow-lg transform hover:scale-105 transition-transform duration-300 ${personIndex === 0 ? 'bg-gradient-to-br from-rose-100 to-pink-200 border-rose-300' : 'bg-gradient-to-br from-fuchsia-100 to-purple-200 border-fuchsia-300'} border-2`}><h3 className={`text-3xl font-bold mb-4 text-center font-gaegu ${personIndex === 0 ? 'text-rose-600' : 'text-fuchsia-600'}`}>{(person.name || (personIndex === 0 ? currentStrings.person1Title : currentStrings.person2Title))} {currentStrings.personAnalysisTitleSuffix}</h3><div className="relative"><p className="text-md leading-relaxed whitespace-pre-line p-4 bg-white/70 rounded-lg shadow-inner">{person.physiognomy_analysis || "..."}</p></div></div>))}
+          {[person1Analysis, person2Analysis].map((person, personIndex) => (<div key={personIndex} className={`p-6 rounded-xl shadow-lg transform hover:scale-105 transition-transform duration-300 ${personIndex === 0 ? 'bg-gradient-to-br from-rose-100 to-pink-200 border-rose-300' : 'bg-gradient-to-br from-fuchsia-100 to-purple-200 border-fuchsia-300'} border-2`}><h3 className={`text-3xl font-bold mb-4 text-center font-gaegu ${personIndex === 0 ? 'text-rose-600' : 'text-fuchsia-600'}`}>{(person.name || (personIndex === 0 ? currentStrings.person1Title : currentStrings.person2Title))} {currentStrings.personAnalysisTitleSuffix}</h3><div className="relative">
+            <p className="text-md leading-relaxed whitespace-pre-line p-4 bg-white/70 rounded-lg shadow-inner">
+              {person.physiognomy_analysis || "..."}
+            </p>
+          </div></div>))}
         </div>
 
         <div className={`${sectionTransition} ${getSectionClass(sectionsVisible.score)} bg-gradient-to-br from-indigo-100 to-blue-200 p-6 rounded-xl shadow-xl border-2 border-indigo-300`}>
