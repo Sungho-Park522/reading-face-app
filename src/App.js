@@ -95,7 +95,7 @@ const translations = {
     ],
     aiPrompt: {
       instruction: "당신은 유머와 깊이를 겸비한 AI 관상 전문가입니다. 주어진 두 사진에 대해 다음 규칙을 반드시 따라서 분석해주세요.\n\n1.  **오직 얼굴만 분석:** 사진의 배경, 의상, 행동(낚시, 여행 등)은 철저히 무시하고, 오직 두 사람의 얼굴에 드러난 이목구비, 얼굴형, 전체적인 조화 등 관상학적 특징에만 100% 집중하여 분석해야 합니다.\n2.  **개인 관상 분석:** 각 인물의 관상을 개별적으로 분석합니다. 이목구비의 특징을 구체적으로 언급하며, 그 관상이 어떤 성격, 재물운, 애정운을 나타내는지 재치있는 비유와 함께 설명해주세요. 이 내용을 'person_analysis'의 'physiognomy_analysis' 필드에 담아주세요.\n3.  **궁합 분석:** 두 사람의 관상적 특징이 서로에게 어떤 영향을 미치는지 분석하여 궁합 점수와 그 이유를 설명합니다. 'good_points'에는 관상학적으로 서로의 복을 북돋아주는 부분을, 'potential_problems'에는 관상학적 차이로 인해 발생할 수 있는 잠재적 갈등 요소를 구체적으로 분석해주세요.\n4.  **해결책 제시:** 'prevention_tips' 필드에는 위에서 분석된 잠재적 갈등을 각자의 관상적 특징을 활용하여 어떻게 지혜롭게 해결하고 관계를 발전시킬 수 있는지, 현실적이고 따뜻한 조언을 담아주세요.",
-      jsonFormatInstruction: "답변은 다음 JSON 형식으로 제공해주세요:",
+      jsonFormatInstruction: "답변은 다음 JSON 형식으로 제공해주세요. `advice` 필드는 삭제합니다.",
       person1NameExample: "정면돌파 리더상",
       person1ImpressionExample: "이 분, 넓고 반듯한 이마에서부터 리더의 기운이 느껴지네요! 🧐 시원하게 뻗은 이마는 초년운이 좋고 지혜로움을 상징하죠. 여기에 목표를 향해 망설임 없이 나아갈 듯한 곧은 눈썹까지 더해져, 어떤 무리에서든 중심을 잡고 이끌어가는 역할을 할 관상입니다. 다만, 강한 책임감만큼이나 자기 주관도 뚜렷해서 가끔은 '융통성 없는 꼰대'라는 오해를 살 수도 있겠어요. 😉",
       person2NameExample: "따뜻한 지략가상",
@@ -691,7 +691,6 @@ const App = () => {
     const sectionHidden = "opacity-0 transform -translate-y-5";
     const getSectionClass = (isVisible) => isVisible ? 'opacity-100 translate-y-0' : sectionHidden;
 
-    // 콘텐츠가 없는 경우를 대비하여 기본값 설정
     const compatibility = analysisResult.compatibility || {};
     const person1Analysis = analysisResult.person1_analysis || {};
     const person2Analysis = analysisResult.person2_analysis || {};
@@ -705,44 +704,54 @@ const App = () => {
         </div>
 
         <div className={`${sectionTransition} ${getSectionClass(sectionsVisible.details)} grid grid-cols-1 md:grid-cols-2 gap-6 mb-10`}>
-          {[person1Analysis, person2Analysis].map((person, personIndex) => (<div key={personIndex} className={`p-6 rounded-xl shadow-lg transform hover:scale-105 transition-transform duration-300 ${personIndex === 0 ? 'bg-gradient-to-br from-rose-100 to-pink-200 border-rose-300' : 'bg-gradient-to-br from-fuchsia-100 to-purple-200 border-fuchsia-300'} border-2`}><h3 className={`text-3xl font-bold mb-4 text-center font-gaegu ${personIndex === 0 ? 'text-rose-600' : 'text-fuchsia-600'}`}>{(person.name || (personIndex === 0 ? currentStrings.person1Title : currentStrings.person2Title))} {currentStrings.personAnalysisTitleSuffix}</h3><div className="relative"><p className="text-md leading-relaxed whitespace-pre-line p-4 bg-white/70 rounded-lg shadow-inner">{person.physiognomy_analysis || person.overall_impression || "..."}</p></div></div>))}
+          {[person1Analysis, person2Analysis].map((person, personIndex) => (<div key={personIndex} className={`p-6 rounded-xl shadow-lg transform hover:scale-105 transition-transform duration-300 ${personIndex === 0 ? 'bg-gradient-to-br from-rose-100 to-pink-200 border-rose-300' : 'bg-gradient-to-br from-fuchsia-100 to-purple-200 border-fuchsia-300'} border-2`}><h3 className={`text-3xl font-bold mb-4 text-center font-gaegu ${personIndex === 0 ? 'text-rose-600' : 'text-fuchsia-600'}`}>{(person.name || (personIndex === 0 ? currentStrings.person1Title : currentStrings.person2Title))} {currentStrings.personAnalysisTitleSuffix}</h3><div className="relative"><p className="text-md leading-relaxed whitespace-pre-line p-4 bg-white/70 rounded-lg shadow-inner">{person.physiognomy_analysis || "..."}</p></div></div>))}
         </div>
 
         <div className={`${sectionTransition} ${getSectionClass(sectionsVisible.score)} bg-gradient-to-br from-indigo-100 to-blue-200 p-6 rounded-xl shadow-xl border-2 border-indigo-300`}>
           <h3 className="text-3xl font-bold text-indigo-700 mb-6 text-center font-gaegu">{currentStrings.compatibilityTitle}</h3><div className="flex justify-center mb-4">{renderHearts(compatibility.score || 0)}</div><p className="text-5xl md:text-6xl font-bold text-indigo-600 mb-2 text-center font-gaegu">{animatedScore}{currentStrings.scoreUnit}</p><p className="text-md text-gray-700 mb-6 italic text-center p-2 bg-white/50 rounded-md">{compatibility.score_reason || currentStrings.scoreDefaultReason}</p>
-          <div className="text-left space-y-6">{compatibility.good_points?.length > 0 && (<div><h4 className="text-xl font-bold text-green-700 mb-2 flex items-center font-gaegu"><ThumbsUpIcon className="w-6 h-6 mr-2 text-green-500" /> {currentStrings.goodPointsTitle}</h4>{compatibility.good_points.map((point, index) => (<p key={index} className="text-md text-gray-800 mb-1 p-3 bg-green-100 rounded-lg shadow-sm">- {point}</p>))}</div>)}</div>
+          <div className="text-left space-y-6">
+            {compatibility.good_points?.length > 0 && (<div><h4 className="text-xl font-bold text-green-700 mb-2 flex items-center font-gaegu"><ThumbsUpIcon className="w-6 h-6 mr-2 text-green-500" /> {currentStrings.goodPointsTitle}</h4>{compatibility.good_points.map((point, index) => (<p key={index} className="text-md text-gray-800 mb-1 p-3 bg-green-100 rounded-lg shadow-sm">- {point}</p>))}</div>)}
+          </div>
         </div>
 
+        {/* ▼▼▼ '조심해야 할 부분'을 표시하는 새로운 섹션입니다. ▼▼▼ */}
         <div className={`${sectionTransition} ${getSectionClass(sectionsVisible.problems)} mt-8 p-6 bg-white rounded-xl shadow-lg`}>
           {compatibility.potential_problems && (
             <div>
-              <h4 className="text-2xl font-bold text-red-700 mb-3 text-center font-gaegu">두 분의 관상에서 예측되는 갈등 요소! 💥</h4>
+              <h4 className="text-2xl font-bold text-red-700 mb-3 text-center font-gaegu">관상으로 예측되는 갈등 요소! 💥</h4>
               <p className="text-md text-gray-800 mb-4 p-3 bg-red-100 rounded-lg shadow-sm">{compatibility.potential_problems}</p>
             </div>
           )}
           {compatibility.prevention_tips && (
             <div>
-              <h4 className="text-2xl font-bold text-emerald-700 mt-6 mb-3 text-center font-gaegu">갈등을 막고 사랑을 키우는 비법! 🔐</h4>
+              <h4 className="text-2xl font-bold text-emerald-700 mt-6 mb-3 text-center font-gaegu">갈등 예방 & 관계 발전 비법! 🔐</h4>
               <p className="text-md text-gray-800 p-3 bg-emerald-100 rounded-lg shadow-sm">{compatibility.prevention_tips}</p>
             </div>
           )}
         </div>
 
-        <div className={`${sectionTransition} ${getSectionClass(sectionsVisible.summary)} mt-8 p-6 bg-white rounded-xl shadow-lg`}><h4 className="text-2xl font-bold text-indigo-700 mb-3 text-center font-gaegu">{currentStrings.overallCommentTitle}</h4><p className="text-md text-gray-800 leading-relaxed whitespace-pre-line p-4 bg-white/70 rounded-lg shadow-inner mb-8">{compatibility.overall_summary || currentStrings.defaultOverallComment}</p></div>
+        <div className={`${sectionTransition} ${getSectionClass(sectionsVisible.summary)} mt-8 p-6 bg-white rounded-xl shadow-lg`}>
+          <h4 className="text-2xl font-bold text-indigo-700 mb-3 text-center font-gaegu">{currentStrings.overallCommentTitle}</h4>
+          <p className="text-md text-gray-800 leading-relaxed whitespace-pre-line p-4 bg-white/70 rounded-lg shadow-inner mb-8">{compatibility.overall_summary || currentStrings.defaultOverallComment}</p>
+        </div>
 
         <div className="mt-10 pt-6 border-t border-gray-300">
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 font-gaegu text-sm">
-            <button onClick={handleCopyToClipboard} disabled={!resultId} className="w-full flex items-center justify-center px-4 py-3 bg-gray-600 hover:bg-gray-700 text-white font-bold rounded-lg shadow-lg transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"><LinkIcon className="w-5 h-5 mr-2" /> {currentStrings.copyButton}</button>
-            <a href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(currentStrings.shareMessage)}&url=${window.location.origin}/result/${resultId}`} target="_blank" rel="noopener noreferrer" className={`w-full flex items-center justify-center px-4 py-3 bg-black hover:bg-gray-800 text-white font-bold rounded-lg shadow-lg transition-colors ${!resultId ? 'pointer-events-none bg-gray-400' : ''}`}><svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path></svg>{currentStrings.shareTwitterButton}</a>
-            <a href={`https://www.facebook.com/sharer/sharer.php?u=${window.location.origin}/result/${resultId}`} target="_blank" rel="noopener noreferrer" className={`w-full flex items-center justify-center px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg shadow-lg transition-colors ${!resultId ? 'pointer-events-none bg-gray-400' : ''}`}><svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fillRule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12Z" clipRule="evenodd"></path></svg>{currentStrings.shareFacebookButton}</a>
-            <a href={`https://www.linkedin.com/sharing/share-offsite/?url=${window.location.origin}/result/${resultId}`} target="_blank" rel="noopener noreferrer" className={`w-full flex items-center justify-center px-4 py-3 bg-blue-700 hover:bg-blue-800 text-white font-bold rounded-lg shadow-lg transition-colors ${!resultId ? 'pointer-events-none bg-gray-400' : ''}`}><LinkedInIcon className="w-5 h-5 mr-2" />{currentStrings.shareLinkedInButton}</a>
-            <button onClick={handleCopyToClipboard} className={`w-full flex items-center justify-center px-4 py-3 text-white font-bold rounded-lg shadow-lg transition-colors bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 hover:from-purple-600 hover:to-pink-600 ${!resultId ? 'opacity-50 cursor-not-allowed' : ''}`}><InstagramIcon className="w-5 h-5 mr-2" />{currentStrings.shareInstagramButton}</button>
-          </div>
-          <div className="mt-8 text-center"><button onClick={resetAllStates} className="w-auto flex items-center justify-center px-8 py-4 bg-gray-500 hover:bg-gray-600 text-white font-bold rounded-lg shadow-lg transition-colors text-lg"><RefreshCwIcon className="w-6 h-6 mr-3" /> {currentStrings.retryButton}</button></div>{copyStatus && <p className="text-center text-md text-green-700 mt-4 font-semibold animate-bounce">{copyStatus}</p>}
+          {<div className="mt-10 pt-6 border-t border-gray-300">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 font-gaegu text-sm">
+              <button onClick={handleCopyToClipboard} disabled={!resultId} className="w-full flex items-center justify-center px-4 py-3 bg-gray-600 hover:bg-gray-700 text-white font-bold rounded-lg shadow-lg transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"><LinkIcon className="w-5 h-5 mr-2" /> {currentStrings.copyButton}</button>
+              <a href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(currentStrings.shareMessage)}&url=${window.location.origin}/result/${resultId}`} target="_blank" rel="noopener noreferrer" className={`w-full flex items-center justify-center px-4 py-3 bg-black hover:bg-gray-800 text-white font-bold rounded-lg shadow-lg transition-colors ${!resultId ? 'pointer-events-none bg-gray-400' : ''}`}><svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path></svg>{currentStrings.shareTwitterButton}</a>
+              <a href={`https://www.facebook.com/sharer/sharer.php?u=${window.location.origin}/result/${resultId}`} target="_blank" rel="noopener noreferrer" className={`w-full flex items-center justify-center px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg shadow-lg transition-colors ${!resultId ? 'pointer-events-none bg-gray-400' : ''}`}><svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fillRule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12Z" clipRule="evenodd"></path></svg>{currentStrings.shareFacebookButton}</a>
+              <a href={`https://www.linkedin.com/sharing/share-offsite/?url=${window.location.origin}/result/${resultId}`} target="_blank" rel="noopener noreferrer" className={`w-full flex items-center justify-center px-4 py-3 bg-blue-700 hover:bg-blue-800 text-white font-bold rounded-lg shadow-lg transition-colors ${!resultId ? 'pointer-events-none bg-gray-400' : ''}`}><LinkedInIcon className="w-5 h-5 mr-2" />{currentStrings.shareLinkedInButton}</a>
+              <button onClick={handleCopyToClipboard} className={`w-full flex items-center justify-center px-4 py-3 text-white font-bold rounded-lg shadow-lg transition-colors bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 hover:from-purple-600 hover:to-pink-600 ${!resultId ? 'opacity-50 cursor-not-allowed' : ''}`}><InstagramIcon className="w-5 h-5 mr-2" />{currentStrings.shareInstagramButton}</button>
+            </div>
+            <div className="mt-8 text-center"><button onClick={resetAllStates} className="w-auto flex items-center justify-center px-8 py-4 bg-gray-500 hover:bg-gray-600 text-white font-bold rounded-lg shadow-lg transition-colors text-lg"><RefreshCwIcon className="w-6 h-6 mr-3" /> {currentStrings.retryButton}</button></div>{copyStatus && <p className="text-center text-md text-green-700 mt-4 font-semibold animate-bounce">{copyStatus}</p>}
+          </div>}
         </div>
       </section>
     );
   };
+
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-400 via-purple-500 to-indigo-600 p-4 sm:p-6 lg:p-8 flex flex-col items-center">
