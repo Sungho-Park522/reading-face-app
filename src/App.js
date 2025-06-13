@@ -312,19 +312,34 @@ const AnalysisLoadingComponent = ({ image1, image2, strings }) => {
   }, [strings.loadingComments]);
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-80 flex flex-col items-center justify-center z-50 p-4 text-white font-gaegu">
-      <div className="relative w-full max-w-md flex items-center justify-center mb-8">
-        <img src={image1} alt="Person 1" className="w-32 h-32 md:w-40 md:h-40 object-cover rounded-full shadow-lg border-4 border-rose-400 animate-pulse" />
-        <svg className="absolute w-1/2 h-full text-cyan-300" viewBox="0 0 100 50" preserveAspectRatio="none">
-          <path d="M0 25 Q 25 10, 50 25 T 100 25" stroke="currentColor" strokeWidth="2" fill="none" className="animate-pulse" style={{ strokeDasharray: 5, animation: 'dash 1s linear infinite' }} />
-          <path d="M0 25 Q 25 40, 50 25 T 100 25" stroke="currentColor" strokeWidth="1" fill="none" className="opacity-70 animate-pulse" style={{ strokeDasharray: 5, animation: 'dash 1.5s linear infinite reverse' }} />
-        </svg>
-        <img src={image2} alt="Person 2" className="w-32 h-32 md:w-40 md:h-40 object-cover rounded-full shadow-lg border-4 border-fuchsia-400 animate-pulse" />
-      </div>
-      <div className="text-center">
-        <p className="text-xl md:text-2xl h-16 flex items-center justify-center transition-opacity duration-500">"{comment}"</p>
-        <div className="w-16 h-16 border-4 border-purple-400 border-t-transparent rounded-full mx-auto animate-spin mt-4"></div>
-        <p className="text-purple-300 mt-3 font-semibold text-lg">{strings.loadingMessage}</p>
+    <div className="fixed inset-0 bg-black bg-opacity-75 flex flex-col items-center justify-center z-50 p-4 font-gaegu">
+      <div className="bg-white p-6 sm:p-8 rounded-2xl shadow-2xl text-center max-w-md w-full">
+        <h3 className="text-2xl font-bold text-purple-600 mb-3">{strings.interstitialAdTitle}</h3>
+        <p className="text-gray-600 text-sm mb-4">{strings.interstitialAdBody1}</p>
+
+        {/* ▼▼▼ 광고 영역을 여기에 다시 추가했습니다. ▼▼▼ */}
+        <img
+          src={`https://placehold.co/320x100/dedede/777777?text=${strings.adPlaceholderInterstitialText.replace(/\+/g, '%20')}`}
+          alt="Interstitial Ad Example"
+          className="mx-auto rounded-md shadow-md mb-6"
+          onError={(e) => { e.target.src = `https://placehold.co/320x100/dedede/777777?text=Error`; }}
+        />
+        {/* ▲▲▲ 광고 영역 끝 ▲▲▲ */}
+
+        <div className="relative w-full max-w-xs mx-auto flex items-center justify-center mb-4">
+          <img src={image1} alt="Person 1" className="w-24 h-24 object-cover rounded-full shadow-lg border-4 border-rose-400 animate-pulse" />
+          <svg className="absolute w-1/3 h-full text-cyan-400" viewBox="0 0 100 50" preserveAspectRatio="none">
+            <path d="M0 25 Q 25 10, 50 25 T 100 25" stroke="currentColor" strokeWidth="2" fill="none" className="animate-pulse" style={{ strokeDasharray: 5, animation: 'dash 1s linear infinite' }} />
+            <path d="M0 25 Q 25 40, 50 25 T 100 25" stroke="currentColor" strokeWidth="1" fill="none" className="opacity-70 animate-pulse" style={{ strokeDasharray: 5, animation: 'dash 1.5s linear infinite reverse' }} />
+          </svg>
+          <img src={image2} alt="Person 2" className="w-24 h-24 object-cover rounded-full shadow-lg border-4 border-fuchsia-400 animate-pulse" />
+        </div>
+
+        <div className="text-center text-gray-800">
+          <p className="text-lg h-12 flex items-center justify-center transition-opacity duration-500">"{comment}"</p>
+          <div className="w-12 h-12 border-4 border-purple-500 border-t-transparent rounded-full mx-auto animate-spin mt-2"></div>
+          <p className="text-purple-600 mt-2 font-semibold">{strings.interstitialAdLoadingText}</p>
+        </div>
       </div>
       <style>{`@keyframes dash { to { stroke-dashoffset: 100; } }`}</style>
     </div>
