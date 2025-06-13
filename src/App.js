@@ -675,14 +675,12 @@ const App = () => {
 
   const ResultPageComponent = () => {
     const animatedScore = useCountUp(analysisResult.compatibility?.score);
-    // 애니메이션 상태에 새로운 필드 추가
     const [sectionsVisible, setSectionsVisible] = useState({ details: false, score: false, problems: false, summary: false });
 
     useEffect(() => {
       const timers = [
         setTimeout(() => setSectionsVisible(prev => ({ ...prev, details: true })), 200),
         setTimeout(() => setSectionsVisible(prev => ({ ...prev, score: true })), 400),
-        // problems와 summary의 등장 순서 조정
         setTimeout(() => setSectionsVisible(prev => ({ ...prev, problems: true })), 800),
         setTimeout(() => setSectionsVisible(prev => ({ ...prev, summary: true })), 1200),
       ];
@@ -693,61 +691,55 @@ const App = () => {
     const sectionHidden = "opacity-0 transform -translate-y-5";
     const getSectionClass = (isVisible) => isVisible ? 'opacity-100 translate-y-0' : sectionHidden;
 
-    // 새로운 섹션 타이틀을 위한 텍스트 추가
-    const potentialProblemsTitle = "두 분의 관상에서 예측되는 갈등 요소! 💥";
-    const preventionTipsTitle = "갈등을 막고 사랑을 키우는 비법! 🔐";
+    // 콘텐츠가 없는 경우를 대비하여 기본값 설정
+    const compatibility = analysisResult.compatibility || {};
+    const person1Analysis = analysisResult.person1_analysis || {};
+    const person2Analysis = analysisResult.person2_analysis || {};
 
     return (
       <section className="bg-white/80 p-6 rounded-xl shadow-xl mt-8 font-gowun text-lg overflow-hidden">
         <h2 className="text-4xl font-bold text-center text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 mb-8 animate-bounce font-gaegu">{currentStrings.resultTitle}</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
-          <div className="flex flex-col items-center"><img src={person1ImagePreview} alt={currentStrings.person1Title} className="w-48 h-48 md:w-56 md:h-56 object-cover mx-auto rounded-full shadow-xl border-4 border-white" /><h3 className="text-2xl font-bold mt-4 text-rose-600 font-gaegu">{analysisResult.person1_analysis?.name || currentStrings.person1Title}</h3></div>
-          <div className="flex flex-col items-center"><img src={person2ImagePreview} alt={currentStrings.person2Title} className="w-48 h-48 md:w-56 md:h-56 object-cover mx-auto rounded-full shadow-xl border-4 border-white" /><h3 className="text-2xl font-bold mt-4 text-fuchsia-600 font-gaegu">{analysisResult.person2_analysis?.name || currentStrings.person2Title}</h3></div>
+          <div className="flex flex-col items-center"><img src={person1ImagePreview} alt={currentStrings.person1Title} className="w-48 h-48 md:w-56 md:h-56 object-cover mx-auto rounded-full shadow-xl border-4 border-white" /><h3 className="text-2xl font-bold mt-4 text-rose-600 font-gaegu">{person1Analysis.name || currentStrings.person1Title}</h3></div>
+          <div className="flex flex-col items-center"><img src={person2ImagePreview} alt={currentStrings.person2Title} className="w-48 h-48 md:w-56 md:h-56 object-cover mx-auto rounded-full shadow-xl border-4 border-white" /><h3 className="text-2xl font-bold mt-4 text-fuchsia-600 font-gaegu">{person2Analysis.name || currentStrings.person2Title}</h3></div>
         </div>
-        {analysisResult && (
-          <>
-            <div className={`${sectionTransition} ${getSectionClass(sectionsVisible.details)} grid grid-cols-1 md:grid-cols-2 gap-6 mb-10`}>
-              {[analysisResult.person1_analysis, analysisResult.person2_analysis].map((person, personIndex) => (<div key={personIndex} className={`p-6 rounded-xl shadow-lg transform hover:scale-105 transition-transform duration-300 ${personIndex === 0 ? 'bg-gradient-to-br from-rose-100 to-pink-200 border-rose-300' : 'bg-gradient-to-br from-fuchsia-100 to-purple-200 border-fuchsia-300'} border-2`}><h3 className={`text-3xl font-bold mb-4 text-center font-gaegu ${personIndex === 0 ? 'text-rose-600' : 'text-fuchsia-600'}`}>{(person?.name || (personIndex === 0 ? currentStrings.person1Title : currentStrings.person2Title))} {currentStrings.personAnalysisTitleSuffix}</h3><div className="relative"><p className="text-md leading-relaxed whitespace-pre-line p-4 bg-white/70 rounded-lg shadow-inner">{person?.physiognomy_analysis || person?.overall_impression || "..."}</p></div></div>))}
+
+        <div className={`${sectionTransition} ${getSectionClass(sectionsVisible.details)} grid grid-cols-1 md:grid-cols-2 gap-6 mb-10`}>
+          {[person1Analysis, person2Analysis].map((person, personIndex) => (<div key={personIndex} className={`p-6 rounded-xl shadow-lg transform hover:scale-105 transition-transform duration-300 ${personIndex === 0 ? 'bg-gradient-to-br from-rose-100 to-pink-200 border-rose-300' : 'bg-gradient-to-br from-fuchsia-100 to-purple-200 border-fuchsia-300'} border-2`}><h3 className={`text-3xl font-bold mb-4 text-center font-gaegu ${personIndex === 0 ? 'text-rose-600' : 'text-fuchsia-600'}`}>{(person.name || (personIndex === 0 ? currentStrings.person1Title : currentStrings.person2Title))} {currentStrings.personAnalysisTitleSuffix}</h3><div className="relative"><p className="text-md leading-relaxed whitespace-pre-line p-4 bg-white/70 rounded-lg shadow-inner">{person.physiognomy_analysis || person.overall_impression || "..."}</p></div></div>))}
+        </div>
+
+        <div className={`${sectionTransition} ${getSectionClass(sectionsVisible.score)} bg-gradient-to-br from-indigo-100 to-blue-200 p-6 rounded-xl shadow-xl border-2 border-indigo-300`}>
+          <h3 className="text-3xl font-bold text-indigo-700 mb-6 text-center font-gaegu">{currentStrings.compatibilityTitle}</h3><div className="flex justify-center mb-4">{renderHearts(compatibility.score || 0)}</div><p className="text-5xl md:text-6xl font-bold text-indigo-600 mb-2 text-center font-gaegu">{animatedScore}{currentStrings.scoreUnit}</p><p className="text-md text-gray-700 mb-6 italic text-center p-2 bg-white/50 rounded-md">{compatibility.score_reason || currentStrings.scoreDefaultReason}</p>
+          <div className="text-left space-y-6">{compatibility.good_points?.length > 0 && (<div><h4 className="text-xl font-bold text-green-700 mb-2 flex items-center font-gaegu"><ThumbsUpIcon className="w-6 h-6 mr-2 text-green-500" /> {currentStrings.goodPointsTitle}</h4>{compatibility.good_points.map((point, index) => (<p key={index} className="text-md text-gray-800 mb-1 p-3 bg-green-100 rounded-lg shadow-sm">- {point}</p>))}</div>)}</div>
+        </div>
+
+        <div className={`${sectionTransition} ${getSectionClass(sectionsVisible.problems)} mt-8 p-6 bg-white rounded-xl shadow-lg`}>
+          {compatibility.potential_problems && (
+            <div>
+              <h4 className="text-2xl font-bold text-red-700 mb-3 text-center font-gaegu">두 분의 관상에서 예측되는 갈등 요소! 💥</h4>
+              <p className="text-md text-gray-800 mb-4 p-3 bg-red-100 rounded-lg shadow-sm">{compatibility.potential_problems}</p>
             </div>
-
-            <div className={`${sectionTransition} ${getSectionClass(sectionsVisible.score)} bg-gradient-to-br from-indigo-100 to-blue-200 p-6 rounded-xl shadow-xl border-2 border-indigo-300`}>
-              <h3 className="text-3xl font-bold text-indigo-700 mb-6 text-center font-gaegu">{currentStrings.compatibilityTitle}</h3><div className="flex justify-center mb-4">{renderHearts(analysisResult.compatibility?.score || 0)}</div><p className="text-5xl md:text-6xl font-bold text-indigo-600 mb-2 text-center font-gaegu">{animatedScore}{currentStrings.scoreUnit}</p><p className="text-md text-gray-700 mb-6 italic text-center p-2 bg-white/50 rounded-md">{analysisResult.compatibility?.score_reason || currentStrings.scoreDefaultReason}</p>
-              <div className="text-left space-y-6">{analysisResult.compatibility?.good_points?.length > 0 && (<div><h4 className="text-xl font-bold text-green-700 mb-2 flex items-center font-gaegu"><ThumbsUpIcon className="w-6 h-6 mr-2 text-green-500" /> {currentStrings.goodPointsTitle}</h4>{analysisResult.compatibility.good_points.map((point, index) => (<p key={index} className="text-md text-gray-800 mb-1 p-3 bg-green-100 rounded-lg shadow-sm">- {point}</p>))}</div>)}</div>
+          )}
+          {compatibility.prevention_tips && (
+            <div>
+              <h4 className="text-2xl font-bold text-emerald-700 mt-6 mb-3 text-center font-gaegu">갈등을 막고 사랑을 키우는 비법! 🔐</h4>
+              <p className="text-md text-gray-800 p-3 bg-emerald-100 rounded-lg shadow-sm">{compatibility.prevention_tips}</p>
             </div>
+          )}
+        </div>
 
-            {/* ▼▼▼ 새로운 '갈등 요소' 및 '예방 비법' 섹션 추가 ▼▼▼ */}
-            <div className={`${sectionTransition} ${getSectionClass(sectionsVisible.problems)} mt-8 p-6 bg-white rounded-xl shadow-lg`}>
-              {analysisResult.compatibility?.potential_problems && (
-                <div>
-                  <h4 className="text-2xl font-bold text-red-700 mb-3 text-center font-gaegu">{potentialProblemsTitle}</h4>
-                  <p className="text-md text-gray-800 mb-4 p-3 bg-red-100 rounded-lg shadow-sm">{analysisResult.compatibility.potential_problems}</p>
-                </div>
-              )}
-              {analysisResult.compatibility?.prevention_tips && (
-                <div>
-                  <h4 className="text-2xl font-bold text-emerald-700 mt-6 mb-3 text-center font-gaegu">{preventionTipsTitle}</h4>
-                  <p className="text-md text-gray-800 p-3 bg-emerald-100 rounded-lg shadow-sm">{analysisResult.compatibility.prevention_tips}</p>
-                </div>
-              )}
-            </div>
-            {/* ▲▲▲ 새로운 섹션 끝 ▲▲▲ */}
+        <div className={`${sectionTransition} ${getSectionClass(sectionsVisible.summary)} mt-8 p-6 bg-white rounded-xl shadow-lg`}><h4 className="text-2xl font-bold text-indigo-700 mb-3 text-center font-gaegu">{currentStrings.overallCommentTitle}</h4><p className="text-md text-gray-800 leading-relaxed whitespace-pre-line p-4 bg-white/70 rounded-lg shadow-inner mb-8">{compatibility.overall_summary || currentStrings.defaultOverallComment}</p></div>
 
-            <div className={`${sectionTransition} ${getSectionClass(sectionsVisible.summary)} mt-8 p-6 bg-white rounded-xl shadow-lg`}><h4 className="text-2xl font-bold text-indigo-700 mb-3 text-center font-gaegu">{currentStrings.overallCommentTitle}</h4><p className="text-md text-gray-800 leading-relaxed whitespace-pre-line p-4 bg-white/70 rounded-lg shadow-inner mb-8">{analysisResult.compatibility?.overall_summary || currentStrings.defaultOverallComment}</p></div>
-
-            {/* '데이트 비법' 섹션은 완전히 삭제되었습니다. */}
-
-            <div className="mt-10 pt-6 border-t border-gray-300">
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 font-gaegu text-sm">
-                <button onClick={handleCopyToClipboard} disabled={!resultId} className="w-full flex items-center justify-center px-4 py-3 bg-gray-600 hover:bg-gray-700 text-white font-bold rounded-lg shadow-lg transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"><LinkIcon className="w-5 h-5 mr-2" /> {currentStrings.copyButton}</button>
-                <a href={`https://twitter.com/intent/tweet?text=<span class="math-inline">\{encodeURIComponent\(currentStrings\.shareMessage\)\}&url\=</span>{window.location.origin}/result/${resultId}`} target="_blank" rel="noopener noreferrer" className={`w-full flex items-center justify-center ...`}></a>
-                <a href={`https://www.facebook.com/sharer/sharer.php?u=<span class="math-inline">\{window\.location\.origin\}/result/</span>{resultId}`} target="_blank" rel="noopener noreferrer" className={`w-full flex items-center justify-center px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg shadow-lg transition-colors ${!resultId ? 'pointer-events-none bg-gray-400' : ''}`}><svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fillRule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12Z" clipRule="evenodd"></path></svg>{currentStrings.shareFacebookButton}</a>
-                <a href={`https://www.linkedin.com/sharing/share-offsite/?url=<span class="math-inline">\{window\.location\.origin\}/result/</span>{resultId}`} target="_blank" rel="noopener noreferrer" className={`w-full flex items-center justify-center px-4 py-3 bg-blue-700 hover:bg-blue-800 text-white font-bold rounded-lg shadow-lg transition-colors ${!resultId ? 'pointer-events-none bg-gray-400' : ''}`}><LinkedInIcon className="w-5 h-5 mr-2" />{currentStrings.shareLinkedInButton}</a>
-                <button onClick={handleCopyToClipboard} className={`w-full flex items-center justify-center px-4 py-3 text-white font-bold rounded-lg shadow-lg transition-colors bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 hover:from-purple-600 hover:to-pink-600 ${!resultId ? 'opacity-50 cursor-not-allowed' : ''}`}><InstagramIcon className="w-5 h-5 mr-2" />{currentStrings.shareInstagramButton}</button>
-              </div>
-              <div className="mt-8 text-center"><button onClick={resetAllStates} className="w-auto flex items-center justify-center px-8 py-4 bg-gray-500 hover:bg-gray-600 text-white font-bold rounded-lg shadow-lg transition-colors text-lg"><RefreshCwIcon className="w-6 h-6 mr-3" /> {currentStrings.retryButton}</button></div>{copyStatus && <p className="text-center text-md text-green-700 mt-4 font-semibold animate-bounce">{copyStatus}</p>}
-            </div>
-          </>
-        )}
+        <div className="mt-10 pt-6 border-t border-gray-300">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 font-gaegu text-sm">
+            <button onClick={handleCopyToClipboard} disabled={!resultId} className="w-full flex items-center justify-center px-4 py-3 bg-gray-600 hover:bg-gray-700 text-white font-bold rounded-lg shadow-lg transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"><LinkIcon className="w-5 h-5 mr-2" /> {currentStrings.copyButton}</button>
+            <a href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(currentStrings.shareMessage)}&url=${window.location.origin}/result/${resultId}`} target="_blank" rel="noopener noreferrer" className={`w-full flex items-center justify-center px-4 py-3 bg-black hover:bg-gray-800 text-white font-bold rounded-lg shadow-lg transition-colors ${!resultId ? 'pointer-events-none bg-gray-400' : ''}`}><svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path></svg>{currentStrings.shareTwitterButton}</a>
+            <a href={`https://www.facebook.com/sharer/sharer.php?u=${window.location.origin}/result/${resultId}`} target="_blank" rel="noopener noreferrer" className={`w-full flex items-center justify-center px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg shadow-lg transition-colors ${!resultId ? 'pointer-events-none bg-gray-400' : ''}`}><svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fillRule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12Z" clipRule="evenodd"></path></svg>{currentStrings.shareFacebookButton}</a>
+            <a href={`https://www.linkedin.com/sharing/share-offsite/?url=${window.location.origin}/result/${resultId}`} target="_blank" rel="noopener noreferrer" className={`w-full flex items-center justify-center px-4 py-3 bg-blue-700 hover:bg-blue-800 text-white font-bold rounded-lg shadow-lg transition-colors ${!resultId ? 'pointer-events-none bg-gray-400' : ''}`}><LinkedInIcon className="w-5 h-5 mr-2" />{currentStrings.shareLinkedInButton}</a>
+            <button onClick={handleCopyToClipboard} className={`w-full flex items-center justify-center px-4 py-3 text-white font-bold rounded-lg shadow-lg transition-colors bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 hover:from-purple-600 hover:to-pink-600 ${!resultId ? 'opacity-50 cursor-not-allowed' : ''}`}><InstagramIcon className="w-5 h-5 mr-2" />{currentStrings.shareInstagramButton}</button>
+          </div>
+          <div className="mt-8 text-center"><button onClick={resetAllStates} className="w-auto flex items-center justify-center px-8 py-4 bg-gray-500 hover:bg-gray-600 text-white font-bold rounded-lg shadow-lg transition-colors text-lg"><RefreshCwIcon className="w-6 h-6 mr-3" /> {currentStrings.retryButton}</button></div>{copyStatus && <p className="text-center text-md text-green-700 mt-4 font-semibold animate-bounce">{copyStatus}</p>}
+        </div>
       </section>
     );
   };
