@@ -266,15 +266,26 @@ const InputSection = React.memo(({ personNum, title, onImageSelect, onDobChange,
     const handleDragEnter = useCallback((e) => { e.preventDefault(); e.stopPropagation(); setIsDragging(true); }, []);
     const handleDragLeave = useCallback((e) => { e.preventDefault(); e.stopPropagation(); setIsDragging(false); }, []);
     const handleDragOver = useCallback((e) => { e.preventDefault(); e.stopPropagation(); }, []);
+    
     const handleDrop = useCallback((e) => {
-      e.preventDefault(); e.stopPropagation(); setIsDragging(false);
+      e.preventDefault(); e.stopPropagation();
+      setIsDragging(false);
       const files = e.dataTransfer.files;
-      if (files && files.length > 0) onImageSelect(files[0], personNum);
+      if (files && files.length > 0) {
+        onImageSelect(files[0], personNum);
+      }
     }, [onImageSelect, personNum]);
+
     const handleFileChange = useCallback((e) => {
       const files = e.target.files;
-      if (files && files.length > 0) onImageSelect(files[0], personNum);
+      if (files && files.length > 0) {
+        onImageSelect(files[0], personNum);
+      }
     }, [onImageSelect, personNum]);
+    
+    const handleDobChangeCallback = useCallback((val) => {
+        onDobChange(val, personNum);
+    }, [onDobChange, personNum]);
 
     const borderColor = personNum === 1 ? 'border-rose-300 hover:border-rose-500' : 'border-fuchsia-300 hover:border-fuchsia-500';
     const bgColor = personNum === 1 ? 'bg-rose-50/50' : 'bg-fuchsia-50/50';
@@ -305,7 +316,7 @@ const InputSection = React.memo(({ personNum, title, onImageSelect, onDobChange,
                 </label>
                 <DobInput
                     value={dob}
-                    onChange={(val) => onDobChange(val, personNum)}
+                    onChange={handleDobChangeCallback}
                     placeholder={strings.dobPlaceholder}
                 />
             </div>
@@ -519,11 +530,8 @@ const ResultPageComponent = React.memo(({
 
 // --- 메인 앱 컴포넌트 ---
 const App = () => {
-    const getInitialLanguage = useCallback(() => (typeof window !== 'undefined' && translations[window.navigator.language?.split('-')[0]]) ? window.navigator.language.split('-')[0] : 'ko', []);
-    
-    // 상태 관리
-    const [language, setLanguage] = useState(getInitialLanguage);
-    const [currentStrings, setCurrentStrings] = useState(translations[language]);
+    const [language, setLanguage] = useState('ko');
+    const [currentStrings, setCurrentStrings] = useState(translations.ko);
     const [pageState, setPageState] = useState('main');
     const [showCoupleInput, setShowCoupleInput] = useState(false);
     const [person1ImageFile, setPerson1ImageFile] = useState(null);
@@ -541,11 +549,12 @@ const App = () => {
     const [selectedInterests, setSelectedInterests] = useState([]);
     const [showInterestSelection, setShowInterestSelection] = useState(false);
 
-    // useEffect 훅
     useEffect(() => {
-        setCurrentStrings(translations[language]);
-        setLoadingText(translations[language].loadingMessage);
-    }, [language]);
+        const lang = (typeof window !== 'undefined' && translations[window.navigator.language?.split('-')[0]]) ? window.navigator.language.split('-')[0] : 'ko';
+        setLanguage(lang);
+        setCurrentStrings(translations[lang]);
+        setLoadingText(translations[lang].loadingMessage);
+    }, []);
 
     useEffect(() => {
         if (person1ImageFile && person1Dob.length === 10) {
@@ -562,7 +571,7 @@ const App = () => {
             setIsLoading(true);
             const fetchResult = async () => {
                 if (!db) { setTimeout(fetchResult, 300); return; }
-                const lang = getInitialLanguage();
+                const lang = (typeof window !== 'undefined' && translations[window.navigator.language?.split('-')[0]]) ? window.navigator.language.split('-')[0] : 'ko';
                 setLoadingText(translations[lang].resultLoading);
                 try {
                     const docRef = doc(db, "results", id);
@@ -570,6 +579,7 @@ const App = () => {
                     if (docSnap.exists()) {
                         const data = docSnap.data();
                         setLanguage(data.language || 'ko');
+                        setCurrentStrings(translations[data.language || 'ko']);
                         setAnalysisResult(data.analysis);
                         setPerson1ImagePreview(data.images.person1);
                         if (data.analysis.analysis_type === 'couple') {
@@ -586,7 +596,8 @@ const App = () => {
                     }
                 } catch (e) {
                     console.error("Error fetching result:", e);
-                    setError(translations[getInitialLanguage()].resultNotFound);
+                    const lang = (typeof window !== 'undefined' && translations[window.navigator.language?.split('-')[0]]) ? window.navigator.language.split('-')[0] : 'ko';
+                    setError(translations[lang].resultNotFound);
                     setPageState('main');
                 } finally {
                     setIsLoading(false);
@@ -594,7 +605,7 @@ const App = () => {
             };
             fetchResult();
         }
-    }, [getInitialLanguage]);
+    }, []);
 
 
     // 함수
