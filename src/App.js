@@ -314,7 +314,7 @@ const InputSection = React.memo(({ personNum, title, onImageSelect, onDobChange,
 });
 
 
-const InterestSelection = ({ strings, selectedInterests, onInterestToggle }) => {
+const InterestSelection = React.memo(({ strings, selectedInterests, onInterestToggle }) => {
     return (
         <section className="mt-8 p-6 bg-indigo-50 rounded-lg shadow-inner">
             <h3 className="text-xl font-bold text-indigo-700 mb-4 text-center font-gaegu">{strings.interestSelectionTitle}</h3>
@@ -339,10 +339,10 @@ const InterestSelection = ({ strings, selectedInterests, onInterestToggle }) => 
             </div>
         </section>
     );
-};
+});
 
 
-const AnalysisLoadingComponent = ({ images, strings, loadingText }) => {
+const AnalysisLoadingComponent = React.memo(({ images, strings, loadingText }) => {
   const [comment, setComment] = useState(strings.loadingComments[0]);
   const isFetching = loadingText === strings.resultLoading;
 
@@ -382,9 +382,8 @@ const AnalysisLoadingComponent = ({ images, strings, loadingText }) => {
       </div>
     </div>
   );
-};
+});
 
-// *** FIX: 컴포넌트 외부로 분리 ***
 const MainPageComponent = React.memo(({
     currentStrings,
     handleAnalysis,
@@ -595,7 +594,6 @@ const App = () => {
             };
             fetchResult();
         }
-    // *** FIX: useEffect 의존성 배열 수정 ***
     }, [getInitialLanguage]);
 
 
