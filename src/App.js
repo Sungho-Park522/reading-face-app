@@ -1,10 +1,8 @@
 import React, { useState, useCallback, useEffect } from 'react';
 // Firebase SDK import
 import { initializeApp, getApps } from "firebase/app";
-// *** FIX: 사용하지 않는 Firestore 함수(query, orderBy 등) 제거 ***
 import { getFirestore, collection, doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
 import { getAuth, signInAnonymously } from "firebase/auth";
-// *** FIX: 사용하지 않는 Storage 함수(listAll 등) 제거 ***
 import {
   getStorage, ref, uploadBytes, getDownloadURL
 } from "firebase/storage";
@@ -51,7 +49,6 @@ const UploadCloudIcon = ({ className }) => (<svg xmlns="http://www.w3.org/2000/s
 const HeartIcon = ({ className, filled }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill={filled ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>);
 const UsersIcon = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>);
 const UserIcon = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>);
-// *** FIX: 사용하지 않는 아이콘 (ThumbsUpIcon, PlayCircleIcon, GlobeIcon, ChevronDownIcon) 제거 ***
 const LinkIcon = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.72"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.72-1.72"></path></svg>);
 const RefreshCwIcon = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"></path><path d="M21 3v5h-5"></path><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"></path><path d="M3 21v-5h5"></path></svg>);
 const PlusCircleIcon = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>);
@@ -87,49 +84,66 @@ const translations = {
     loadingComments: ["오, 이 눈썹... 심상치 않은데요? 🤔", "콧대가 예술이군요. 잠시 감상 좀...👃", "타고난 운명의 기운을 읽는 중... ✨", "입꼬리가 닮았네요! 이건 운명일지도? 🤭", "잠시만요, 이마에서 빛이... 광채 분석 중! 💡"],
     adPlaceholderBannerText: "꿀잼 광고 배너",
     shareMessage: "나의 AI 운명 분석 결과가 궁금하다면? 클릭해서 확인해봐! 👇",
-    aiPromptSingle: `당신은 관상과 사주에 능통한 유머러스한 AI 도사입니다. 주어진 사진과 생년월일을 바탕으로 한 사람의 운명을 종합적으로 분석해주세요.
-      규칙:
-      1.  **분석**: 관상(얼굴 특징)과 사주(생년월일 기반)를 각각 심도 있게 분석합니다.
-      2.  **통합**: 두 분석 결과를 종합하여, 사용자의 성격, 잠재력, 인생 조언을 유쾌하고 통찰력 있게 설명합니다.
-      3.  **JSON 형식**: 반드시 다음 JSON 형식으로만 응답해주세요. 'analysis_type'은 'single'로 고정입니다.
+    // *** FIX: 프롬프트 최신화 ***
+    aiPromptSingle: `당신은 관상과 사주에 정통한 유머러스하고 통찰력 있는 AI 도사입니다. 사용자의 사진과 생년월일을 기반으로 한 사람의 운명을 다층적으로 분석해주세요.
 
-      JSON 형식 예시:
-      {
-        "analysis_type": "single",
-        "person_analysis": {
-          "name": "뜨거운 열정을 품은 불꽃",
-          "physiognomy_analysis": "이글이글 타오르는 눈빛과 도톰한 입술에서 강한 에너지와 표현력이 느껴집니다. 목표를 향해 저돌적으로 나아가는 힘이 있지만, 때로는 감정이 앞서 실수를 할 수도 있겠네요. 하지만 그 모습마저 매력적!",
-          "saju_analysis": "여름에 태어난 큰 나무의 사주로군요! 따뜻한 마음과 리더십을 타고났습니다. 주변에 늘 사람이 모여들지만, 가끔은 너무 많은 것을 책임지려다 지칠 수 있으니 자신을 돌보는 시간을 갖는 것이 중요합니다.",
-          "integrated_analysis": "관상과 사주 모두 당신이 '사람을 이끄는 리더'의 기질을 타고났음을 보여줍니다. 당신의 열정적인 에너지는 사주의 따뜻한 리더십과 만나 강력한 시너지를 발휘할 것입니다. 때로는 불같은 성미를 지혜롭게 다스린다면, 큰 성공을 거둘 수 있는 운명입니다. 주변 사람들의 말을 경청하는 자세를 잊지 마세요!"
-        }
-      }`,
-    aiPromptCouple: `당신은 관상과 사주에 능통한 유머러스한 AI 커플 매니저입니다. 두 사람의 사진과 생년월일을 바탕으로 각각의 운세와 둘의 궁합을 종합적으로 분석해주세요.
-      규칙:
-      1.  **개인 분석**: 각 사람의 관상과 사주를 개별적으로 분석합니다.
-      2.  **궁합 분석**: 관상 궁합(얼굴의 조화)과 사주 궁합(오행의 조화)을 각각 분석한 후, 이를 종합하여 두 사람의 관계 전망과 조언을 제시합니다.
-      3.  **JSON 형식**: 반드시 다음 JSON 형식으로만 응답해주세요. 'analysis_type'은 'couple'로 고정입니다.
+    🎯 목적:
+    - 사용자가 "내가 어떤 사람인지", "어떤 삶을 살 가능성이 있는지", "어떻게 살아야 하는지"에 대해 **웃기고 통찰력 있는 통합 결과**를 얻는 것
+    - 분석 결과가 **SNS에서 공유하고 싶은 재미와 몰입감**을 제공해야 함
+    
+    📌 규칙:
+    1. **관상 분석**: 눈, 코, 입, 턱, 얼굴형 등 사진 기반의 특징을 풍부하게 묘사하고, 그 의미를 해석해주세요. 외형 묘사는 유머와 비유로 풀어주세요.
+    2. **사주 분석**: 태어난 연월일시(양력 기준)로 오행/십성/용신 관점에서 해석하되, 쉽게 설명해주세요. "봄에 핀 꽃", "겨울의 얼음", "뜨거운 금속" 등 비유적으로.
+    3. **통합 분석**: 관상과 사주의 핵심 포인트를 연결해 통합적인 운명/성격/조언을 제공해주세요. 단순 요약이 아니라, 새로운 **의미의 연결**을 만들어주세요.  
+    4. **길이**: 각 분석은 3~6문장 이상으로 상세하게, 핵심 내용은 드라마틱하게  
+    5. **형식**: 반드시 아래 JSON 구조로 응답할 것. \`analysis_type\`은 'single'로 고정
+    
+    🧾 JSON 형식:
+    {
+      "analysis_type": "single",
+      "person_analysis": {
+        "name": "[사용자의 특징을 표현하는 별명]",
+        "physiognomy_analysis": "[관상 분석]",
+        "saju_analysis": "[사주 분석]",
+        "integrated_analysis": "[관상과 사주를 연결한 통합 분석 결과]"
+      }
+    }`,
+    aiPromptCouple: `당신은 관상과 사주에 능통하고, 관계 통찰력과 유머 감각까지 갖춘 AI 커플 운명 분석가입니다. 두 사람의 사진과 생년월일을 바탕으로, 각자의 운세와 둘의 궁합을 드라마틱하고 공감 가는 방식으로 분석해주세요.
 
-      JSON 형식 예시:
-      {
-        "analysis_type": "couple",
-        "person1_analysis": {
-          "name": "차가운 이성의 소유자",
-          "physiognomy_analysis": "날카로운 턱선과 얇은 입술은 냉철한 판단력과 분석력을 상징합니다. 감정에 휘둘리지 않는 이성적인 타입이지만, 때로는 차가워 보인다는 오해를 살 수 있겠네요.",
-          "saju_analysis": "가을에 태어난 큰 바위의 사주입니다. 굳건하고 책임감이 강하지만, 변화를 두려워하고 융통성이 부족할 수 있습니다. 꾸준함이 가장 큰 무기입니다."
-        },
-        "person2_analysis": {
-          "name": "따뜻한 감성의 예술가",
-          "physiognomy_analysis": "크고 둥근 눈과 부드러운 얼굴선은 풍부한 감수성과 공감 능력을 보여줍니다. 예술적인 재능이 뛰어나지만, 감정 기복이 클 수 있으니 마음의 중심을 잡는 것이 중요해요.",
-          "saju_analysis": "봄에 태어난 아름다운 꽃의 사주로군요. 주변을 밝히는 매력이 있지만, 쉽게 상처받고 외부 환경에 영향을 많이 받는 여린 면도 있습니다."
-        },
-        "compatibility": {
-          "score": 85,
-          "score_reason": "차가운 바위와 아름다운 꽃의 만남! 서로 다른 매력이 강하게 끌리는 조합입니다. 안정적인 바위가 꽃을 지켜주고, 꽃은 바위의 삶에 활력을 불어넣어 줄 거예요.",
-          "physiognomy_compatibility": "외모적으로는 서로 다른 매력을 가지고 있지만, 눈빛의 깊이가 서로 닮아있어 내면의 소통이 잘 될 관상입니다. 서로의 다름을 인정할 때 최고의 조화를 이룹니다.",
-          "saju_compatibility": "사주 오행상으로 서로에게 필요한 기운을 보완해주는 관계입니다. 함께 있으면 안정감을 느끼고, 각자의 부족한 점을 채워주며 함께 성장할 수 있습니다.",
-          "integrated_summary": "이성적인 사람과 감성적인 사람의 만남은 서로에게 완벽한 균형을 선사합니다. 때로는 서로를 이해하기 어려울 수 있지만, '다름'을 '틀림'으로 생각하지 않는다면 세상 가장 든든한 파트너가 될 것입니다. 서로의 세계를 존중하고 배우려는 노력이 관계를 더욱 단단하게 만들 거예요."
-        }
-      }`
+    🎯 목적:
+    - 두 사람의 관계가 "어떻게 흘러갈지", "왜 이런 사람을 만났는지", "어떻게 하면 잘 지낼 수 있는지"에 대한 유쾌한 통찰 제공
+    - SNS에서 공유하고 싶은 감정적/재미있는 궁합 결과를 제공할 것
+    
+    📌 규칙:
+    1. **개인 분석**: 두 사람 각각에 대해 관상+사주를 개별적으로 분석 (각각 3~6문장 이상)
+    2. **궁합 분석**: 
+       - 관상 궁합: 외모/표정/인상 기반 궁합
+       - 사주 궁합: 오행 조화, 성격 상극 여부 등
+       - 종합 해석: 갈등 요소/시너지/연애 조언 등을 중심으로 드라마틱하게 설명
+    3. **점수**: \`score\`는 100점 만점 기준으로 부여하되, 감정이입 가능한 사유(\`score_reason\`)를 함께 설명
+    4. **형식**: 반드시 아래 JSON 형식으로 응답할 것. \`analysis_type\`은 "couple" 고정
+    
+    🧾 JSON 형식:
+    {
+      "analysis_type": "couple",
+      "person1_analysis": {
+        "name": "[첫 번째 사람 별명]",
+        "physiognomy_analysis": "[관상 분석]",
+        "saju_analysis": "[사주 분석]"
+      },
+      "person2_analysis": {
+        "name": "[두 번째 사람 별명]",
+        "physiognomy_analysis": "[관상 분석]",
+        "saju_analysis": "[사주 분석]"
+      },
+      "compatibility": {
+        "score": 0,
+        "score_reason": "[점수 부여 이유]",
+        "physiognomy_compatibility": "[관상 궁합]",
+        "saju_compatibility": "[사주 궁합]",
+        "integrated_summary": "[갈등/조화 포인트 + 관계 유지 조언]"
+      }
+    }`
   }
   // 영문 및 다른 언어 번역 생략
 };
@@ -222,13 +236,15 @@ const InputSection = ({ personNum, title, onImageSelect, onDobChange, previewIma
                 <label htmlFor={`dob${personNum}`} className="font-bold text-gray-700 mb-1 flex items-center justify-center font-gaegu">
                     <CalendarIcon className="w-5 h-5 mr-2" />{strings.dobLabel}
                 </label>
+                {/* *** FIX: 생년월일 입력 방식을 text로 변경 *** */}
                 <input 
-                    type="date"
+                    type="text"
                     id={`dob${personNum}`}
                     value={dob}
                     onChange={(e) => onDobChange(e.target.value, personNum)}
                     className="w-full p-2 border border-gray-300 rounded-md text-center shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                     placeholder={strings.dobPlaceholder}
+                    maxLength="10"
                 />
             </div>
         </div>
@@ -285,7 +301,7 @@ const App = () => {
     // --- 상태 관리 ---
     const [language, setLanguage] = useState(getInitialLanguage);
     const [currentStrings, setCurrentStrings] = useState(translations[language]);
-    const [pageState, setPageState] = useState('main'); // main, loading, result
+    const [pageState, setPageState] = useState('main'); // main, result
   
     // 입력 정보
     const [showCoupleInput, setShowCoupleInput] = useState(false);
@@ -315,7 +331,7 @@ const App = () => {
         const path = window.location.pathname.split('/');
         if (path[1] === 'result' && path[2]) {
             const id = path[2];
-            setPageState('loading');
+            setIsLoading(true);
             const fetchResult = async () => {
                 if (!db) { setTimeout(fetchResult, 300); return; }
                 try {
@@ -365,10 +381,20 @@ const App = () => {
     };
 
     const handleDobChange = (date, personNum) => {
-        if (personNum === 1) {
-            setPerson1Dob(date);
+        // 자동 하이픈 추가
+        const cleaned = ('' + date).replace(/\D/g, '');
+        let match = cleaned.match(/^(\d{4})(\d{2})?(\d{2})?$/);
+        let formattedDate = '';
+        if (match) {
+            formattedDate = match[1] + (match[2] ? '-' + match[2] : '') + (match[3] ? '-' + match[3] : '');
         } else {
-            setPerson2Dob(date);
+            formattedDate = date;
+        }
+
+        if (personNum === 1) {
+            setPerson1Dob(formattedDate);
+        } else {
+            setPerson2Dob(formattedDate);
         }
         setError('');
     };
@@ -437,7 +463,7 @@ const App = () => {
                 setAnalysisResult(parsedJson);
 
                 // Firestore에 결과 저장
-                if (!GEMINI_API_KEY.includes('DUMMY') && db && storage) {
+                if (db && storage) {
                     const person1URL = await uploadImageToStorage(person1ImageFile);
                     const person2URL = isCoupleAnalysis ? await uploadImageToStorage(person2ImageFile) : null;
                     
@@ -521,7 +547,7 @@ const App = () => {
 
     const ResultPageComponent = () => {
         const isCouple = analysisResult.analysis_type === 'couple';
-        const [activeTab, setActiveTab] = useState('person1');
+        const [activeTab, setActiveTab] = useState(isCouple ? 'compatibility' : 'person1');
         const animatedScore = useCountUp(isCouple ? analysisResult.compatibility?.score : 0);
         
         const renderAnalysisSection = (title, content) => (
@@ -534,9 +560,9 @@ const App = () => {
         if (isCouple) {
             const { person1_analysis, person2_analysis, compatibility } = analysisResult;
             const tabs = [
+                { id: 'compatibility', label: currentStrings.tabCompatibility },
                 { id: 'person1', label: currentStrings.tabPerson1 },
-                { id: 'person2', label: currentStrings.tabPerson2 },
-                { id: 'compatibility', label: currentStrings.tabCompatibility }
+                { id: 'person2', label: currentStrings.tabPerson2 }
             ];
             return (
                 <div className="font-gowun">
@@ -560,6 +586,16 @@ const App = () => {
                     <RegularAdPlaceholder />
                     
                     <div>
+                         {activeTab === 'compatibility' && compatibility && (
+                             <div className="bg-gradient-to-br from-indigo-100 to-blue-200 p-6 rounded-xl shadow-xl border-2 border-indigo-300">
+                                <h3 className="text-3xl font-bold text-indigo-700 mb-4 text-center font-gaegu">{currentStrings.compatibilityTitle}</h3>
+                                <p className="text-5xl md:text-6xl font-bold text-indigo-600 mb-2 text-center font-gaegu">{animatedScore}{currentStrings.scoreUnit}</p>
+                                <p className="text-md text-gray-700 mb-6 italic text-center p-2 bg-white/50 rounded-md">{compatibility.score_reason}</p>
+                                {renderAnalysisSection('관상 궁합', compatibility.physiognomy_compatibility)}
+                                {renderAnalysisSection('사주 궁합', compatibility.saju_compatibility)}
+                                {renderAnalysisSection('최종 궁합 조언', compatibility.integrated_summary)}
+                            </div>
+                        )}
                         {activeTab === 'person1' && person1_analysis && (
                             <div>
                                 {renderAnalysisSection(currentStrings.sectionPhysiognomy, person1_analysis.physiognomy_analysis)}
@@ -570,16 +606,6 @@ const App = () => {
                             <div>
                                 {renderAnalysisSection(currentStrings.sectionPhysiognomy, person2_analysis.physiognomy_analysis)}
                                 {renderAnalysisSection(currentStrings.sectionSaju, person2_analysis.saju_analysis)}
-                            </div>
-                        )}
-                        {activeTab === 'compatibility' && compatibility && (
-                             <div className="bg-gradient-to-br from-indigo-100 to-blue-200 p-6 rounded-xl shadow-xl border-2 border-indigo-300">
-                                <h3 className="text-3xl font-bold text-indigo-700 mb-4 text-center font-gaegu">{currentStrings.compatibilityTitle}</h3>
-                                <p className="text-5xl md:text-6xl font-bold text-indigo-600 mb-2 text-center font-gaegu">{animatedScore}{currentStrings.scoreUnit}</p>
-                                <p className="text-md text-gray-700 mb-6 italic text-center p-2 bg-white/50 rounded-md">{compatibility.score_reason}</p>
-                                {renderAnalysisSection('관상 궁합', compatibility.physiognomy_compatibility)}
-                                {renderAnalysisSection('사주 궁합', compatibility.saju_compatibility)}
-                                {renderAnalysisSection('최종 궁합 조언', compatibility.integrated_summary)}
                             </div>
                         )}
                     </div>
@@ -608,40 +634,43 @@ const App = () => {
     
     // 최종 렌더링
     return (
-        <div className="min-h-screen bg-gradient-to-br from-pink-400 via-purple-500 to-indigo-600 p-4 sm:p-6 lg:p-8 flex flex-col items-center">
-            <header className="w-full max-w-4xl mt-16 sm:mt-12 mb-8 text-center font-gaegu">
-                <h1 className="text-5xl sm:text-6xl font-bold text-white py-2 flex items-center justify-center drop-shadow-lg">
-                    {showCoupleInput ? <UsersIcon className="inline-block w-12 h-12 mr-3 text-pink-300" /> : <UserIcon className="inline-block w-12 h-12 mr-3 text-cyan-300" />}
-                    {currentStrings.appTitle}
-                </h1>
-                <p className="text-xl text-white mt-3 drop-shadow-md">{currentStrings.appSubtitle}</p>
-            </header>
-            
-            <main className="w-full max-w-4xl bg-white/95 backdrop-blur-md shadow-2xl rounded-xl p-6 sm:p-8">
-                {isLoading && <AnalysisLoadingComponent images={showCoupleInput ? [person1ImagePreview, person2ImagePreview] : [person1ImagePreview]} strings={currentStrings} />}
+        <div className="relative min-h-screen bg-gradient-to-br from-pink-400 via-purple-500 to-indigo-600 p-4 sm:p-6 lg:p-8 flex flex-col items-center">
+            {/* *** FIX: 로딩 시 뒷 배경 반투명 처리 *** */}
+            {isLoading && <AnalysisLoadingComponent images={showCoupleInput ? [person1ImagePreview, person2ImagePreview] : [person1ImagePreview]} strings={currentStrings} />}
+
+            <div className={`w-full transition-all duration-500 ${isLoading ? 'opacity-50 blur-sm pointer-events-none' : 'opacity-100'}`}>
+                <header className="w-full max-w-4xl mt-16 sm:mt-12 mb-8 text-center font-gaegu">
+                    <h1 className="text-5xl sm:text-6xl font-bold text-white py-2 flex items-center justify-center drop-shadow-lg">
+                        {showCoupleInput ? <UsersIcon className="inline-block w-12 h-12 mr-3 text-pink-300" /> : <UserIcon className="inline-block w-12 h-12 mr-3 text-cyan-300" />}
+                        {currentStrings.appTitle}
+                    </h1>
+                    <p className="text-xl text-white mt-3 drop-shadow-md">{currentStrings.appSubtitle}</p>
+                </header>
                 
-                {pageState === 'main' && !isLoading && <MainPageComponent />}
-                {pageState === 'result' && !isLoading && analysisResult && 
-                    <div>
-                        <ResultPageComponent />
-                        <div className="mt-10 pt-6 border-t border-gray-300 flex flex-col sm:flex-row items-center justify-center gap-4">
-                            <button onClick={handleCopyToClipboard} disabled={!resultId} className="flex items-center justify-center px-4 py-3 bg-gray-600 hover:bg-gray-700 text-white font-bold rounded-lg shadow-lg transition-colors disabled:bg-gray-400 font-gaegu">
-                                <LinkIcon className="w-5 h-5 mr-2" /> {currentStrings.copyButton}
-                            </button>
-                            <button onClick={resetAllStates} className="flex items-center justify-center px-8 py-3 bg-gray-500 hover:bg-gray-600 text-white font-bold rounded-lg shadow-lg transition-colors text-lg font-gaegu">
-                                <RefreshCwIcon className="w-6 h-6 mr-3" /> {currentStrings.retryButton}
-                            </button>
+                <main className="w-full max-w-4xl bg-white/95 backdrop-blur-md shadow-2xl rounded-xl p-6 sm:p-8">
+                    {pageState === 'main' && <MainPageComponent />}
+                    {pageState === 'result' && analysisResult && 
+                        <div>
+                            <ResultPageComponent />
+                            <div className="mt-10 pt-6 border-t border-gray-300 flex flex-col sm:flex-row items-center justify-center gap-4">
+                                <button onClick={handleCopyToClipboard} disabled={!resultId} className="flex items-center justify-center px-4 py-3 bg-gray-600 hover:bg-gray-700 text-white font-bold rounded-lg shadow-lg transition-colors disabled:bg-gray-400 font-gaegu">
+                                    <LinkIcon className="w-5 h-5 mr-2" /> {currentStrings.copyButton}
+                                </button>
+                                <button onClick={resetAllStates} className="flex items-center justify-center px-8 py-3 bg-gray-500 hover:bg-gray-600 text-white font-bold rounded-lg shadow-lg transition-colors text-lg font-gaegu">
+                                    <RefreshCwIcon className="w-6 h-6 mr-3" /> {currentStrings.retryButton}
+                                </button>
+                            </div>
+                            {copyStatus && <p className="text-center text-md text-green-700 mt-4 font-semibold animate-bounce">{copyStatus}</p>}
                         </div>
-                        {copyStatus && <p className="text-center text-md text-green-700 mt-4 font-semibold animate-bounce">{copyStatus}</p>}
-                    </div>
-                }
+                    }
 
-                {error && <p className="text-red-500 bg-red-100 border border-red-300 rounded-md p-4 text-md mt-4 max-w-md mx-auto shadow-md animate-shake text-center font-bold">{error}</p>}
-            </main>
+                    {error && <p className="text-red-500 bg-red-100 border border-red-300 rounded-md p-4 text-md mt-4 max-w-md mx-auto shadow-md animate-shake text-center font-bold">{error}</p>}
+                </main>
 
-            <footer className="w-full max-w-4xl mt-12 text-center">
-                <p className="text-md text-white/90 drop-shadow-sm">© {new Date().getFullYear()} AI 관상 & 궁합. Just for Fun!</p>
-            </footer>
+                <footer className="w-full max-w-4xl mt-12 text-center">
+                    <p className="text-md text-white/90 drop-shadow-sm">© {new Date().getFullYear()} AI 관상 & 궁합. Just for Fun!</p>
+                </footer>
+            </div>
         </div>
     );
 };
