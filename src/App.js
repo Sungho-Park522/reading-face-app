@@ -454,12 +454,7 @@ const ResultPageComponent = React.memo(({
     analysisResult,
     currentStrings,
     person1ImagePreview,
-    person2ImagePreview,
-    reAnalyzeWithDifferentInterests,
-    handleCopyToClipboard,
-    resetAllStates,
-    resultId,
-    copyStatus
+    person2ImagePreview
 }) => {
     const isCouple = analysisResult.analysis_type === 'couple';
     const [activeTab, setActiveTab] = useState(isCouple ? 'compatibility' : 'person1');
@@ -600,6 +595,7 @@ const App = () => {
             };
             fetchResult();
         }
+    // *** FIX: useEffect 의존성 배열 수정 ***
     }, [getInitialLanguage]);
 
 
@@ -720,7 +716,7 @@ const App = () => {
         } finally {
             setIsLoading(false);
         }
-    }, [showCoupleInput, selectedInterests, person1ImageFile, person1Dob, person2ImageFile, person2Dob, currentStrings]);
+    }, [showCoupleInput, selectedInterests, person1ImageFile, person1Dob, person2ImageFile, person2Dob, currentStrings, language]);
     
     const handleCopyToClipboard = useCallback(() => {
         if (!resultId) return;
