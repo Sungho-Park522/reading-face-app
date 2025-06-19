@@ -56,11 +56,10 @@ const CalendarIcon = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg"
 const SparklesIcon = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="m12 3-1.9 5.8-5.8 1.9 5.8 1.9 1.9 5.8 1.9-5.8 5.8-1.9-5.8-1.9z"/><path d="M22 12a10 10 0 1 1-10-10"/><path d="M22 12a10 10 0 0 0-10-10"/></svg>);
 
 
-// 다국어 텍스트 객체 (전체) - 신규 기능 관련 텍스트 추가
+// 다국어 텍스트 객체
 const translations = {
   ko: {
     languageName: "한국어",
-    languageSelectLabel: "언어 변경",
     appTitle: "AI 관상 & 궁합", appSubtitle: "사진과 생년월일로 AI가 당신의 운명을 분석해드려요!",
     physiognomyIntroTitle: "✨ '관상'과 '사주'란?", physiognomyIntroText: "'관상'은 얼굴로, '사주'는 태어난 시간으로 사람의 운명을 해석하는 동양의 지혜입니다. 이 앱은 AI 기술을 활용해 이 둘을 재미있게 분석해 드립니다. 과학적 근거보다는 유쾌한 해석에 집중해주세요!",
     person1Title: "분석할 분", person2Title: "궁합 볼 상대",
@@ -69,44 +68,61 @@ const translations = {
     addCoupleButton: "+ 궁합 보기", removeCoupleButton: "x 혼자 보기",
     analyzeButtonSingle: "AI 개인 운명 분석", analyzeButtonCouple: "AI 커플 궁합 분석",
     loadingMessage: "AI가 열일 중! 🔥 거의 다 됐어요!",
-    watchAdButton: "광고 보고 결과 확인!",
     errorMessageDefault: "사진과 생년월일을 모두 입력해주세요. 얼굴이 선명한 사진일수록 분석이 정확해요!",
     noFaceDetectedError: "앗, 사진에서 얼굴을 찾기 어려워요! 😅 이목구비가 선명하게 나온 정면 사진으로 다시 시도해주시면 더 정확한 관상을 볼 수 있답니다.",
     apiErrorGeneric: "API 요청에 실패했습니다", apiErrorResponseFormat: "AI가 응답을 준비하지 못했어요. 😥 응답 형식이 올바르지 않습니다. 잠시 후 다시 시도해주세요!",
     resultTitleSingle: "✨ AI 개인 운명 분석 결과 ✨", resultTitleCouple: "💖 AI 커플 궁합 결과 💖",
     tabPerson1: "첫 번째 분", tabPerson2: "두 번째 분", tabCompatibility: "종합 궁합",
-    sectionPhysiognomy: "관상 분석", sectionSaju: "사주 분석", sectionIntegrated: "관상+사주 통합 해석",
+    // *** FIX: 서사형 분석을 위한 섹션 제목 추가 ***
+    sectionFirstImpression: "🔮 첫인상: 타인에게 비치는 당신의 모습",
+    sectionInnerPersonality: "💖 내면의 성격과 잠재력",
+    sectionHarmony: "🎭 외면과 내면의 조화와 충돌",
+    sectionFuturePath: "🧭 앞으로 나아갈 길과 기회",
+    sectionFinalMessage: "✨ 도사의 마지막 조언",
     compatibilityTitle: "두 분의 종합 궁합은 과연?! 💕",
     scoreUnit: "점!!!",
     retryButton: "처음부터 다시하기",
     copyButton: "공유 링크 복사", copySuccessMessage: "공유 링크가 복사되었어요!",
-    resultLoading: "결과를 불러오는 중입니다...", resultNotFound: "앗! 해당 결과를 찾을 수 없어요.",
+    resultNotFound: "앗! 해당 결과를 찾을 수 없어요.",
     loadingComments: ["오, 이 눈썹... 심상치 않은데요? 🤔", "콧대가 예술이군요. 잠시 감상 좀...👃", "타고난 운명의 기운을 읽는 중... ✨", "입꼬리가 닮았네요! 이건 운명일지도? 🤭", "잠시만요, 이마에서 빛이... 광채 분석 중! 💡"],
     adPlaceholderBannerText: "꿀잼 광고 배너",
     shareMessage: "나의 AI 운명 분석 결과가 궁금하다면? 클릭해서 확인해봐! 👇",
-    // *** FIX: 프롬프트 최신화 ***
-    aiPromptSingle: `당신은 관상과 사주에 정통한 유머러스하고 통찰력 있는 AI 도사입니다. 사용자의 사진과 생년월일을 기반으로 한 사람의 운명을 다층적으로 분석해주세요.
+    // *** FIX: 한 사람 분석 프롬프트 최신화 ***
+    aiPromptSingle: `당신은 관상과 사주에 정통하고, 사람의 인생을 드라마틱하게 해석하는 통찰력 있는 AI 도사입니다.
+    사용자의 사진과 생년월일을 기반으로 아래 5가지 항목을 중심으로 상세 분석해주세요.
 
-    🎯 목적:
-    - 사용자가 "내가 어떤 사람인지", "어떤 삶을 살 가능성이 있는지", "어떻게 살아야 하는지"에 대해 **웃기고 통찰력 있는 통합 결과**를 얻는 것
-    - 분석 결과가 **SNS에서 공유하고 싶은 재미와 몰입감**을 제공해야 함
-    
-    📌 규칙:
-    1. **관상 분석**: 눈, 코, 입, 턱, 얼굴형 등 사진 기반의 특징을 풍부하게 묘사하고, 그 의미를 해석해주세요. 외형 묘사는 유머와 비유로 풀어주세요.
-    2. **사주 분석**: 태어난 연월일시(양력 기준)로 오행/십성/용신 관점에서 해석하되, 쉽게 설명해주세요. "봄에 핀 꽃", "겨울의 얼음", "뜨거운 금속" 등 비유적으로.
-    3. **통합 분석**: 관상과 사주의 핵심 포인트를 연결해 통합적인 운명/성격/조언을 제공해주세요. 단순 요약이 아니라, 새로운 **의미의 연결**을 만들어주세요.  
-    4. **길이**: 각 분석은 3~6문장 이상으로 상세하게, 핵심 내용은 드라마틱하게  
-    5. **형식**: 반드시 아래 JSON 구조로 응답할 것. \`analysis_type\`은 'single'로 고정
-    
-    🧾 JSON 형식:
+    📘 분석 항목:
+
+    first_impression: 겉모습에서 느껴지는 첫인상, 분위기, 타인의 시선 (관상 기반 묘사)
+
+    inner_personality: 내면 성격, 기질, 잠재력, 약점 (사주 기반 분석)
+
+    harmony_or_conflict: 외형과 내면의 조화/충돌 여부 및 그 결과
+
+    future_path: 앞으로 주의해야 할 점, 기회, 강점 활용법
+
+    final_message: 도사의 조언 한마디 (짧고 인상 깊게)
+
+    📌 주의사항:
+
+    각 항목은 3~6문장 분량으로 상세히 작성
+
+    무조건 JSON 형식으로만 응답할 것
+
+    분석에 유머/감정/비유 표현을 적극 활용
+
+    analysis_type은 반드시 "single"
+
+    📎 JSON 응답 예시 구조:
     {
-      "analysis_type": "single",
-      "person_analysis": {
-        "name": "[사용자의 특징을 표현하는 별명]",
-        "physiognomy_analysis": "[관상 분석]",
-        "saju_analysis": "[사주 분석]",
-        "integrated_analysis": "[관상과 사주를 연결한 통합 분석 결과]"
-      }
+    "analysis_type": "single",
+    "person_story": {
+    "first_impression": "텍스트...",
+    "inner_personality": "텍스트...",
+    "harmony_or_conflict": "텍스트...",
+    "future_path": "텍스트...",
+    "final_message": "텍스트..."
+    }
     }`,
     aiPromptCouple: `당신은 관상과 사주에 능통하고, 관계 통찰력과 유머 감각까지 갖춘 AI 커플 운명 분석가입니다. 두 사람의 사진과 생년월일을 바탕으로, 각자의 운세와 둘의 궁합을 드라마틱하고 공감 가는 방식으로 분석해주세요.
 
@@ -145,7 +161,6 @@ const translations = {
       }
     }`
   }
-  // 영문 및 다른 언어 번역 생략
 };
 
 
@@ -186,9 +201,7 @@ const useCountUp = (end, duration = 1500) => {
 };
 
 
-// --- 신규 컴포넌트 ---
-
-// 사용자 입력을 받는 통합 컴포넌트
+// 입력 컴포넌트
 const InputSection = ({ personNum, title, onImageSelect, onDobChange, previewImage, dob, strings }) => {
     const [isDragging, setIsDragging] = useState(false);
     
@@ -221,7 +234,6 @@ const InputSection = ({ personNum, title, onImageSelect, onDobChange, previewIma
         >
             <h2 className="text-2xl font-bold mb-3 font-gaegu">{title}</h2>
             
-            {/* 사진 업로드 */}
             <div className="relative mb-4">
                 <img src={previewImage} alt={`${title}`} className="w-40 h-40 md:w-48 md:h-48 object-cover mx-auto rounded-full shadow-xl border-4 border-white" onError={(e) => { e.target.onerror = null; e.target.src = `https://placehold.co/400x400/e2e8f0/cbd5e0?text=Error`; }} />
                 <label htmlFor={`person${personNum}ImageUpload`} className={`absolute bottom-0 right-0 cursor-pointer p-2 rounded-full shadow-lg transition-transform transform hover:scale-110 ${buttonColor}`}>
@@ -231,12 +243,10 @@ const InputSection = ({ personNum, title, onImageSelect, onDobChange, previewIma
             </div>
             <p className="text-sm font-bold text-indigo-600 mb-4" dangerouslySetInnerHTML={{ __html: strings.uploadInstruction }}></p>
             
-            {/* 생년월일 입력 */}
             <div className="w-full max-w-xs">
                 <label htmlFor={`dob${personNum}`} className="font-bold text-gray-700 mb-1 flex items-center justify-center font-gaegu">
                     <CalendarIcon className="w-5 h-5 mr-2" />{strings.dobLabel}
                 </label>
-                {/* *** FIX: 생년월일 입력 방식을 text로 변경 *** */}
                 <input 
                     type="text"
                     id={`dob${personNum}`}
@@ -321,12 +331,10 @@ const App = () => {
 
 
     // --- useEffect 훅 ---
-    // 언어 변경 시 텍스트 업데이트
     useEffect(() => {
         setCurrentStrings(translations[language]);
     }, [language]);
 
-    // URL 경로에 따라 결과 페이지 로드
     useEffect(() => {
         const path = window.location.pathname.split('/');
         if (path[1] === 'result' && path[2]) {
@@ -381,7 +389,6 @@ const App = () => {
     };
 
     const handleDobChange = (date, personNum) => {
-        // 자동 하이픈 추가
         const cleaned = ('' + date).replace(/\D/g, '');
         let match = cleaned.match(/^(\d{4})(\d{2})?(\d{2})?$/);
         let formattedDate = '';
@@ -416,7 +423,6 @@ const App = () => {
     };
 
     const handleAnalysis = async () => {
-        // 유효성 검사
         if (!person1ImageFile || !person1Dob || (showCoupleInput && (!person2ImageFile || !person2Dob))) {
             setError(currentStrings.errorMessageDefault);
             return;
@@ -462,7 +468,6 @@ const App = () => {
                 }
                 setAnalysisResult(parsedJson);
 
-                // Firestore에 결과 저장
                 if (db && storage) {
                     const person1URL = await uploadImageToStorage(person1ImageFile);
                     const person2URL = isCoupleAnalysis ? await uploadImageToStorage(person2ImageFile) : null;
@@ -500,7 +505,6 @@ const App = () => {
         });
     };
     
-    // 광고 컴포넌트
     const RegularAdPlaceholder = () => (<div className="my-6 p-3 bg-gray-100 rounded-lg text-center border border-gray-300"><p className="text-gray-600 text-xs">{currentStrings.adPlaceholderBannerText}</p><img src={`https://placehold.co/300x100/e0e0e0/757575?text=${currentStrings.adPlaceholderBannerText.replace(/\s/g, '+')}`} alt="Ad Banner" className="mx-auto mt-1 rounded" /></div>);
 
 
@@ -547,6 +551,7 @@ const App = () => {
 
     const ResultPageComponent = () => {
         const isCouple = analysisResult.analysis_type === 'couple';
+        // *** FIX: 커플 분석 시 기본 탭을 '종합 궁합'으로 변경 ***
         const [activeTab, setActiveTab] = useState(isCouple ? 'compatibility' : 'person1');
         const animatedScore = useCountUp(isCouple ? analysisResult.compatibility?.score : 0);
         
@@ -556,86 +561,93 @@ const App = () => {
                 <p className="text-md leading-relaxed whitespace-pre-line">{content || "분석 결과가 없습니다."}</p>
             </div>
         );
-
-        if (isCouple) {
-            const { person1_analysis, person2_analysis, compatibility } = analysisResult;
-            const tabs = [
-                { id: 'compatibility', label: currentStrings.tabCompatibility },
-                { id: 'person1', label: currentStrings.tabPerson1 },
-                { id: 'person2', label: currentStrings.tabPerson2 }
-            ];
-            return (
-                <div className="font-gowun">
-                    <h2 className="text-4xl font-bold text-center text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 mb-6 font-gaegu">{currentStrings.resultTitleCouple}</h2>
-                    <div className="flex justify-center mb-6">
-                        <img src={person1ImagePreview} alt="Person 1" className="w-32 h-32 object-cover rounded-full shadow-lg border-4 border-rose-300 -mr-4 z-10"/>
-                        <img src={person2ImagePreview} alt="Person 2" className="w-32 h-32 object-cover rounded-full shadow-lg border-4 border-fuchsia-300"/>
-                    </div>
-                    
-                    <div className="border-b border-gray-200 mb-4">
-                        <nav className="-mb-px flex justify-center space-x-4" aria-label="Tabs">
-                            {tabs.map(tab => (
-                                <button key={tab.id} onClick={() => setActiveTab(tab.id)}
-                                    className={`${activeTab === tab.id ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg font-gaegu`}>
-                                    {tab.label}
-                                </button>
-                            ))}
-                        </nav>
-                    </div>
-
-                    <RegularAdPlaceholder />
-                    
-                    <div>
-                         {activeTab === 'compatibility' && compatibility && (
-                             <div className="bg-gradient-to-br from-indigo-100 to-blue-200 p-6 rounded-xl shadow-xl border-2 border-indigo-300">
-                                <h3 className="text-3xl font-bold text-indigo-700 mb-4 text-center font-gaegu">{currentStrings.compatibilityTitle}</h3>
-                                <p className="text-5xl md:text-6xl font-bold text-indigo-600 mb-2 text-center font-gaegu">{animatedScore}{currentStrings.scoreUnit}</p>
-                                <p className="text-md text-gray-700 mb-6 italic text-center p-2 bg-white/50 rounded-md">{compatibility.score_reason}</p>
-                                {renderAnalysisSection('관상 궁합', compatibility.physiognomy_compatibility)}
-                                {renderAnalysisSection('사주 궁합', compatibility.saju_compatibility)}
-                                {renderAnalysisSection('최종 궁합 조언', compatibility.integrated_summary)}
-                            </div>
-                        )}
-                        {activeTab === 'person1' && person1_analysis && (
-                            <div>
-                                {renderAnalysisSection(currentStrings.sectionPhysiognomy, person1_analysis.physiognomy_analysis)}
-                                {renderAnalysisSection(currentStrings.sectionSaju, person1_analysis.saju_analysis)}
-                            </div>
-                        )}
-                        {activeTab === 'person2' && person2_analysis && (
-                            <div>
-                                {renderAnalysisSection(currentStrings.sectionPhysiognomy, person2_analysis.physiognomy_analysis)}
-                                {renderAnalysisSection(currentStrings.sectionSaju, person2_analysis.saju_analysis)}
-                            </div>
-                        )}
-                    </div>
-                </div>
-            );
-        } else { // Single person result
-            const { person_analysis } = analysisResult;
+        
+        // *** FIX: 한 사람 분석 결과 페이지 UI 및 파싱 로직 변경 ***
+        if (!isCouple) {
+            const { person_story } = analysisResult;
             return (
                 <div className="font-gowun">
                     <h2 className="text-4xl font-bold text-center text-transparent bg-clip-text bg-gradient-to-r from-green-400 via-cyan-500 to-blue-600 mb-6 font-gaegu">{currentStrings.resultTitleSingle}</h2>
-                     <div className="flex justify-center mb-6">
+                    <div className="flex justify-center mb-6">
                         <img src={person1ImagePreview} alt="Person 1" className="w-40 h-40 object-cover rounded-full shadow-lg border-4 border-cyan-300"/>
                     </div>
                     <RegularAdPlaceholder />
-                    {person_analysis && (
-                        <>
-                           {renderAnalysisSection(currentStrings.sectionPhysiognomy, person_analysis.physiognomy_analysis)}
-                           {renderAnalysisSection(currentStrings.sectionSaju, person_analysis.saju_analysis)}
-                           {renderAnalysisSection(currentStrings.sectionIntegrated, person_analysis.integrated_analysis)}
-                        </>
+                    {person_story && (
+                        <div className="space-y-6">
+                           {renderAnalysisSection(currentStrings.sectionFirstImpression, person_story.first_impression)}
+                           {renderAnalysisSection(currentStrings.sectionInnerPersonality, person_story.inner_personality)}
+                           {renderAnalysisSection(currentStrings.sectionHarmony, person_story.harmony_or_conflict)}
+                           {renderAnalysisSection(currentStrings.sectionFuturePath, person_story.future_path)}
+                           {/* 최종 메시지 특별 스타일링 */}
+                           <div className="p-6 bg-gradient-to-r from-amber-200 to-yellow-300 rounded-xl shadow-lg text-center">
+                                <h4 className="text-2xl font-bold text-yellow-800 mb-3 font-gaegu">{currentStrings.sectionFinalMessage}</h4>
+                                <p className="text-xl text-yellow-900 font-semibold italic">"{person_story.final_message || "당신의 길을 응원합니다!"}"</p>
+                           </div>
+                        </div>
                     )}
                 </div>
-            )
+            );
         }
+
+        // Couple Analysis (기존 구조 유지)
+        const { person1_analysis, person2_analysis, compatibility } = analysisResult;
+        const tabs = [
+            { id: 'compatibility', label: currentStrings.tabCompatibility },
+            { id: 'person1', label: currentStrings.tabPerson1 },
+            { id: 'person2', label: currentStrings.tabPerson2 }
+        ];
+        return (
+            <div className="font-gowun">
+                <h2 className="text-4xl font-bold text-center text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 mb-6 font-gaegu">{currentStrings.resultTitleCouple}</h2>
+                <div className="flex justify-center mb-6">
+                    <img src={person1ImagePreview} alt="Person 1" className="w-32 h-32 object-cover rounded-full shadow-lg border-4 border-rose-300 -mr-4 z-10"/>
+                    <img src={person2ImagePreview} alt="Person 2" className="w-32 h-32 object-cover rounded-full shadow-lg border-4 border-fuchsia-300"/>
+                </div>
+                
+                <div className="border-b border-gray-200 mb-4">
+                    <nav className="-mb-px flex justify-center space-x-4" aria-label="Tabs">
+                        {tabs.map(tab => (
+                            <button key={tab.id} onClick={() => setActiveTab(tab.id)}
+                                className={`${activeTab === tab.id ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg font-gaegu`}>
+                                {tab.label}
+                            </button>
+                        ))}
+                    </nav>
+                </div>
+
+                <RegularAdPlaceholder />
+                
+                <div>
+                     {activeTab === 'compatibility' && compatibility && (
+                         <div className="bg-gradient-to-br from-indigo-100 to-blue-200 p-6 rounded-xl shadow-xl border-2 border-indigo-300">
+                            <h3 className="text-3xl font-bold text-indigo-700 mb-4 text-center font-gaegu">{currentStrings.compatibilityTitle}</h3>
+                            <p className="text-5xl md:text-6xl font-bold text-indigo-600 mb-2 text-center font-gaegu">{animatedScore}{currentStrings.scoreUnit}</p>
+                            <p className="text-md text-gray-700 mb-6 italic text-center p-2 bg-white/50 rounded-md">{compatibility.score_reason}</p>
+                            {renderAnalysisSection('관상 궁합', compatibility.physiognomy_compatibility)}
+                            {renderAnalysisSection('사주 궁합', compatibility.saju_compatibility)}
+                            {renderAnalysisSection('최종 궁합 조언', compatibility.integrated_summary)}
+                        </div>
+                    )}
+                    {activeTab === 'person1' && person1_analysis && (
+                        <div>
+                            {renderAnalysisSection('관상 분석', person1_analysis.physiognomy_analysis)}
+                            {renderAnalysisSection('사주 분석', person1_analysis.saju_analysis)}
+                        </div>
+                    )}
+                    {activeTab === 'person2' && person2_analysis && (
+                        <div>
+                            {renderAnalysisSection('관상 분석', person2_analysis.physiognomy_analysis)}
+                            {renderAnalysisSection('사주 분석', person2_analysis.saju_analysis)}
+                        </div>
+                    )}
+                </div>
+            </div>
+        );
     };
     
     // 최종 렌더링
     return (
         <div className="relative min-h-screen bg-gradient-to-br from-pink-400 via-purple-500 to-indigo-600 p-4 sm:p-6 lg:p-8 flex flex-col items-center">
-            {/* *** FIX: 로딩 시 뒷 배경 반투명 처리 *** */}
             {isLoading && <AnalysisLoadingComponent images={showCoupleInput ? [person1ImagePreview, person2ImagePreview] : [person1ImagePreview]} strings={currentStrings} />}
 
             <div className={`w-full transition-all duration-500 ${isLoading ? 'opacity-50 blur-sm pointer-events-none' : 'opacity-100'}`}>
