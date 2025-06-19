@@ -67,16 +67,13 @@ const translations = {
     uploadInstruction: "얼굴이 선명한 정면 사진을 올려주세요.",
     dobLabel: "생년월일", dobPlaceholder: "YYYY-MM-DD",
     addCoupleButton: "+ 다른사람과 궁합보기", removeCoupleButton: "x 혼자 보기",
-    // *** NEW: 맞춤형 분석 버튼 텍스트 추가 ***
-    analyzeButtonPersonalized: "AI 맞춤 운명 분석",
-    analyzeButtonCouple: "AI 커플 궁합 분석",
+    analyzeButtonPersonalized: "AI 맞춤 운명 분석", analyzeButtonCouple: "AI 커플 궁합 분석",
     loadingMessage: "운명의 비밀을 푸는 중...",
     errorMessageDefault: "사진과 생년월일을 모두 입력해주세요.",
     noFaceDetectedError: "앗, 사진에서 얼굴을 찾기 어려워요! 😅 이목구비가 선명하게 나온 정면 사진으로 다시 시도해주시면 더 정확한 관상을 볼 수 있답니다.",
     apiErrorGeneric: "API 요청에 실패했습니다", apiErrorResponseFormat: "AI가 응답을 준비하지 못했어요. 😥 응답 형식이 올바르지 않습니다. 잠시 후 다시 시도해주세요!",
     resultTitleSingle: "✨ AI 개인 맞춤 운명 분석 ✨", resultTitleCouple: "💖 AI 커플 궁합 결과 💖",
     tabPerson1: "첫 번째 분", tabPerson2: "두 번째 분", tabCompatibility: "종합 궁합",
-    // *** NEW: 관심사 선택 및 결과 섹션 텍스트 추가 ***
     interestSelectionTitle: "🎯 어떤 분야가 가장 궁금하신가요? (2~3개 선택해주세요)",
     interests: {
         love: "💕 연애&결혼", career: "💼 직업&성공", wealth: "💰 재물&투자",
@@ -104,7 +101,6 @@ const translations = {
     ],
     adPlaceholderBannerText: "꿀잼 광고 배너",
     shareMessage: "나의 AI 운명 분석 결과가 궁금하다면? 클릭해서 확인해봐! 👇",
-    // *** NEW: 개인 맞춤형 분석 프롬프트 ***
     aiPromptSingle: `당신은 관상과 사주에 정통하고, 개인 맞춤형 분석을 제공하는 AI 도사입니다.
 
     사용자가 제공한 정보:
@@ -237,7 +233,8 @@ const useCountUp = (end, duration = 1500) => {
 };
 
 
-const DobInput = ({ value, onChange, placeholder }) => {
+// *** FIX: 포커스 문제 해결을 위해 React.memo 적용 ***
+const DobInput = React.memo(({ value, onChange, placeholder }) => {
     const handleChange = (e) => {
         const rawValue = e.target.value;
         const cleaned = rawValue.replace(/\D/g, '');
@@ -261,10 +258,10 @@ const DobInput = ({ value, onChange, placeholder }) => {
             maxLength="10"
         />
     );
-};
+});
 
 
-const InputSection = ({ personNum, title, onImageSelect, onDobChange, previewImage, dob, strings }) => {
+const InputSection = React.memo(({ personNum, title, onImageSelect, onDobChange, previewImage, dob, strings }) => {
     const [isDragging, setIsDragging] = useState(false);
     
     const handleDragEnter = (e) => { e.preventDefault(); e.stopPropagation(); setIsDragging(true); };
@@ -281,9 +278,7 @@ const InputSection = ({ personNum, title, onImageSelect, onDobChange, previewIma
     };
 
     const borderColor = personNum === 1 ? 'border-rose-300 hover:border-rose-500' : 'border-fuchsia-300 hover:border-fuchsia-500';
-    const draggingBorderColor = personNum === 1 ? 'border-rose-600' : 'border-fuchsia-600';
     const bgColor = personNum === 1 ? 'bg-rose-50/50' : 'bg-fuchsia-50/50';
-    const draggingBgColor = personNum === 1 ? 'bg-rose-100' : 'bg-fuchsia-100';
     const buttonColor = personNum === 1 ? 'bg-rose-500 hover:bg-rose-600' : 'bg-fuchsia-500 hover:bg-fuchsia-600';
   
     return (
@@ -292,7 +287,7 @@ const InputSection = ({ personNum, title, onImageSelect, onDobChange, previewIma
             onDragLeave={handleDragLeave} 
             onDragOver={handleDragOver} 
             onDrop={handleDrop}
-            className={`w-full h-full border-2 border-dashed rounded-lg p-6 text-center transition-all duration-300 flex flex-col items-center justify-between ${borderColor} ${bgColor} ${isDragging ? `${draggingBorderColor} ${draggingBgColor} scale-105` : ''}`}
+            className={`w-full h-full border-2 border-dashed rounded-lg p-6 text-center transition-all duration-300 flex flex-col items-center justify-between ${borderColor} ${bgColor} ${isDragging ? 'scale-105' : ''}`}
         >
             <h2 className="text-2xl font-bold mb-3 font-gaegu">{title}</h2>
             
@@ -317,10 +312,9 @@ const InputSection = ({ personNum, title, onImageSelect, onDobChange, previewIma
             </div>
         </div>
     );
-};
+});
 
 
-// *** NEW: 관심사 선택 컴포넌트 ***
 const InterestSelection = ({ strings, selectedInterests, onInterestToggle }) => {
     return (
         <section className="mt-8 p-6 bg-indigo-50 rounded-lg shadow-inner">
@@ -413,7 +407,6 @@ const App = () => {
     const [resultId, setResultId] = useState(null);
     const [copyStatus, setCopyStatus] = useState('');
     const [loadingText, setLoadingText] = useState('');
-    // *** NEW: 관심사 상태 추가 ***
     const [selectedInterests, setSelectedInterests] = useState([]);
     const [showInterestSelection, setShowInterestSelection] = useState(false);
 
@@ -424,7 +417,8 @@ const App = () => {
     }, [language]);
 
     useEffect(() => {
-        if (person1ImageFile && person1Dob) {
+        // *** FIX: 관심사 표시 로직 수정 ***
+        if (person1ImageFile && person1Dob.length === 10) {
             setShowInterestSelection(true);
         } else {
             setShowInterestSelection(false);
@@ -474,22 +468,23 @@ const App = () => {
 
 
     // 함수
-    const handleImageChange = (file, personNum) => {
+    // *** FIX: 포커스 문제 해결을 위해 useCallback 사용 ***
+    const handleImageChange = useCallback((file, personNum) => {
         if (file) {
             const previewUrl = URL.createObjectURL(file);
             if (personNum === 1) { setPerson1ImageFile(file); setPerson1ImagePreview(previewUrl); }
             if (personNum === 2) { setPerson2ImageFile(file); setPerson2ImagePreview(previewUrl); }
             setError('');
         }
-    };
+    }, []);
 
-    const handleDobChange = (date, personNum) => {
+    const handleDobChange = useCallback((date, personNum) => {
         if (personNum === 1) setPerson1Dob(date);
         if (personNum === 2) setPerson2Dob(date);
         setError('');
-    };
+    }, []);
 
-    const handleInterestToggle = (interestKey) => {
+    const handleInterestToggle = useCallback((interestKey) => {
         setSelectedInterests(prev => {
             if (prev.includes(interestKey)) {
                 return prev.filter(item => item !== interestKey);
@@ -499,7 +494,7 @@ const App = () => {
             }
             return prev;
         });
-    };
+    }, []);
 
     const resetAllStates = () => {
         window.history.pushState({}, '', '/');
@@ -519,7 +514,6 @@ const App = () => {
         setShowInterestSelection(false);
     };
     
-    // *** NEW: 다른 관심사로 다시 분석하기 함수 ***
     const reAnalyzeWithDifferentInterests = () => {
         setPageState('main');
         setShowInterestSelection(true);
@@ -531,7 +525,6 @@ const App = () => {
 
     const handleAnalysis = async () => {
         const isCoupleAnalysis = showCoupleInput;
-        // *** NEW: 관심사 선택 유효성 검사 추가 ***
         if (!isCoupleAnalysis && selectedInterests.length < 2) {
              setError(currentStrings.interestSelectionTitle);
              return;
@@ -691,7 +684,7 @@ const App = () => {
                     {personalized_sections && (
                         <div className="mt-8">
                             <h3 className="text-2xl font-bold text-gray-800 mb-4 text-center font-gaegu">{currentStrings.sectionPersonalizedAnalysis}</h3>
-                            {personalized_sections.map((section) => (
+                            {personalized_sections.map((section, index) => (
                                 renderAnalysisSection(section.section_title, section.content, '💫')
                             ))}
                         </div>
