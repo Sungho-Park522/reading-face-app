@@ -65,15 +65,15 @@ const translations = {
     person1Title: "분석할 분", person2Title: "궁합 볼 상대",
     uploadInstruction: "얼굴이 선명한 정면 사진을 올려주세요.",
     dobLabel: "생년월일", dobPlaceholder: "YYYY-MM-DD",
-    addCoupleButton: "+ 궁합 보기", removeCoupleButton: "x 혼자 보기",
+    // *** FIX: 버튼 문구 변경 ***
+    addCoupleButton: "+ 다른사람과 궁합보기", removeCoupleButton: "x 혼자 보기",
     analyzeButtonSingle: "AI 개인 운명 분석", analyzeButtonCouple: "AI 커플 궁합 분석",
-    loadingMessage: "AI가 열일 중! 🔥 거의 다 됐어요!",
+    loadingMessage: "운명의 비밀을 푸는 중...",
     errorMessageDefault: "사진과 생년월일을 모두 입력해주세요. 얼굴이 선명한 사진일수록 분석이 정확해요!",
     noFaceDetectedError: "앗, 사진에서 얼굴을 찾기 어려워요! 😅 이목구비가 선명하게 나온 정면 사진으로 다시 시도해주시면 더 정확한 관상을 볼 수 있답니다.",
     apiErrorGeneric: "API 요청에 실패했습니다", apiErrorResponseFormat: "AI가 응답을 준비하지 못했어요. 😥 응답 형식이 올바르지 않습니다. 잠시 후 다시 시도해주세요!",
     resultTitleSingle: "✨ AI 개인 운명 분석 결과 ✨", resultTitleCouple: "💖 AI 커플 궁합 결과 💖",
     tabPerson1: "첫 번째 분", tabPerson2: "두 번째 분", tabCompatibility: "종합 궁합",
-    // *** FIX: 서사형 분석을 위한 섹션 제목 추가 ***
     sectionFirstImpression: "🔮 첫인상: 타인에게 비치는 당신의 모습",
     sectionInnerPersonality: "💖 내면의 성격과 잠재력",
     sectionHarmony: "🎭 외면과 내면의 조화와 충돌",
@@ -84,10 +84,18 @@ const translations = {
     retryButton: "처음부터 다시하기",
     copyButton: "공유 링크 복사", copySuccessMessage: "공유 링크가 복사되었어요!",
     resultNotFound: "앗! 해당 결과를 찾을 수 없어요.",
-    loadingComments: ["오, 이 눈썹... 심상치 않은데요? 🤔", "콧대가 예술이군요. 잠시 감상 좀...👃", "타고난 운명의 기운을 읽는 중... ✨", "입꼬리가 닮았네요! 이건 운명일지도? 🤭", "잠시만요, 이마에서 빛이... 광채 분석 중! 💡"],
+    // *** FIX: 결과 불러오기 멘트 추가 ***
+    resultLoading: "운명의 기록을 불러오고 있느니라...",
+    // *** FIX: 로딩 멘트 컨셉 변경 ***
+    loadingComments: [
+        "흠... 천지의 기운을 읽고 있느니라... 잠시 숨을 고르거라.",
+        "그대의 얼굴에서 운명의 강이 흐르는 것을 보고 있노라.",
+        "별들의 속삭임과 그대의 사주를 맞추어 보는 중... ✨",
+        "마음의 창인 눈빛에서 과거와 미래를 엿보고 있느니라.",
+        "하늘의 뜻을 그대의 얼굴에 비추어 보고 있으니, 곧 알게 되리라."
+    ],
     adPlaceholderBannerText: "꿀잼 광고 배너",
     shareMessage: "나의 AI 운명 분석 결과가 궁금하다면? 클릭해서 확인해봐! 👇",
-    // *** FIX: 한 사람 분석 프롬프트 최신화 ***
     aiPromptSingle: `당신은 관상과 사주에 정통하고, 사람의 인생을 드라마틱하게 해석하는 통찰력 있는 AI 도사입니다.
     사용자의 사진과 생년월일을 기반으로 아래 5가지 항목을 중심으로 상세 분석해주세요.
 
@@ -201,6 +209,42 @@ const useCountUp = (end, duration = 1500) => {
 };
 
 
+// *** FIX: 생년월일 포커스 이슈 해결을 위한 컴포넌트 분리 ***
+const DobInput = ({ value, onChange, placeholder }) => {
+    const [inputValue, setInputValue] = useState(value);
+
+    useEffect(() => {
+        // 부모의 상태가 변경될 때(예: 초기화) 내부 상태도 동기화
+        setInputValue(value);
+    }, [value]);
+
+    const handleChange = (e) => {
+        const rawValue = e.target.value;
+        const cleaned = rawValue.replace(/\D/g, '');
+        let formatted = cleaned;
+        if (cleaned.length > 4) {
+            formatted = `${cleaned.slice(0, 4)}-${cleaned.slice(4)}`;
+        }
+        if (cleaned.length > 6) {
+            formatted = `${cleaned.slice(0, 4)}-${cleaned.slice(4, 6)}-${cleaned.slice(6, 8)}`;
+        }
+        setInputValue(formatted);
+        onChange(formatted); // 실시간으로 부모 상태 업데이트
+    };
+
+    return (
+        <input 
+            type="text"
+            value={inputValue}
+            onChange={handleChange}
+            className="w-full p-2 border border-gray-300 rounded-md text-center shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+            placeholder={placeholder}
+            maxLength="10"
+        />
+    );
+};
+
+
 // 입력 컴포넌트
 const InputSection = ({ personNum, title, onImageSelect, onDobChange, previewImage, dob, strings }) => {
     const [isDragging, setIsDragging] = useState(false);
@@ -230,7 +274,7 @@ const InputSection = ({ personNum, title, onImageSelect, onDobChange, previewIma
             onDragLeave={handleDragLeave} 
             onDragOver={handleDragOver} 
             onDrop={handleDrop}
-            className={`w-full border-2 border-dashed rounded-lg p-6 text-center transition-all duration-300 flex flex-col items-center justify-between ${borderColor} ${bgColor} ${isDragging ? `${draggingBorderColor} ${draggingBgColor} scale-105` : ''}`}
+            className={`w-full h-full border-2 border-dashed rounded-lg p-6 text-center transition-all duration-300 flex flex-col items-center justify-between ${borderColor} ${bgColor} ${isDragging ? `${draggingBorderColor} ${draggingBgColor} scale-105` : ''}`}
         >
             <h2 className="text-2xl font-bold mb-3 font-gaegu">{title}</h2>
             
@@ -244,17 +288,13 @@ const InputSection = ({ personNum, title, onImageSelect, onDobChange, previewIma
             <p className="text-sm font-bold text-indigo-600 mb-4" dangerouslySetInnerHTML={{ __html: strings.uploadInstruction }}></p>
             
             <div className="w-full max-w-xs">
-                <label htmlFor={`dob${personNum}`} className="font-bold text-gray-700 mb-1 flex items-center justify-center font-gaegu">
+                <label className="font-bold text-gray-700 mb-1 flex items-center justify-center font-gaegu">
                     <CalendarIcon className="w-5 h-5 mr-2" />{strings.dobLabel}
                 </label>
-                <input 
-                    type="text"
-                    id={`dob${personNum}`}
+                <DobInput
                     value={dob}
-                    onChange={(e) => onDobChange(e.target.value, personNum)}
-                    className="w-full p-2 border border-gray-300 rounded-md text-center shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    onChange={(val) => onDobChange(val, personNum)}
                     placeholder={strings.dobPlaceholder}
-                    maxLength="10"
                 />
             </div>
         </div>
@@ -263,19 +303,22 @@ const InputSection = ({ personNum, title, onImageSelect, onDobChange, previewIma
 
 
 // 로딩 화면 컴포넌트
-const AnalysisLoadingComponent = ({ images, strings }) => {
+const AnalysisLoadingComponent = ({ images, strings, loadingText }) => {
   const [comment, setComment] = useState(strings.loadingComments[0]);
+  const isFetching = loadingText === strings.resultLoading;
+
   useEffect(() => {
+    if (isFetching) return;
     const commentInterval = setInterval(() => {
       setComment(strings.loadingComments[Math.floor(Math.random() * strings.loadingComments.length)]);
     }, 2500);
     return () => clearInterval(commentInterval);
-  }, [strings.loadingComments]);
+  }, [strings.loadingComments, isFetching]);
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-75 flex flex-col items-center justify-center z-50 p-4 font-gaegu">
       <div className="bg-white p-6 sm:p-8 rounded-2xl shadow-2xl text-center max-w-md w-full">
-        <h3 className="text-2xl font-bold text-purple-600 mb-4">운명의 비밀을 푸는 중...</h3>
+        <h3 className="text-2xl font-bold text-purple-600 mb-4">{loadingText}</h3>
         
         <img
           src={`https://placehold.co/320x100/dedede/777777?text=${strings.adPlaceholderBannerText.replace(/\+/g, '%20')}`}
@@ -294,9 +337,8 @@ const AnalysisLoadingComponent = ({ images, strings }) => {
         </div>
 
         <div className="text-center text-gray-800">
-          <p className="text-lg h-12 flex items-center justify-center transition-opacity duration-500">"{comment}"</p>
+          {!isFetching && <p className="text-lg h-12 flex items-center justify-center transition-opacity duration-500">"{comment}"</p>}
           <div className="w-12 h-12 border-4 border-purple-500 border-t-transparent rounded-full mx-auto animate-spin mt-2"></div>
-          <p className="text-purple-600 mt-2 font-semibold">{strings.loadingMessage}</p>
         </div>
       </div>
     </div>
@@ -308,12 +350,10 @@ const AnalysisLoadingComponent = ({ images, strings }) => {
 const App = () => {
     const getInitialLanguage = useCallback(() => (typeof window !== 'undefined' && translations[window.navigator.language?.split('-')[0]]) ? window.navigator.language.split('-')[0] : 'ko', []);
     
-    // --- 상태 관리 ---
+    // 상태 관리
     const [language, setLanguage] = useState(getInitialLanguage);
     const [currentStrings, setCurrentStrings] = useState(translations[language]);
     const [pageState, setPageState] = useState('main'); // main, result
-  
-    // 입력 정보
     const [showCoupleInput, setShowCoupleInput] = useState(false);
     const [person1ImageFile, setPerson1ImageFile] = useState(null);
     const [person1ImagePreview, setPerson1ImagePreview] = useState(`https://placehold.co/400x400/e2e8f0/cbd5e0?text=Person+1`);
@@ -321,18 +361,18 @@ const App = () => {
     const [person2ImageFile, setPerson2ImageFile] = useState(null);
     const [person2ImagePreview, setPerson2ImagePreview] = useState(`https://placehold.co/400x400/e9d5ff/a855f7?text=Person+2`);
     const [person2Dob, setPerson2Dob] = useState('');
-
-    // 결과 및 로딩
     const [analysisResult, setAnalysisResult] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
     const [resultId, setResultId] = useState(null);
     const [copyStatus, setCopyStatus] = useState('');
+    const [loadingText, setLoadingText] = useState('');
 
 
-    // --- useEffect 훅 ---
+    // useEffect 훅
     useEffect(() => {
         setCurrentStrings(translations[language]);
+        setLoadingText(translations[language].loadingMessage);
     }, [language]);
 
     useEffect(() => {
@@ -342,6 +382,8 @@ const App = () => {
             setIsLoading(true);
             const fetchResult = async () => {
                 if (!db) { setTimeout(fetchResult, 300); return; }
+                const lang = getInitialLanguage();
+                setLoadingText(translations[lang].resultLoading);
                 try {
                     const docRef = doc(db, "results", id);
                     const docSnap = await getDoc(docRef);
@@ -357,7 +399,7 @@ const App = () => {
                         setResultId(id);
                         setPageState('result');
                     } else {
-                        setError(translations[getInitialLanguage()].resultNotFound);
+                        setError(translations[lang].resultNotFound);
                         setPageState('main');
                     }
                 } catch (e) {
@@ -373,36 +415,19 @@ const App = () => {
     }, [getInitialLanguage]);
 
 
-    // --- 함수 ---
+    // 함수
     const handleImageChange = (file, personNum) => {
         if (file) {
             const previewUrl = URL.createObjectURL(file);
-            if (personNum === 1) {
-                setPerson1ImageFile(file);
-                setPerson1ImagePreview(previewUrl);
-            } else {
-                setPerson2ImageFile(file);
-                setPerson2ImagePreview(previewUrl);
-            }
+            if (personNum === 1) setPerson1ImageFile(file); setPerson1ImagePreview(previewUrl);
+            if (personNum === 2) setPerson2ImageFile(file); setPerson2ImagePreview(previewUrl);
             setError('');
         }
     };
 
     const handleDobChange = (date, personNum) => {
-        const cleaned = ('' + date).replace(/\D/g, '');
-        let match = cleaned.match(/^(\d{4})(\d{2})?(\d{2})?$/);
-        let formattedDate = '';
-        if (match) {
-            formattedDate = match[1] + (match[2] ? '-' + match[2] : '') + (match[3] ? '-' + match[3] : '');
-        } else {
-            formattedDate = date;
-        }
-
-        if (personNum === 1) {
-            setPerson1Dob(formattedDate);
-        } else {
-            setPerson2Dob(formattedDate);
-        }
+        if (personNum === 1) setPerson1Dob(date);
+        if (personNum === 2) setPerson2Dob(date);
         setError('');
     };
 
@@ -428,69 +453,49 @@ const App = () => {
             return;
         }
 
+        setLoadingText(currentStrings.loadingMessage);
         setIsLoading(true);
         setError('');
 
         try {
             const isCoupleAnalysis = showCoupleInput;
             const prompt = isCoupleAnalysis ? currentStrings.aiPromptCouple : currentStrings.aiPromptSingle;
-
             const image1Base64 = await getBase64(person1ImageFile);
-            
-            const parts = [
-                { text: prompt },
-                { inlineData: { mimeType: person1ImageFile.type, data: image1Base64 } }
-            ];
+            const parts = [{ text: prompt }, { inlineData: { mimeType: person1ImageFile.type, data: image1Base64 } }];
 
             if (isCoupleAnalysis) {
                 const image2Base64 = await getBase64(person2ImageFile);
                 parts.push({ inlineData: { mimeType: person2ImageFile.type, data: image2Base64 } });
             }
 
-            const payload = {
-                contents: [{ role: "user", parts }],
-                generationConfig: { responseMimeType: "application/json" }
-            };
-
+            const payload = { contents: [{ role: "user", parts }], generationConfig: { responseMimeType: "application/json" } };
             const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
             const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
 
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(`${currentStrings.apiErrorGeneric}: ${errorData.error?.message || response.statusText}`);
-            }
+            if (!response.ok) throw new Error(currentStrings.apiErrorGeneric);
 
             const result = await response.json();
-            if (result.candidates && result.candidates[0].content && result.candidates[0].content.parts[0]) {
-                const parsedJson = JSON.parse(result.candidates[0].content.parts[0].text);
-                 if (parsedJson.error && parsedJson.error === 'NO_FACE_DETECTED') {
-                    throw new Error(currentStrings.noFaceDetectedError);
-                }
-                setAnalysisResult(parsedJson);
+            if (!result.candidates?.[0]?.content?.parts?.[0]) throw new Error(currentStrings.apiErrorResponseFormat);
+            
+            const parsedJson = JSON.parse(result.candidates[0].content.parts[0].text);
+            if (parsedJson.error === 'NO_FACE_DETECTED') throw new Error(currentStrings.noFaceDetectedError);
+            
+            setAnalysisResult(parsedJson);
 
-                if (db && storage) {
-                    const person1URL = await uploadImageToStorage(person1ImageFile);
-                    const person2URL = isCoupleAnalysis ? await uploadImageToStorage(person2ImageFile) : null;
-                    
-                    const docRef = doc(collection(db, "results"));
-                    await setDoc(docRef, { 
-                        analysis: parsedJson, 
-                        images: { person1: person1URL, person2: person2URL },
-                        language: language, 
-                        createdAt: serverTimestamp() 
-                    });
-                    const newId = docRef.id;
-                    setResultId(newId);
-                    window.history.pushState({}, '', `/result/${newId}`);
-                }
-                setPageState('result');
-
-            } else {
-                throw new Error(currentStrings.apiErrorResponseFormat);
+            if (db && storage) {
+                const person1URL = await uploadImageToStorage(person1ImageFile);
+                const person2URL = isCoupleAnalysis ? await uploadImageToStorage(person2ImageFile) : null;
+                const docRef = doc(collection(db, "results"));
+                await setDoc(docRef, { 
+                    analysis: parsedJson, images: { person1: person1URL, person2: person2URL },
+                    language: language, createdAt: serverTimestamp() 
+                });
+                setResultId(docRef.id);
+                window.history.pushState({}, '', `/result/${docRef.id}`);
             }
+            setPageState('result');
         } catch (err) {
-            console.error('분석 또는 저장 중 오류 발생:', err);
-            setError(`${err.message}`);
+            setError(err.message);
         } finally {
             setIsLoading(false);
         }
@@ -508,7 +513,7 @@ const App = () => {
     const RegularAdPlaceholder = () => (<div className="my-6 p-3 bg-gray-100 rounded-lg text-center border border-gray-300"><p className="text-gray-600 text-xs">{currentStrings.adPlaceholderBannerText}</p><img src={`https://placehold.co/300x100/e0e0e0/757575?text=${currentStrings.adPlaceholderBannerText.replace(/\s/g, '+')}`} alt="Ad Banner" className="mx-auto mt-1 rounded" /></div>);
 
 
-    // --- 렌더링 컴포넌트 ---
+    // 렌더링 컴포넌트
     const MainPageComponent = () => (
         <div className="font-gowun">
             <section className="mb-8 p-4 bg-indigo-50 rounded-lg shadow">
@@ -516,9 +521,10 @@ const App = () => {
                 <p className="text-sm text-gray-600 leading-relaxed text-center">{currentStrings.physiognomyIntroText}</p>
             </section>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6 items-start">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6 items-stretch">
                 <InputSection personNum={1} title={currentStrings.person1Title} onImageSelect={handleImageChange} onDobChange={handleDobChange} previewImage={person1ImagePreview} dob={person1Dob} strings={currentStrings} />
-                <div className={`transition-all duration-500 ease-in-out ${showCoupleInput ? 'opacity-100' : 'opacity-0 md:opacity-100'}`}>
+                {/* *** FIX: 모바일 버튼 표시 오류 수정 *** */}
+                <div className="w-full h-full">
                     {showCoupleInput ? (
                        <InputSection personNum={2} title={currentStrings.person2Title} onImageSelect={handleImageChange} onDobChange={handleDobChange} previewImage={person2ImagePreview} dob={person2Dob} strings={currentStrings} />
                     ) : (
@@ -551,36 +557,31 @@ const App = () => {
 
     const ResultPageComponent = () => {
         const isCouple = analysisResult.analysis_type === 'couple';
-        // *** FIX: 커플 분석 시 기본 탭을 '종합 궁합'으로 변경 ***
         const [activeTab, setActiveTab] = useState(isCouple ? 'compatibility' : 'person1');
         const animatedScore = useCountUp(isCouple ? analysisResult.compatibility?.score : 0);
         
-        const renderAnalysisSection = (title, content) => (
+        const renderAnalysisSection = (title, content, icon) => (
             <div className="mb-6 p-4 bg-white/70 rounded-lg shadow-inner">
-                <h4 className="text-2xl font-bold text-indigo-700 mb-3 font-gaegu">{title}</h4>
+                <h4 className="text-2xl font-bold text-indigo-700 mb-3 font-gaegu flex items-center">{icon} {title}</h4>
                 <p className="text-md leading-relaxed whitespace-pre-line">{content || "분석 결과가 없습니다."}</p>
             </div>
         );
         
-        // *** FIX: 한 사람 분석 결과 페이지 UI 및 파싱 로직 변경 ***
         if (!isCouple) {
             const { person_story } = analysisResult;
             return (
                 <div className="font-gowun">
                     <h2 className="text-4xl font-bold text-center text-transparent bg-clip-text bg-gradient-to-r from-green-400 via-cyan-500 to-blue-600 mb-6 font-gaegu">{currentStrings.resultTitleSingle}</h2>
-                    <div className="flex justify-center mb-6">
-                        <img src={person1ImagePreview} alt="Person 1" className="w-40 h-40 object-cover rounded-full shadow-lg border-4 border-cyan-300"/>
-                    </div>
+                    <div className="flex justify-center mb-6"><img src={person1ImagePreview} alt="Person 1" className="w-40 h-40 object-cover rounded-full shadow-lg border-4 border-cyan-300"/></div>
                     <RegularAdPlaceholder />
                     {person_story && (
                         <div className="space-y-6">
-                           {renderAnalysisSection(currentStrings.sectionFirstImpression, person_story.first_impression)}
-                           {renderAnalysisSection(currentStrings.sectionInnerPersonality, person_story.inner_personality)}
-                           {renderAnalysisSection(currentStrings.sectionHarmony, person_story.harmony_or_conflict)}
-                           {renderAnalysisSection(currentStrings.sectionFuturePath, person_story.future_path)}
-                           {/* 최종 메시지 특별 스타일링 */}
+                           {renderAnalysisSection(currentStrings.sectionFirstImpression, person_story.first_impression, '🔮')}
+                           {renderAnalysisSection(currentStrings.sectionInnerPersonality, person_story.inner_personality, '💖')}
+                           {renderAnalysisSection(currentStrings.sectionHarmony, person_story.harmony_or_conflict, '🎭')}
+                           {renderAnalysisSection(currentStrings.sectionFuturePath, person_story.future_path, '🧭')}
                            <div className="p-6 bg-gradient-to-r from-amber-200 to-yellow-300 rounded-xl shadow-lg text-center">
-                                <h4 className="text-2xl font-bold text-yellow-800 mb-3 font-gaegu">{currentStrings.sectionFinalMessage}</h4>
+                                <h4 className="text-2xl font-bold text-yellow-800 mb-3 font-gaegu flex items-center justify-center">✨ {currentStrings.sectionFinalMessage}</h4>
                                 <p className="text-xl text-yellow-900 font-semibold italic">"{person_story.final_message || "당신의 길을 응원합니다!"}"</p>
                            </div>
                         </div>
@@ -589,13 +590,8 @@ const App = () => {
             );
         }
 
-        // Couple Analysis (기존 구조 유지)
         const { person1_analysis, person2_analysis, compatibility } = analysisResult;
-        const tabs = [
-            { id: 'compatibility', label: currentStrings.tabCompatibility },
-            { id: 'person1', label: currentStrings.tabPerson1 },
-            { id: 'person2', label: currentStrings.tabPerson2 }
-        ];
+        const tabs = [{ id: 'compatibility', label: currentStrings.tabCompatibility }, { id: 'person1', label: currentStrings.tabPerson1 }, { id: 'person2', label: currentStrings.tabPerson2 }];
         return (
             <div className="font-gowun">
                 <h2 className="text-4xl font-bold text-center text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 mb-6 font-gaegu">{currentStrings.resultTitleCouple}</h2>
@@ -603,43 +599,12 @@ const App = () => {
                     <img src={person1ImagePreview} alt="Person 1" className="w-32 h-32 object-cover rounded-full shadow-lg border-4 border-rose-300 -mr-4 z-10"/>
                     <img src={person2ImagePreview} alt="Person 2" className="w-32 h-32 object-cover rounded-full shadow-lg border-4 border-fuchsia-300"/>
                 </div>
-                
-                <div className="border-b border-gray-200 mb-4">
-                    <nav className="-mb-px flex justify-center space-x-4" aria-label="Tabs">
-                        {tabs.map(tab => (
-                            <button key={tab.id} onClick={() => setActiveTab(tab.id)}
-                                className={`${activeTab === tab.id ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg font-gaegu`}>
-                                {tab.label}
-                            </button>
-                        ))}
-                    </nav>
-                </div>
-
+                <div className="border-b border-gray-200 mb-4"><nav className="-mb-px flex justify-center space-x-4" aria-label="Tabs">{tabs.map(tab => (<button key={tab.id} onClick={() => setActiveTab(tab.id)} className={`${activeTab === tab.id ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg font-gaegu`}>{tab.label}</button>))}</nav></div>
                 <RegularAdPlaceholder />
-                
                 <div>
-                     {activeTab === 'compatibility' && compatibility && (
-                         <div className="bg-gradient-to-br from-indigo-100 to-blue-200 p-6 rounded-xl shadow-xl border-2 border-indigo-300">
-                            <h3 className="text-3xl font-bold text-indigo-700 mb-4 text-center font-gaegu">{currentStrings.compatibilityTitle}</h3>
-                            <p className="text-5xl md:text-6xl font-bold text-indigo-600 mb-2 text-center font-gaegu">{animatedScore}{currentStrings.scoreUnit}</p>
-                            <p className="text-md text-gray-700 mb-6 italic text-center p-2 bg-white/50 rounded-md">{compatibility.score_reason}</p>
-                            {renderAnalysisSection('관상 궁합', compatibility.physiognomy_compatibility)}
-                            {renderAnalysisSection('사주 궁합', compatibility.saju_compatibility)}
-                            {renderAnalysisSection('최종 궁합 조언', compatibility.integrated_summary)}
-                        </div>
-                    )}
-                    {activeTab === 'person1' && person1_analysis && (
-                        <div>
-                            {renderAnalysisSection('관상 분석', person1_analysis.physiognomy_analysis)}
-                            {renderAnalysisSection('사주 분석', person1_analysis.saju_analysis)}
-                        </div>
-                    )}
-                    {activeTab === 'person2' && person2_analysis && (
-                        <div>
-                            {renderAnalysisSection('관상 분석', person2_analysis.physiognomy_analysis)}
-                            {renderAnalysisSection('사주 분석', person2_analysis.saju_analysis)}
-                        </div>
-                    )}
+                     {activeTab === 'compatibility' && compatibility && (<div className="bg-gradient-to-br from-indigo-100 to-blue-200 p-6 rounded-xl shadow-xl border-2 border-indigo-300"><h3 className="text-3xl font-bold text-indigo-700 mb-4 text-center font-gaegu">{currentStrings.compatibilityTitle}</h3><p className="text-5xl md:text-6xl font-bold text-indigo-600 mb-2 text-center font-gaegu">{animatedScore}{currentStrings.scoreUnit}</p><p className="text-md text-gray-700 mb-6 italic text-center p-2 bg-white/50 rounded-md">{compatibility.score_reason}</p>{renderAnalysisSection('관상 궁합', compatibility.physiognomy_compatibility, '🎭')}{renderAnalysisSection('사주 궁합', compatibility.saju_compatibility, '📜')}{renderAnalysisSection('최종 궁합 조언', compatibility.integrated_summary, '💡')}</div>)}
+                     {activeTab === 'person1' && person1_analysis && (<div>{renderAnalysisSection('관상 분석', person1_analysis.physiognomy_analysis, '🧐')}{renderAnalysisSection('사주 분석', person1_analysis.saju_analysis, '🗓️')}</div>)}
+                     {activeTab === 'person2' && person2_analysis && (<div>{renderAnalysisSection('관상 분석', person2_analysis.physiognomy_analysis, '🧐')}{renderAnalysisSection('사주 분석', person2_analysis.saju_analysis, '🗓️')}</div>)}
                 </div>
             </div>
         );
@@ -647,11 +612,12 @@ const App = () => {
     
     // 최종 렌더링
     return (
-        <div className="relative min-h-screen bg-gradient-to-br from-pink-400 via-purple-500 to-indigo-600 p-4 sm:p-6 lg:p-8 flex flex-col items-center">
-            {isLoading && <AnalysisLoadingComponent images={showCoupleInput ? [person1ImagePreview, person2ImagePreview] : [person1ImagePreview]} strings={currentStrings} />}
+        <div className="relative min-h-screen bg-gradient-to-br from-pink-400 via-purple-500 to-indigo-600 p-4 sm:p-6 lg:p-8 flex flex-col">
+            {isLoading && <AnalysisLoadingComponent images={showCoupleInput ? [person1ImagePreview, person2ImagePreview] : [person1ImagePreview]} strings={currentStrings} loadingText={loadingText} />}
 
-            <div className={`w-full transition-all duration-500 ${isLoading ? 'opacity-50 blur-sm pointer-events-none' : 'opacity-100'}`}>
-                <header className="w-full max-w-4xl mt-16 sm:mt-12 mb-8 text-center font-gaegu">
+            {/* *** FIX: 중앙 정렬 문제 해결 *** */}
+            <div className={`w-full mx-auto transition-all duration-500 ${isLoading ? 'opacity-50 blur-sm pointer-events-none' : 'opacity-100'}`}>
+                <header className="w-full max-w-4xl mx-auto mt-16 sm:mt-12 mb-8 text-center font-gaegu">
                     <h1 className="text-5xl sm:text-6xl font-bold text-white py-2 flex items-center justify-center drop-shadow-lg">
                         {showCoupleInput ? <UsersIcon className="inline-block w-12 h-12 mr-3 text-pink-300" /> : <UserIcon className="inline-block w-12 h-12 mr-3 text-cyan-300" />}
                         {currentStrings.appTitle}
@@ -659,7 +625,7 @@ const App = () => {
                     <p className="text-xl text-white mt-3 drop-shadow-md">{currentStrings.appSubtitle}</p>
                 </header>
                 
-                <main className="w-full max-w-4xl bg-white/95 backdrop-blur-md shadow-2xl rounded-xl p-6 sm:p-8">
+                <main className="w-full max-w-4xl mx-auto bg-white/95 backdrop-blur-md shadow-2xl rounded-xl p-6 sm:p-8">
                     {pageState === 'main' && <MainPageComponent />}
                     {pageState === 'result' && analysisResult && 
                         <div>
@@ -675,11 +641,9 @@ const App = () => {
                             {copyStatus && <p className="text-center text-md text-green-700 mt-4 font-semibold animate-bounce">{copyStatus}</p>}
                         </div>
                     }
-
                     {error && <p className="text-red-500 bg-red-100 border border-red-300 rounded-md p-4 text-md mt-4 max-w-md mx-auto shadow-md animate-shake text-center font-bold">{error}</p>}
                 </main>
-
-                <footer className="w-full max-w-4xl mt-12 text-center">
+                <footer className="w-full max-w-4xl mx-auto mt-12 text-center">
                     <p className="text-md text-white/90 drop-shadow-sm">© {new Date().getFullYear()} AI 관상 & 궁합. Just for Fun!</p>
                 </footer>
             </div>
