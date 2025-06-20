@@ -54,6 +54,7 @@ const RefreshCwIcon = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg
 const PlusCircleIcon = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>);
 const CalendarIcon = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>);
 const SparklesIcon = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="m12 3-1.9 5.8-5.8 1.9 5.8 1.9 1.9 5.8 1.9-5.8 5.8-1.9-5.8-1.9z"/><path d="M22 12a10 10 0 1 1-10-10"/><path d="M22 12a10 10 0 0 0-10-10"/></svg>);
+const CheckCircleIcon = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>);
 const ClipboardCopyIcon = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>);
 
 // 다국어 텍스트 객체
@@ -66,14 +67,26 @@ const translations = {
     uploadInstruction: "얼굴이 선명한 정면 사진을 올려주세요.",
     dobLabel: "생년월일", dobPlaceholder: "YYYY-MM-DD",
     addCoupleButton: "+ 다른사람과 궁합보기", removeCoupleButton: "x 혼자 보기",
-    analyzeButtonSingle: "AI 운명 분석",
+    analyzeButtonPersonalized: "AI 맞춤 운명 분석",
     analyzeButtonCouple: "AI 커플 궁합 분석",
     loadingMessage: "운명의 비밀을 푸는 중...",
     errorMessageDefault: "사진과 생년월일을 모두 입력해주세요.",
     noFaceDetectedError: "앗, 사진에서 얼굴을 찾기 어려워요! 😅 이목구비가 선명하게 나온 정면 사진으로 다시 시도해주시면 더 정확한 관상을 볼 수 있답니다.",
     apiErrorGeneric: "API 요청에 실패했습니다", apiErrorResponseFormat: "AI가 응답을 준비하지 못했어요. 😥 응답 형식이 올바르지 않습니다. 잠시 후 다시 시도해주세요!",
-    resultTitleSingle: "✨ AI 개인 운명 분석 ✨", resultTitleCouple: "💖 AI 커플 궁합 결과 💖",
+    resultTitleSingle: "✨ AI 개인 맞춤 운명 분석 ✨", resultTitleCouple: "💖 AI 커플 궁합 결과 💖",
     tabPerson1: "첫 번째 분", tabPerson2: "두 번째 분", tabCompatibility: "종합 궁합",
+    interestSelectionTitle: "🎯 어떤 분야가 가장 궁금하신가요? (2~3개 선택해주세요)",
+    interests: {
+        love: "💕 연애&결혼", career: "💼 직업&성공", wealth: "💰 재물&투자",
+        health: "🏥 건강&장수", relationship: "👥 인간관계", talent: "🎨 재능&특기",
+        yearFortune: "🔮 올해운세", caution: "⚠️ 주의사항", charm: "🌟 숨겨진매력"
+    },
+    sectionBasicAnalysis: "🎯 기본 운명 분석",
+    sectionPersonalizedAnalysis: "💫 맞춤 심층 분석",
+    sectionBirthSaju: "📜 타고난 사주",
+    sectionBasicPhysiognomy: "🎭 기본적 관상분석",
+    sectionInherentDestiny: "🌟 타고난 운명과 성향",
+    reAnalyzeButton: "다른 관심사로 다시 분석하기",
     sectionFirstImpression: "🔮 첫인상: 타인에게 비치는 당신의 모습",
     sectionInnerPersonality: "💖 내면의 성격과 잠재력",
     sectionHarmony: "🎭 외면과 내면의 조화와 충돌",
@@ -338,7 +351,6 @@ const AnalysisLoadingComponent = React.memo(({ images, strings, loadingText }) =
   );
 });
 
-// *** FIX: 컴포넌트 외부로 분리 ***
 const MainPageComponent = React.memo(({
     currentStrings,
     handleAnalysis,
@@ -670,9 +682,6 @@ const App = () => {
                             person2Dob={person2Dob}
                             showCoupleInput={showCoupleInput}
                             setShowCoupleInput={setShowCoupleInput}
-                            showInterestSelection={showInterestSelection}
-                            selectedInterests={selectedInterests}
-                            handleInterestToggle={handleInterestToggle}
                             person1ImageFile={person1ImageFile}
                             person2ImageFile={person2ImageFile}
                         />
@@ -687,11 +696,7 @@ const App = () => {
                                 handleSummaryCopy={handleCopyToClipboard}
                             />
                             <div className="mt-10 pt-6 border-t border-gray-300 flex flex-col sm:flex-row items-center justify-center gap-4">
-                                {analysisResult.analysis_type === 'single' && (
-                                     <button onClick={reAnalyzeWithDifferentInterests} className="flex items-center justify-center px-4 py-3 bg-green-600 hover:bg-green-700 text-white font-bold rounded-lg shadow-lg transition-colors font-gaegu">
-                                        <RefreshCwIcon className="w-5 h-5 mr-2" /> {currentStrings.reAnalyzeButton}
-                                    </button>
-                                )}
+                                
                                 <button onClick={() => handleCopyToClipboard(`${window.location.origin}/result/${resultId}`)} disabled={!resultId} className="flex items-center justify-center px-4 py-3 bg-gray-600 hover:bg-gray-700 text-white font-bold rounded-lg shadow-lg transition-colors disabled:bg-gray-400 font-gaegu">
                                     <LinkIcon className="w-5 h-5 mr-2" /> {currentStrings.copyButton}
                                 </button>
