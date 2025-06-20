@@ -54,7 +54,7 @@ const RefreshCwIcon = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg
 const PlusCircleIcon = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>);
 const CalendarIcon = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>);
 const SparklesIcon = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="m12 3-1.9 5.8-5.8 1.9 5.8 1.9 1.9 5.8 1.9-5.8 5.8-1.9-5.8-1.9z"/><path d="M22 12a10 10 0 1 1-10-10"/><path d="M22 12a10 10 0 0 0-10-10"/></svg>);
-const CheckCircleIcon = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>);
+const ClipboardCopyIcon = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>);
 
 
 // 다국어 텍스트 객체
@@ -67,25 +67,21 @@ const translations = {
     uploadInstruction: "얼굴이 선명한 정면 사진을 올려주세요.",
     dobLabel: "생년월일", dobPlaceholder: "YYYY-MM-DD",
     addCoupleButton: "+ 다른사람과 궁합보기", removeCoupleButton: "x 혼자 보기",
-    analyzeButtonPersonalized: "AI 맞춤 운명 분석", analyzeButtonCouple: "AI 커플 궁합 분석",
+    analyzeButtonSingle: "AI 운명 분석",
+    analyzeButtonCouple: "AI 커플 궁합 분석",
     loadingMessage: "운명의 비밀을 푸는 중...",
     errorMessageDefault: "사진과 생년월일을 모두 입력해주세요.",
     noFaceDetectedError: "앗, 사진에서 얼굴을 찾기 어려워요! 😅 이목구비가 선명하게 나온 정면 사진으로 다시 시도해주시면 더 정확한 관상을 볼 수 있답니다.",
     apiErrorGeneric: "API 요청에 실패했습니다", apiErrorResponseFormat: "AI가 응답을 준비하지 못했어요. 😥 응답 형식이 올바르지 않습니다. 잠시 후 다시 시도해주세요!",
-    resultTitleSingle: "✨ AI 개인 맞춤 운명 분석 ✨", resultTitleCouple: "💖 AI 커플 궁합 결과 💖",
+    resultTitleSingle: "✨ AI 개인 운명 분석 ✨", resultTitleCouple: "💖 AI 커플 궁합 결과 💖",
     tabPerson1: "첫 번째 분", tabPerson2: "두 번째 분", tabCompatibility: "종합 궁합",
-    interestSelectionTitle: "🎯 어떤 분야가 가장 궁금하신가요? (2~3개 선택해주세요)",
-    interests: {
-        love: "💕 연애&결혼", career: "💼 직업&성공", wealth: "💰 재물&투자",
-        health: "🏥 건강&장수", relationship: "👥 인간관계", talent: "🎨 재능&특기",
-        yearFortune: "🔮 올해운세", caution: "⚠️ 주의사항", charm: "🌟 숨겨진매력"
-    },
-    sectionBasicAnalysis: "🎯 기본 운명 분석",
-    sectionPersonalizedAnalysis: "💫 맞춤 심층 분석",
-    sectionBirthSaju: "📜 타고난 사주",
-    sectionBasicPhysiognomy: "🎭 기본적 관상분석",
-    sectionInherentDestiny: "🌟 타고난 운명과 성향",
-    reAnalyzeButton: "다른 관심사로 다시 분석하기",
+    sectionFirstImpression: "🔮 첫인상: 타인에게 비치는 당신의 모습",
+    sectionInnerPersonality: "💖 내면의 성격과 잠재력",
+    sectionHarmony: "🎭 외면과 내면의 조화와 충돌",
+    sectionFuturePath: "🧭 앞으로 나아갈 길과 기회",
+    sectionFinalMessage: "✨ 도사의 마지막 조언",
+    summaryTitle: "🙋 나의 요약 결과는?",
+    summaryCopyButton: "복사하기",
     compatibilityTitle: "두 분의 종합 궁합은 과연?! 💕",
     scoreUnit: "점!!!",
     retryButton: "처음부터 다시하기",
@@ -101,60 +97,36 @@ const translations = {
     ],
     adPlaceholderBannerText: "꿀잼 광고 배너",
     shareMessage: "나의 AI 운명 분석 결과가 궁금하다면? 클릭해서 확인해봐! 👇",
-    aiPromptSingle: `당신은 관상과 사주에 정통하고, 개인 맞춤형 분석을 제공하는 AI 도사입니다.
+    aiPromptSingle: `당신은 관상과 사주에 정통하고, 사람의 인생을 하나의 흥미로운 이야기로 엮어내는 AI 스토리텔러 도사입니다. 사용자의 사진과 생년월일을 바탕으로, 사용자의 운명을 하나의 '캐릭터'와 '서사'로 정의하여 아래 항목을 반드시 포함한 JSON 형식으로 분석해주세요.
 
-    사용자가 제공한 정보:
-    - 사진: 관상 분석용
-    - 생년월일: 사주 분석 및 연령대 파악용
-    - 선택한 관심사: {interests}
-    - 현재 날짜: 2025년 1월
+    🎯 분석 목표:
+    - 사용자가 자신의 운명을 한 편의 드라마처럼 느끼고, 결과에 깊이 몰입하게 만들어야 합니다.
+    - 분석 결과가 SNS에서 공유하고 싶을 만큼 재미있고, 인상적인 캐릭터성을 부여해야 합니다.
     
-    분석 구조:
-    1. 기본 3개 섹션 (반드시 포함):
-       - birth_saju: 타고난 사주 - 생년월일 기반 사주 해석과 오행 분석
-       - basic_physiognomy: 기본적 관상분석 - 얼굴 전체에서 읽어내는 기본 성격과 기질
-       - inherent_destiny: 타고난 운명과 성향 - 사주와 관상을 종합한 전반적 성향과 타고난 운명
+    📌 분석 규칙:
+    1.  **캐릭터 설정**: 사용자의 관상과 사주를 종합하여, 그를 표현하는 창의적이고 매력적인 별명(\`nickname\`)과, 호기심을 자극하는 한 문장(\`hooking_sentence\`), 그리고 핵심 성향을 나타내는 키워드 태그(\`tags\`) 3개를 생성해주세요.
+    2.  **서사 구성 (5단계)**:
+        - \`first_impression\`: 겉모습(관상)에서 느껴지는 첫인상과 분위기를 감성적이고 비유적으로 묘사해주세요.
+        - \`inner_personality\`: 생년월일(사주)에 담긴 내면의 성격, 타고난 기질, 잠재력을 분석해주세요.
+        - \`harmony_or_conflict\`: 겉모습과 내면의 성향이 어떻게 조화를 이루거나 충돌하는지, 그리고 그로 인해 어떤 결과가 나타나는지 흥미롭게 해석해주세요.
+        - \`future_path\`: 앞으로의 운세 흐름과 인생의 기회, 조심해야 할 점을 구체적으로 조언해주세요.
+        - \`final_message\`: 모든 분석을 아우르는, 도사의 지혜가 담긴 짧고 인상 깊은 한마디를 남겨주세요.
+    3.  **내용 상세화**: 각 항목은 3~6문장 분량으로 구체적이고 감성적으로 작성해주세요.
+    4.  **JSON 형식 준수**: 반드시 아래에 명시된 JSON 구조로만 응답해야 합니다. \`analysis_type\`은 'single'로 고정입니다.
     
-    2. 맞춤 심층 분석 2-3개 섹션:
-       사용자가 선택한 관심사를 바탕으로 다음 중에서 가장 적합한 섹션들을 선택:
-       
-       연애&결혼: "💕 올해의 연애운", "💒 결혼 시기와 신호", "💔 조심해야 할 연애 패턴"
-       직업&성공: "💼 승진과 이직 타이밍", "🎯 성공을 위한 전략", "⚡ 업무에서 발휘할 강점"
-       재물&투자: "💰 돈복과 재물 증식법", "📈 투자 운과 타이밍", "💎 예상치 못한 수익원"
-       건강&장수: "🏥 건강 주의 시기", "💪 체력 관리법", "🧘 스트레스 해소법"
-       인간관계: "👥 인맥 확장 시기", "💝 소중한 인연 만나는 법", "⚠️ 조심해야 할 관계"
-       재능&특기: "🎨 숨겨진 재능 발견", "⭐ 특별한 능력 개발법", "🌟 재능으로 성공하는 길"
-       올해운세: "🔮 2025년 전체 운세", "🌈 올해 주요 변화", "📅 월별 운세 하이라이트"
-       주의사항: "⚠️ 올해 조심해야 할 일", "🛡️ 액막이와 방어법", "💡 위기를 기회로 바꾸는 법"
-       숨겨진매력: "✨ 나도 모르는 매력 포인트", "💫 어필하면 좋을 특징", "🎭 상황별 매력 발산법"
-    
-    분석 원칙:
-    - 각 섹션은 3-6문장으로 구체적이고 개인적으로 작성
-    - 유머와 감정을 적절히 활용하여 재미있게 구성
-    - 공유하고 싶고 화제가 될 만한 내용으로 작성
-    - 과학적 근거보다는 엔터테인먼트에 집중
-    - 사용자의 연령대도 고려하여 적절한 조언 제공
-    
-    무조건 아래 JSON 형식으로만 응답할 것:
+    🧾 JSON 응답 구조:
     {
       "analysis_type": "single",
-      "basic_sections": {
-        "birth_saju": "생년월일 기반 사주와 오행 분석 내용...",
-        "basic_physiognomy": "얼굴에서 읽어내는 기본 성격과 기질 내용...", 
-        "inherent_destiny": "사주와 관상 종합 운명과 성향 내용..."
-      },
-      "personalized_sections": [
-        {
-          "section_key": "love_fortune", 
-          "section_title": "💕 올해의 연애운",
-          "content": "선택한 관심사에 맞는 상세 분석 내용..."
-        },
-        {
-          "section_key": "career_success",
-          "section_title": "💼 승진과 성공 타이밍", 
-          "content": "선택한 관심사에 맞는 상세 분석 내용..."
-        }
-      ]
+      "person_story": {
+        "nickname": "태풍 속의 조용한 리더",
+        "hooking_sentence": "겉은 조용하지만, 안에는 불이 타오른다.",
+        "tags": ["🔥 추진력", "🎯 전략가", "💬 외향형"],
+        "first_impression": "눈에서 불꽃이 느껴지는 관상입니다...",
+        "inner_personality": "사주에 나타난 성격은 외유내강...",
+        "harmony_or_conflict": "겉과 속의 간극이 있어 갈등이 발생할 수 있음...",
+        "future_path": "2025년은 이직 또는 새로운 시작의 해로 적합합니다...",
+        "final_message": "혼자 가면 빠르지만, 함께 가면 멀리 갑니다."
+      }
     }`,
     aiPromptCouple: `당신은 관상과 사주에 능통하고, 관계 통찰력과 유머 감각까지 갖춘 AI 커플 운명 분석가입니다. 두 사람의 사진과 생년월일을 바탕으로, 각자의 운세와 둘의 궁합을 드라마틱하고 공감 가는 방식으로 분석해주세요.
 
@@ -325,34 +297,6 @@ const InputSection = React.memo(({ personNum, title, onImageSelect, onDobChange,
 });
 
 
-const InterestSelection = React.memo(({ strings, selectedInterests, onInterestToggle }) => {
-    return (
-        <section className="mt-8 p-6 bg-indigo-50 rounded-lg shadow-inner">
-            <h3 className="text-xl font-bold text-indigo-700 mb-4 text-center font-gaegu">{strings.interestSelectionTitle}</h3>
-            <div className="grid grid-cols-3 gap-3">
-                {Object.entries(strings.interests).map(([key, value]) => {
-                    const isSelected = selectedInterests.includes(key);
-                    return (
-                        <button
-                            key={key}
-                            onClick={() => onInterestToggle(key)}
-                            className={`relative p-3 font-gaegu font-bold text-gray-700 rounded-lg shadow-md transition-all duration-200 transform hover:scale-105
-                                ${isSelected 
-                                    ? 'bg-gradient-to-br from-purple-400 to-indigo-500 text-white ring-2 ring-purple-600' 
-                                    : 'bg-white hover:bg-gray-100'}`
-                            }
-                        >
-                            {value}
-                            {isSelected && <CheckCircleIcon className="absolute top-1 right-1 w-5 h-5 text-white" />}
-                        </button>
-                    );
-                })}
-            </div>
-        </section>
-    );
-});
-
-
 const AnalysisLoadingComponent = React.memo(({ images, strings, loadingText }) => {
   const [comment, setComment] = useState(strings.loadingComments[0]);
   const isFetching = loadingText === strings.resultLoading;
@@ -405,10 +349,7 @@ const MainPageComponent = React.memo(({
     person2ImagePreview,
     person2Dob,
     showCoupleInput,
-    setShowCoupleInput,
-    showInterestSelection,
-    selectedInterests,
-    handleInterestToggle
+    setShowCoupleInput
 }) => (
     <div className="font-gowun">
         <section className="mb-8 p-4 bg-indigo-50 rounded-lg shadow">
@@ -437,24 +378,16 @@ const MainPageComponent = React.memo(({
             <button onClick={() => setShowCoupleInput(false)} className="text-sm text-gray-500 hover:text-red-500 font-gaegu">{currentStrings.removeCoupleButton}</button>
           </div>
         )}
-
-        {!showCoupleInput && showInterestSelection && (
-            <InterestSelection
-                strings={currentStrings}
-                selectedInterests={selectedInterests}
-                onInterestToggle={handleInterestToggle}
-            />
-        )}
         
         <div className="my-6 p-3 bg-gray-100 rounded-lg text-center border border-gray-300"><p className="text-gray-600 text-xs">{currentStrings.adPlaceholderBannerText}</p><img src={`https://placehold.co/300x100/e0e0e0/757575?text=${currentStrings.adPlaceholderBannerText.replace(/\s/g, '+')}`} alt="Ad Banner" className="mx-auto mt-1 rounded" /></div>
 
         <section className="text-center mt-6">
             <button 
                 onClick={handleAnalysis} 
-                disabled={!showCoupleInput && selectedInterests.length < 2}
+                disabled={!person1ImageFile || !person1Dob}
                 className="px-12 py-5 bg-gradient-to-r from-purple-600 to-indigo-700 hover:from-purple-700 hover:to-indigo-800 text-white font-bold text-2xl rounded-lg shadow-xl transition-all duration-300 ease-in-out transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:scale-100 font-gaegu">
                 <SparklesIcon className="inline-block w-8 h-8 mr-2" />
-                {showCoupleInput ? currentStrings.analyzeButtonCouple : currentStrings.analyzeButtonPersonalized}
+                {showCoupleInput ? currentStrings.analyzeButtonCouple : currentStrings.analyzeButtonSingle}
             </button>
         </section>
     </div>
@@ -464,7 +397,8 @@ const ResultPageComponent = React.memo(({
     analysisResult,
     currentStrings,
     person1ImagePreview,
-    person2ImagePreview
+    person2ImagePreview,
+    handleSummaryCopy,
 }) => {
     const isCouple = analysisResult.analysis_type === 'couple';
     const [activeTab, setActiveTab] = useState(isCouple ? 'compatibility' : 'person1');
@@ -478,31 +412,43 @@ const ResultPageComponent = React.memo(({
     );
     
     if (!isCouple) {
-        const { basic_sections, personalized_sections } = analysisResult;
+        const { person_story } = analysisResult;
+        const { nickname, hooking_sentence, tags, first_impression, inner_personality, harmony_or_conflict, future_path, final_message } = person_story || {};
+
         return (
             <div className="font-gowun">
                 <h2 className="text-4xl font-bold text-center text-transparent bg-clip-text bg-gradient-to-r from-green-400 via-cyan-500 to-blue-600 mb-6 font-gaegu">{currentStrings.resultTitleSingle}</h2>
                 <div className="flex justify-center mb-6"><img src={person1ImagePreview} alt="Person 1" className="w-40 h-40 object-cover rounded-full shadow-lg border-4 border-cyan-300"/></div>
                 
-                {basic_sections && (
-                    <div className="mb-8">
-                        <h3 className="text-2xl font-bold text-gray-800 mb-4 text-center font-gaegu">{currentStrings.sectionBasicAnalysis}</h3>
-                        {renderAnalysisSection(currentStrings.sectionBirthSaju, basic_sections.birth_saju, '📜')}
-                        {renderAnalysisSection(currentStrings.sectionBasicPhysiognomy, basic_sections.basic_physiognomy, '🎭')}
-                        {renderAnalysisSection(currentStrings.sectionInherentDestiny, basic_sections.inherent_destiny, '🌟')}
-                    </div>
-                )}
-                
-                <div className="my-6 p-3 bg-gray-100 rounded-lg text-center border border-gray-300"><p className="text-gray-600 text-xs">{currentStrings.adPlaceholderBannerText}</p><img src={`https://placehold.co/300x100/e0e0e0/757575?text=${currentStrings.adPlaceholderBannerText.replace(/\s/g, '+')}`} alt="Ad Banner" className="mx-auto mt-1 rounded" /></div>
-                
-                {personalized_sections && (
-                    <div className="mt-8">
-                        <h3 className="text-2xl font-bold text-gray-800 mb-4 text-center font-gaegu">{currentStrings.sectionPersonalizedAnalysis}</h3>
-                        {personalized_sections.map((section) => (
-                            renderAnalysisSection(section.section_title, section.content, '💫')
+                {/* Hero Summary Card */}
+                <div className="mb-8 p-4 bg-white rounded-xl shadow-lg text-center">
+                    <h2 className="text-3xl font-bold text-indigo-800 font-gaegu">{nickname || "분석 중..."}</h2>
+                    <p className="italic text-gray-700 mt-2 text-lg">"{hooking_sentence || "당신의 이야기가 펼쳐집니다."}"</p>
+                    <div className="flex flex-wrap justify-center gap-2 mt-4">
+                        {(tags || []).map((tag, index) => (
+                            <span key={index} className="text-sm bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full font-semibold">{tag}</span>
                         ))}
                     </div>
-                )}
+                </div>
+
+                {renderAnalysisSection(currentStrings.sectionFirstImpression, first_impression, '🔮')}
+                {renderAnalysisSection(currentStrings.sectionInnerPersonality, inner_personality, '💖')}
+                {renderAnalysisSection(currentStrings.sectionHarmony, harmony_or_conflict, '🎭')}
+                {renderAnalysisSection(currentStrings.sectionFuturePath, future_path, '🧭')}
+                
+                <div className="my-6 p-3 bg-gray-100 rounded-lg text-center border border-gray-300"><p className="text-gray-600 text-xs">{currentStrings.adPlaceholderBannerText}</p><img src={`https://placehold.co/300x100/e0e0e0/757575?text=${currentStrings.adPlaceholderBannerText.replace(/\s/g, '+')}`} alt="Ad Banner" className="mx-auto mt-1 rounded" /></div>
+
+                {renderAnalysisSection(currentStrings.sectionFinalMessage, final_message, '✨')}
+                
+                {/* Copy Summary Box */}
+                <div className="mt-8 bg-yellow-50 p-4 rounded-lg text-center border border-yellow-300">
+                    <p className="font-bold text-gray-800 text-lg font-gaegu">{currentStrings.summaryTitle}</p>
+                    <p className="text-md mt-1 text-gray-700 italic">"{final_message}"</p>
+                    <button onClick={() => handleSummaryCopy(final_message)} className="mt-3 px-4 py-2 rounded-lg bg-yellow-400 hover:bg-yellow-500 text-white text-sm font-bold shadow-md transition-colors flex items-center justify-center mx-auto">
+                        <ClipboardCopyIcon className="w-4 h-4 mr-2" />
+                        {currentStrings.summaryCopyButton}
+                    </button>
+                </div>
             </div>
         );
     }
@@ -546,8 +492,6 @@ const App = () => {
     const [resultId, setResultId] = useState(null);
     const [copyStatus, setCopyStatus] = useState('');
     const [loadingText, setLoadingText] = useState('');
-    const [selectedInterests, setSelectedInterests] = useState([]);
-    const [showInterestSelection, setShowInterestSelection] = useState(false);
 
     useEffect(() => {
         const lang = (typeof window !== 'undefined' && translations[window.navigator.language?.split('-')[0]]) ? window.navigator.language.split('-')[0] : 'ko';
@@ -555,14 +499,6 @@ const App = () => {
         setCurrentStrings(translations[lang]);
         setLoadingText(translations[lang].loadingMessage);
     }, []);
-
-    useEffect(() => {
-        if (person1ImageFile && person1Dob.length === 10) {
-            setShowInterestSelection(true);
-        } else {
-            setShowInterestSelection(false);
-        }
-    }, [person1ImageFile, person1Dob]);
 
     useEffect(() => {
         const path = window.location.pathname.split('/');
@@ -585,8 +521,6 @@ const App = () => {
                         if (data.analysis.analysis_type === 'couple') {
                             setPerson2ImagePreview(data.images.person2);
                             setShowCoupleInput(true);
-                        } else {
-                            setSelectedInterests(data.interests || []);
                         }
                         setResultId(id);
                         setPageState('result');
@@ -624,18 +558,6 @@ const App = () => {
         setError('');
     }, []);
 
-    const handleInterestToggle = useCallback((interestKey) => {
-        setSelectedInterests(prev => {
-            if (prev.includes(interestKey)) {
-                return prev.filter(item => item !== interestKey);
-            }
-            if (prev.length < 3) {
-                return [...prev, interestKey];
-            }
-            return prev;
-        });
-    }, []);
-
     const resetAllStates = () => {
         window.history.pushState({}, '', '/');
         setShowCoupleInput(false);
@@ -650,25 +572,10 @@ const App = () => {
         setIsLoading(false);
         setPageState('main');
         setResultId(null);
-        setSelectedInterests([]);
-        setShowInterestSelection(false);
-    };
-    
-    const reAnalyzeWithDifferentInterests = () => {
-        setPageState('main');
-        setShowInterestSelection(true);
-        setAnalysisResult(null);
-        setSelectedInterests([]);
-        setResultId(null);
-        window.history.pushState({}, '', '/');
     };
 
     const handleAnalysis = useCallback(async () => {
         const isCoupleAnalysis = showCoupleInput;
-        if (!isCoupleAnalysis && selectedInterests.length < 2) {
-             setError(currentStrings.interestSelectionTitle);
-             return;
-        }
         if (!person1ImageFile || !person1Dob || (isCoupleAnalysis && (!person2ImageFile || !person2Dob))) {
             setError(currentStrings.errorMessageDefault);
             return;
@@ -679,12 +586,7 @@ const App = () => {
         setError('');
 
         try {
-            let prompt = isCoupleAnalysis ? currentStrings.aiPromptCouple : currentStrings.aiPromptSingle;
-            if (!isCoupleAnalysis) {
-                const interestTexts = selectedInterests.map(key => currentStrings.interests[key]).join(', ');
-                prompt = prompt.replace('{interests}', interestTexts);
-            }
-
+            const prompt = isCoupleAnalysis ? currentStrings.aiPromptCouple : currentStrings.aiPromptSingle;
             const image1Base64 = await getBase64(person1ImageFile);
             const parts = [{ text: prompt }, { inlineData: { mimeType: person1ImageFile.type, data: image1Base64 } }];
 
@@ -713,7 +615,6 @@ const App = () => {
                 const docRef = doc(collection(db, "results"));
                 await setDoc(docRef, { 
                     analysis: parsedJson, images: { person1: person1URL, person2: person2URL },
-                    interests: isCoupleAnalysis ? [] : selectedInterests,
                     language: language, createdAt: serverTimestamp() 
                 });
                 setResultId(docRef.id);
@@ -725,16 +626,15 @@ const App = () => {
         } finally {
             setIsLoading(false);
         }
-    }, [showCoupleInput, selectedInterests, person1ImageFile, person1Dob, person2ImageFile, person2Dob, currentStrings, language]);
+    }, [showCoupleInput, person1ImageFile, person1Dob, person2ImageFile, person2Dob, currentStrings, language]);
     
-    const handleCopyToClipboard = useCallback(() => {
-        if (!resultId) return;
-        const shareUrl = `${window.location.origin}/result/${resultId}`;
-        navigator.clipboard.writeText(shareUrl).then(() => {
+    const handleCopyToClipboard = useCallback((textToCopy) => {
+        if (!textToCopy) return;
+        navigator.clipboard.writeText(textToCopy).then(() => {
           setCopyStatus(currentStrings.copySuccessMessage);
           setTimeout(() => setCopyStatus(''), 2000);
         });
-    }, [resultId, currentStrings.copySuccessMessage]);
+    }, [currentStrings.copySuccessMessage]);
     
     // 최종 렌더링
     return (
@@ -763,9 +663,7 @@ const App = () => {
                             person2Dob={person2Dob}
                             showCoupleInput={showCoupleInput}
                             setShowCoupleInput={setShowCoupleInput}
-                            showInterestSelection={showInterestSelection}
-                            selectedInterests={selectedInterests}
-                            handleInterestToggle={handleInterestToggle}
+                            // 사용하지 않으므로 props 전달 제거
                         />
                     )}
                     {pageState === 'result' && analysisResult && 
@@ -775,14 +673,10 @@ const App = () => {
                                 currentStrings={currentStrings}
                                 person1ImagePreview={person1ImagePreview}
                                 person2ImagePreview={person2ImagePreview}
+                                handleSummaryCopy={handleCopyToClipboard}
                             />
                             <div className="mt-10 pt-6 border-t border-gray-300 flex flex-col sm:flex-row items-center justify-center gap-4">
-                                {analysisResult.analysis_type === 'single' && (
-                                     <button onClick={reAnalyzeWithDifferentInterests} className="flex items-center justify-center px-4 py-3 bg-green-600 hover:bg-green-700 text-white font-bold rounded-lg shadow-lg transition-colors font-gaegu">
-                                        <RefreshCwIcon className="w-5 h-5 mr-2" /> {currentStrings.reAnalyzeButton}
-                                    </button>
-                                )}
-                                <button onClick={handleCopyToClipboard} disabled={!resultId} className="flex items-center justify-center px-4 py-3 bg-gray-600 hover:bg-gray-700 text-white font-bold rounded-lg shadow-lg transition-colors disabled:bg-gray-400 font-gaegu">
+                                <button onClick={() => handleCopyToClipboard(`${window.location.origin}/result/${resultId}`)} disabled={!resultId} className="flex items-center justify-center px-4 py-3 bg-gray-600 hover:bg-gray-700 text-white font-bold rounded-lg shadow-lg transition-colors disabled:bg-gray-400 font-gaegu">
                                     <LinkIcon className="w-5 h-5 mr-2" /> {currentStrings.copyButton}
                                 </button>
                                 <button onClick={resetAllStates} className="flex items-center justify-center px-8 py-3 bg-gray-500 hover:bg-gray-600 text-white font-bold rounded-lg shadow-lg transition-colors text-lg font-gaegu">
