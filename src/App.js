@@ -498,7 +498,7 @@ const ResultPageComponent = React.memo(({
                 {personalized_sections && (
                     <div className="mt-8">
                         <h3 className="text-2xl font-bold text-gray-800 mb-4 text-center font-gaegu">{currentStrings.sectionPersonalizedAnalysis}</h3>
-                        {personalized_sections.map((section, index) => (
+                        {personalized_sections.map((section) => (
                             renderAnalysisSection(section.section_title, section.content, '💫')
                         ))}
                     </div>
