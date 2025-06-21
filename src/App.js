@@ -71,30 +71,9 @@ const translations = {
     loadingMessage: "운명의 비밀을 푸는 중...",
     errorMessageDefault: "사진과 생년월일을 모두 입력해주세요.",
     noFaceDetectedError: "앗, 사진에서 얼굴을 찾기 어려워요! 😅 이목구비가 선명하게 나온 정면 사진으로 다시 시도해주시면 더 정확한 관상을 볼 수 있답니다.",
-    apiErrorGeneric: "API 요청에 실패했습니다", apiErrorResponseFormat: "AI가 응답을 준비하지 못했어요. 😥 응답 형식이 올바르지 않습니다. 잠시 후 다시 시도해주세요!",
+    apiErrorGeneric: "API 요청에 실패했습니다", 
+    apiErrorResponseFormat: "AI가 응답을 준비하지 못했어요. 😥 응답 형식이 올바르지 않습니다. 잠시 후 다시 시도해주세요!",
     resultTitleSingle: "✨ AI 개인 맞춤 운명 분석 ✨", resultTitleCouple: "💖 AI 커플 궁합 결과 💖",
-    tabPerson1: "첫 번째 분", tabPerson2: "두 번째 분", tabCompatibility: "종합 궁합",
-    interestSelectionTitle: "🎯 어떤 분야가 가장 궁금하신가요? (2~3개 선택해주세요)",
-    interests: {
-        love: "💕 연애&결혼", career: "💼 직업&성공", wealth: "💰 재물&투자",
-        health: "🏥 건강&장수", relationship: "👥 인간관계", talent: "🎨 재능&특기",
-        yearFortune: "🔮 올해운세", caution: "⚠️ 주의사항", charm: "🌟 숨겨진매력"
-    },
-    sectionBasicAnalysis: "🎯 기본 운명 분석",
-    sectionPersonalizedAnalysis: "💫 맞춤 심층 분석",
-    sectionBirthSaju: "📜 타고난 사주",
-    sectionBasicPhysiognomy: "🎭 기본적 관상분석",
-    sectionInherentDestiny: "🌟 타고난 운명과 성향",
-    reAnalyzeButton: "다른 관심사로 다시 분석하기",
-    sectionFirstImpression: "🔮 첫인상: 타인에게 비치는 당신의 모습",
-    sectionInnerPersonality: "💖 내면의 성격과 잠재력",
-    sectionHarmony: "🎭 외면과 내면의 조화와 충돌",
-    sectionFuturePath: "🧭 앞으로 나아갈 길과 기회",
-    sectionFinalMessage: "✨ 도사의 마지막 조언",
-    summaryTitle: "🙋 나의 요약 결과는?",
-    summaryCopyButton: "복사하기",
-    compatibilityTitle: "두 분의 종합 궁합은 과연?! 💕",
-    scoreUnit: "점!!!",
     retryButton: "처음부터 다시하기",
     copyButton: "공유 링크 복사", copySuccessMessage: "공유 링크가 복사되었어요!",
     resultNotFound: "앗! 해당 결과를 찾을 수 없어요.",
@@ -107,72 +86,95 @@ const translations = {
         "하늘의 뜻을 그대의 얼굴에 비추어 보고 있으니, 곧 알게 되리라."
     ],
     adPlaceholderBannerText: "꿀잼 광고 배너",
-    shareMessage: "나의 AI 운명 분석 결과가 궁금하다면? 클릭해서 확인해봐! 👇",
-    aiPromptSingle: `당신은 관상과 사주에 정통하고, 사람의 인생을 하나의 흥미로운 이야기로 엮어내는 AI 스토리텔러 도사입니다. 사용자의 사진과 생년월일을 바탕으로, 사용자의 운명을 하나의 '캐릭터'와 '서사'로 정의하여 아래 항목을 반드시 포함한 JSON 형식으로 분석해주세요.
+    aiPromptSingle: `당신은 30년 경력의 저명한 관상가이자 사주 명리학의 대가입니다. 사용자의 사진(관상)과 생년월일(사주)을 종합하여, 실제 점집에서 1:1로 깊이 있는 상담을 해주는 것처럼 운세 풀이를 제공해야 합니다. 친근하면서도 신비로운 전문가의 말투를 사용해주세요.
 
-    🎯 분석 목표:
-    - 사용자가 자신의 운명을 한 편의 드라마처럼 느끼고, 결과에 깊이 몰입하게 만들어야 합니다.
-    - 분석 결과가 SNS에서 공유하고 싶을 만큼 재미있고, 인상적인 캐릭터성을 부여해야 합니다.
-    
-    📌 분석 규칙:
-    1.  **캐릭터 설정**: 사용자의 관상과 사주를 종합하여, 그를 표현하는 창의적이고 매력적인 별명(\`nickname\`), 호기심을 자극하는 한 문장(\`hooking_sentence\`), 그리고 핵심 성향을 나타내는 키워드 태그(\`tags\`) 3개를 생성해주세요.
-    2.  **서사 구성 (5단계)**:
-        - \`first_impression\`: 겉모습(관상)에서 느껴지는 첫인상과 분위기를 감성적이고 비유적으로 묘사해주세요.
-        - \`inner_personality\`: 생년월일(사주)에 담긴 내면의 성격, 타고난 기질, 잠재력을 분석해주세요.
-        - \`harmony_or_conflict\`: 겉모습과 내면의 성향이 어떻게 조화를 이루거나 충돌하는지, 그리고 그로 인해 어떤 결과가 나타나는지 흥미롭게 해석해주세요.
-        - \`future_path\`: 앞으로의 운세 흐름과 인생의 기회, 조심해야 할 점을 구체적으로 조언해주세요.
-        - \`final_message\`: 모든 분석을 아우르는, 도사의 지혜가 담긴 짧고 인상 깊은 한마디를 남겨주세요.
-    3.  **내용 상세화**: 각 항목은 3~6문장 분량으로 구체적이고 감성적으로 작성해주세요.
-    4.  **JSON 형식 준수**: 반드시 아래에 명시된 JSON 구조로만 응답해야 합니다. \`analysis_type\`은 'single'로 고정입니다.
-    
-    🧾 JSON 응답 구조:
+    **[분석 목표]**
+    - 사용자가 자신의 삶에 대한 깊은 통찰과 재미를 얻고, 결과에 완전히 몰입하게 만들어야 합니다.
+    - 분석 내용은 반드시 구체적이고, 사용자가 "어떻게 알았지?"라고 생각할 만큼 현실적인 사건들을 포함해야 합니다.
+
+    **[분석 지침 및 순서]**
+    1.  **첫인상 및 기운 (first_impression)**: "어? 이 분은 정말 특별한 기운을 가지고 있네요!" 와 같이 사용자의 호기심을 자극하는 강력한 한마디로 시작하세요. 관상과 사주에서 느껴지는 전체적인 기운과 첫인상을 날카롭게 묘사해주세요.
+    2.  **성격 심층 분석 (personality_analysis)**: 관상을 중심으로 사주를 결합하여 진짜 성격을 분석합니다.
+        -   \`face_shape\`: 얼굴형과 전체적인 조화
+        -   \`forehead\`: 이마 (초년운, 지혜)
+        -   \`eyes\`: 눈 (마음의 창, 대인관계)
+        -   \`nose\`: 코 (재물운, 자존심)
+        -   \`mouth\`: 입과 턱 (말년운, 의지)
+        -   \`summary\`: 모든 것을 종합한 성격의 핵심 요약.
+    3.  **과거 흐름 검증 (past_verification)**: 사용자의 신뢰를 얻기 위해 과거의 중요한 시점을 짚어주세요.
+        -   \`period_2018_2019\`: 2018-2019년 시기의 환경 변화, 도전, 기회 등을 분석.
+        -   \`period_2020_2021\`: 2020-2021년 시기의 어려움, 인내, 성장의 과정을 분석.
+        -   \`recent_years\`: 최근 2-3년간의 운세 흐름과 주요 이슈 분석.
+    4.  **핵심 운세 분석**:
+        -   \`wealth_career\`: 재물운과 직업운의 흐름, 성공 가능성, 피해야 할 것들.
+        -   \`love_marriage\`: 연애운과 결혼운, 좋은 인연을 만나는 시기, 관계 조언.
+    5.  **미래 전망 및 조언**:
+        -   \`future_fortune\`: 2024년 하반기부터 2025년까지의 구체적인 월별 운세와 기회.
+        -   \`advice_caution\`: 인생 전반에 걸쳐 주의해야 할 점과 운을 좋게 만드는 개운법.
+    6.  **운세 요약 및 키워드**:
+        -   \`summary_table\`: 재물, 연애, 건강, 직업, 관계 5개 항목에 대해 1~5점 척도로 점수를 매기고, 짧은 설명을 덧붙여주세요.
+        -   \`keywords\`: 사용자의 인생을 대표하는 핵심 키워드 4개를 제시해주세요.
+
+    **[JSON 응답 형식]**
+    반드시 아래의 JSON 구조를 완벽하게 준수하여 응답해야 합니다. 다른 텍스트는 절대 포함하지 마세요.
     {
       "analysis_type": "single",
-      "person_story": {
-        "nickname": "태풍 속의 조용한 리더",
-        "hooking_sentence": "겉은 조용하지만, 안에는 불이 타오른다.",
-        "tags": ["🔥 추진력", "🎯 전략가", "💬 외향형"],
-        "first_impression": "눈에서 불꽃이 느껴지는 관상입니다...",
-        "inner_personality": "사주에 나타난 성격은 외유내강...",
-        "harmony_or_conflict": "겉과 속의 간극이 있어 갈등이 발생할 수 있음...",
-        "future_path": "2025년은 이직 또는 새로운 시작의 해로 적합합니다...",
-        "final_message": "혼자 가면 빠르지만, 함께 가면 멀리 갑니다."
+      "result": {
+        "title": "🔮 사주팔자 + 관상 종합 운세 풀이",
+        "birth_info": "YYYY년 MM월 DD일생",
+        "first_impression": "...",
+        "personality_analysis": {
+          "face_shape": "...", "forehead": "...", "eyes": "...", "nose": "...", "mouth": "...", "summary": "..."
+        },
+        "past_verification": {
+          "period_2018_2019": "...", "period_2020_2021": "...", "recent_years": "..."
+        },
+        "wealth_career": "...",
+        "love_marriage": "...",
+        "future_fortune": "...",
+        "advice_caution": "...",
+        "summary_table": {
+          "wealth": { "score": 4, "description": "안정적이고 꾸준함" },
+          "love": { "score": 3, "description": "2027년 이후 상승" },
+          "health": { "score": 3, "description": "소화기 주의 필요" },
+          "career": { "score": 4, "description": "전문성 발휘 시기" },
+          "relationship": { "score": 3, "description": "선택적 관계 유지" }
+        },
+        "keywords": ["완벽주의자", "늦은 성공", "안정적 재물", "깊은 사랑"]
       }
     }`,
-    aiPromptCouple: `당신은 관상과 사주에 능통하고, 관계 통찰력과 유머 감각까지 갖춘 AI 커플 운명 분석가입니다. 두 사람의 사진과 생년월일을 바탕으로, 각자의 운세와 둘의 궁합을 드라마틱하고 공감 가는 방식으로 분석해주세요.
+    aiPromptCouple: `당신은 30년 경력의 관계 전문 점술가입니다. 두 사람의 사진(관상)과 생년월일(사주)을 통해, 실제 커플 상담을 하듯 깊이 있고 재미있게 궁합을 분석해주세요. 친근하면서도 핵심을 찌르는 말투를 사용해주세요.
 
-    🎯 목적:
-    - 두 사람의 관계가 "어떻게 흘러갈지", "왜 이런 사람을 만났는지", "어떻게 하면 잘 지낼 수 있는지"에 대한 유쾌한 통찰 제공
-    - SNS에서 공유하고 싶은 감정적/재미있는 궁합 결과를 제공할 것
-    
-    📌 규칙:
-    1. **개인 분석**: 두 사람 각각에 대해 관상+사주를 개별적으로 분석 (각각 3~6문장 이상)
-    2. **궁합 분석**: 
-       - 관상 궁합: 외모/표정/인상 기반 궁합
-       - 사주 궁합: 오행 조화, 성격 상극 여부 등
-       - 종합 해석: 갈등 요소/시너지/연애 조언 등을 중심으로 드라마틱하게 설명
-    3. **점수**: \`score\`는 100점 만점 기준으로 부여하되, 감정이입 가능한 사유(\`score_reason\`)를 함께 설명
-    4. **형식**: 반드시 아래 JSON 형식으로 응답할 것. \`analysis_type\`은 "couple" 고정
-    
-    🧾 JSON 형식:
+    **[분석 목표]**
+    - 두 사람의 관계에 대한 명확한 통찰을 제공하고, 관계 개선을 위한 실질적인 조언을 통해 재미와 감동을 선사해야 합니다.
+
+    **[분석 지침]**
+    1.  **개별 분석**: 각 사람의 관상과 사주를 간략하게 분석하여 어떤 사람인지 설명해주세요.
+    2.  **궁합 종합 분석**:
+        -   \`total_score\`: 궁합 점수를 100점 만점으로 매기고, 그 이유를 재미있게 설명해주세요.
+        -   \`physiognomy_match\`: 얼굴의 조화, 서로에게 미치는 영향 등 관상 궁합을 분석합니다.
+        -   \`saju_match\`: 사주 오행의 조화, 성격의 상생 또는 상극 관계를 분석합니다.
+        -   \`relationship_advice\`: 두 사람이 더 행복해지기 위한 구체적이고 현실적인 연애 조언을 2~3가지 제시해주세요.
+
+    **[JSON 응답 형식]**
+    반드시 아래의 JSON 구조를 완벽하게 준수하여 응답해야 합니다. 다른 텍스트는 절대 포함하지 마세요.
     {
       "analysis_type": "couple",
-      "person1_analysis": {
-        "name": "[첫 번째 사람 별명]",
-        "physiognomy_analysis": "[관상 분석]",
-        "saju_analysis": "[사주 분석]"
-      },
-      "person2_analysis": {
-        "name": "[두 번째 사람 별명]",
-        "physiognomy_analysis": "[관상 분석]",
-        "saju_analysis": "[사주 분석]"
-      },
-      "compatibility": {
-        "score": 0,
-        "score_reason": "[점수 부여 이유]",
-        "physiognomy_compatibility": "[관상 궁합]",
-        "saju_compatibility": "[사주 궁합]",
-        "integrated_summary": "[갈등/조화 포인트 + 관계 유지 조언]"
+      "result": {
+        "title": "💖 AI 커플 궁합 결과 💖",
+        "person1": {
+          "nickname": "첫 번째 분 별명", "physiognomy": "관상 분석...", "saju": "사주 분석..."
+        },
+        "person2": {
+          "nickname": "두 번째 분 별명", "physiognomy": "관상 분석...", "saju": "사주 분석..."
+        },
+        "compatibility": {
+          "total_score": 85,
+          "score_reason": "두 분은 마치...",
+          "physiognomy_match": "관상으로 볼 때...",
+          "saju_match": "사주 상으로는...",
+          "relationship_advice": "서로에게..."
+        }
       }
     }`
   }
@@ -409,82 +411,129 @@ const MainPageComponent = React.memo(({
     </div>
 ));
 
-const ResultPageComponent = React.memo(({
-    analysisResult,
-    currentStrings,
-    person1ImagePreview,
-    person2ImagePreview,
-    handleSummaryCopy,
-}) => {
+
+const ResultPageComponent = React.memo(({ analysisResult, person1ImagePreview, person2ImagePreview }) => {
+    const { result } = analysisResult;
     const isCouple = analysisResult.analysis_type === 'couple';
-    const [activeTab, setActiveTab] = useState(isCouple ? 'compatibility' : 'person1');
-    const animatedScore = useCountUp(isCouple ? analysisResult.compatibility?.score : 0);
-    
-    const renderAnalysisSection = (title, content, icon) => (
-        <div className="mb-6 p-4 bg-white/70 rounded-lg shadow-inner">
-            <h4 className="text-xl font-bold text-indigo-700 mb-3 font-gaegu flex items-center">{icon} {title}</h4>
-            <p className="text-md leading-relaxed whitespace-pre-line">{content || "분석 결과가 없습니다."}</p>
+
+    const animatedScore = useCountUp(isCouple ? result.compatibility?.total_score : 0, 2000);
+
+    const renderSection = (title, content, emoji, customClass = '') => (
+        content && (
+            <div className={`mb-6 p-5 rounded-xl shadow-lg bg-white/80 backdrop-blur-sm border border-gray-200 ${customClass}`}>
+                <h3 className="text-2xl font-bold text-indigo-800 mb-3 font-gaegu flex items-center">
+                    <span className="text-3xl mr-3">{emoji}</span> {title}
+                </h3>
+                <p className="text-gray-700 leading-relaxed whitespace-pre-line font-gowun">{content}</p>
+            </div>
+        )
+    );
+
+    const StarRating = ({ score }) => (
+        <div className="flex items-center">
+            {[...Array(5)].map((_, i) => (
+                <span key={i} className={`text-2xl ${i < score ? 'text-yellow-400' : 'text-gray-300'}`}>⭐</span>
+            ))}
         </div>
     );
-    
-    if (!isCouple) {
-        const { person_story } = analysisResult;
-        const { nickname, hooking_sentence, tags, first_impression, inner_personality, harmony_or_conflict, future_path, final_message } = person_story || {};
 
+    if (isCouple) {
+        const { person1, person2, compatibility } = result || {};
         return (
             <div className="font-gowun">
-                <h2 className="text-4xl font-bold text-center text-transparent bg-clip-text bg-gradient-to-r from-green-400 via-cyan-500 to-blue-600 mb-6 font-gaegu">{currentStrings.resultTitleSingle}</h2>
-                <div className="flex justify-center mb-6"><img src={person1ImagePreview} alt="Person 1" className="w-40 h-40 object-cover rounded-full shadow-lg border-4 border-cyan-300"/></div>
-                
-                {/* Hero Summary Card */}
-                <div className="mb-8 p-4 bg-white rounded-xl shadow-lg text-center">
-                    <h2 className="text-3xl font-bold text-indigo-800 font-gaegu">{nickname || "분석 중..."}</h2>
-                    <p className="italic text-gray-700 mt-2 text-lg">"{hooking_sentence || "당신의 이야기가 펼쳐집니다."}"</p>
-                    <div className="flex flex-wrap justify-center gap-2 mt-4">
-                        {(tags || []).map((tag, index) => (
-                            <span key={index} className="text-sm bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full font-semibold">{tag}</span>
-                        ))}
-                    </div>
+                <h2 className="text-4xl font-bold text-center text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 mb-4 font-gaegu">{result?.title || "AI 커플 궁합 결과"}</h2>
+                <div className="flex justify-center items-center mb-6 gap-2">
+                    <img src={person1ImagePreview} alt="Person 1" className="w-28 h-28 object-cover rounded-full shadow-xl border-4 border-rose-300"/>
+                    <HeartIcon className="w-10 h-10 text-red-400" filled={true} />
+                    <img src={person2ImagePreview} alt="Person 2" className="w-28 h-28 object-cover rounded-full shadow-xl border-4 border-fuchsia-300"/>
                 </div>
 
-                {renderAnalysisSection(currentStrings.sectionFirstImpression, first_impression, '🔮')}
-                {renderAnalysisSection(currentStrings.sectionInnerPersonality, inner_personality, '💖')}
-                {renderAnalysisSection(currentStrings.sectionHarmony, harmony_or_conflict, '🎭')}
-                {renderAnalysisSection(currentStrings.sectionFuturePath, future_path, '🧭')}
-                
-                <div className="my-6 p-3 bg-gray-100 rounded-lg text-center border border-gray-300"><p className="text-gray-600 text-xs">{currentStrings.adPlaceholderBannerText}</p><img src={`https://placehold.co/300x100/e0e0e0/757575?text=${currentStrings.adPlaceholderBannerText.replace(/\s/g, '+')}`} alt="Ad Banner" className="mx-auto mt-1 rounded" /></div>
+                <div className="bg-gradient-to-br from-indigo-100 to-blue-200 p-6 rounded-xl shadow-xl border-2 border-indigo-300 text-center mb-8">
+                    <h3 className="text-3xl font-bold text-indigo-700 mb-2 font-gaegu">종합 궁합 점수</h3>
+                    <p className="text-6xl font-bold text-indigo-600 my-2 font-gaegu">{animatedScore}점!!!</p>
+                    <p className="text-md text-gray-800 italic p-2 bg-white/50 rounded-md">{compatibility?.score_reason}</p>
+                </div>
 
-                {renderAnalysisSection(currentStrings.sectionFinalMessage, final_message, '✨')}
-                
-                {/* Copy Summary Box */}
-                <div className="mt-8 bg-yellow-50 p-4 rounded-lg text-center border border-yellow-300">
-                    <p className="font-bold text-gray-800 text-lg font-gaegu">{currentStrings.summaryTitle}</p>
-                    <p className="text-md mt-1 text-gray-700 italic">"{final_message}"</p>
-                    <button onClick={() => handleSummaryCopy(final_message)} className="mt-3 px-4 py-2 rounded-lg bg-yellow-400 hover:bg-yellow-500 text-white text-sm font-bold shadow-md transition-colors flex items-center justify-center mx-auto">
-                        <ClipboardCopyIcon className="w-4 h-4 mr-2" />
-                        {currentStrings.summaryCopyButton}
-                    </button>
+                {renderSection('관상 궁합', compatibility?.physiognomy_match, '🎭')}
+                {renderSection('사주 궁합', compatibility?.saju_match, '📜')}
+                {renderSection('행복을 위한 조언', compatibility?.relationship_advice, '💡', 'bg-emerald-50 border-emerald-200')}
+
+                <div className="grid md:grid-cols-2 gap-6 mt-8">
+                    <div className="p-4 bg-rose-50 rounded-lg border border-rose-200">
+                        <h4 className="font-bold text-xl text-center mb-2 font-gaegu">{person1?.nickname || "첫 번째 분"}</h4>
+                        {renderSection('관상 분석', person1?.physiognomy, '🧐')}
+                        {renderSection('사주 분석', person1?.saju, '🗓️')}
+                    </div>
+                    <div className="p-4 bg-fuchsia-50 rounded-lg border border-fuchsia-200">
+                        <h4 className="font-bold text-xl text-center mb-2 font-gaegu">{person2?.nickname || "두 번째 분"}</h4>
+                        {renderSection('관상 분석', person2?.physiognomy, '🧐')}
+                        {renderSection('사주 분석', person2?.saju, '🗓️')}
+                    </div>
                 </div>
             </div>
         );
     }
+    
+    // Single Analysis
+    const { title, birth_info, first_impression, personality_analysis, past_verification, wealth_career, love_marriage, future_fortune, advice_caution, summary_table, keywords } = result || {};
 
-    const { person1_analysis, person2_analysis, compatibility } = analysisResult;
-    const tabs = [{ id: 'compatibility', label: currentStrings.tabCompatibility }, { id: 'person1', label: currentStrings.tabPerson1 }, { id: 'person2', label: currentStrings.tabPerson2 }];
     return (
         <div className="font-gowun">
-            <h2 className="text-4xl font-bold text-center text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 mb-6 font-gaegu">{currentStrings.resultTitleCouple}</h2>
+            <h2 className="text-4xl font-bold text-center text-transparent bg-clip-text bg-gradient-to-r from-purple-600 via-cyan-500 to-blue-600 mb-2 font-gaegu">{title || "종합 운세 풀이"}</h2>
+            <p className="text-center text-gray-600 font-semibold mb-6">{birth_info}</p>
             <div className="flex justify-center mb-6">
-                <img src={person1ImagePreview} alt="Person 1" className="w-32 h-32 object-cover rounded-full shadow-lg border-4 border-rose-300 -mr-4 z-10"/>
-                <img src={person2ImagePreview} alt="Person 2" className="w-32 h-32 object-cover rounded-full shadow-lg border-4 border-fuchsia-300"/>
+                <img src={person1ImagePreview} alt="Analyzed person" className="w-40 h-40 object-cover rounded-full shadow-2xl border-4 border-cyan-300"/>
             </div>
-            <div className="border-b border-gray-200 mb-4"><nav className="-mb-px flex justify-center space-x-4" aria-label="Tabs">{tabs.map(tab => (<button key={tab.id} onClick={() => setActiveTab(tab.id)} className={`${activeTab === tab.id ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg font-gaegu`}>{tab.label}</button>))}</nav></div>
-            <div className="my-6 p-3 bg-gray-100 rounded-lg text-center border border-gray-300"><p className="text-gray-600 text-xs">{currentStrings.adPlaceholderBannerText}</p><img src={`https://placehold.co/300x100/e0e0e0/757575?text=${currentStrings.adPlaceholderBannerText.replace(/\s/g, '+')}`} alt="Ad Banner" className="mx-auto mt-1 rounded" /></div>
-            <div>
-                 {activeTab === 'compatibility' && compatibility && (<div className="bg-gradient-to-br from-indigo-100 to-blue-200 p-6 rounded-xl shadow-xl border-2 border-indigo-300"><h3 className="text-3xl font-bold text-indigo-700 mb-4 text-center font-gaegu">{currentStrings.compatibilityTitle}</h3><p className="text-5xl md:text-6xl font-bold text-indigo-600 mb-2 text-center font-gaegu">{animatedScore}{currentStrings.scoreUnit}</p><p className="text-md text-gray-700 mb-6 italic text-center p-2 bg-white/50 rounded-md">{compatibility.score_reason}</p>{renderAnalysisSection('관상 궁합', compatibility.physiognomy_compatibility, '🎭')}{renderAnalysisSection('사주 궁합', compatibility.saju_compatibility, '📜')}{renderAnalysisSection('최종 궁합 조언', compatibility.integrated_summary, '💡')}</div>)}
-                 {activeTab === 'person1' && person1_analysis && (<div>{renderAnalysisSection('관상 분석', person1_analysis.physiognomy_analysis, '🧐')}{renderAnalysisSection('사주 분석', person1_analysis.saju_analysis, '🗓️')}</div>)}
-                 {activeTab === 'person2' && person2_analysis && (<div>{renderAnalysisSection('관상 분석', person2_analysis.physiognomy_analysis, '🧐')}{renderAnalysisSection('사주 분석', person2_analysis.saju_analysis, '🗓️')}</div>)}
+
+            {renderSection('첫인상 & 기운', first_impression, '💫', 'bg-amber-50 border-amber-200')}
+            
+            <div className="mb-6 p-5 rounded-xl shadow-lg bg-white/80 backdrop-blur-sm border border-gray-200">
+                <h3 className="text-2xl font-bold text-indigo-800 mb-4 font-gaegu flex items-center"><span className="text-3xl mr-3">🎭</span> 진짜 성격 (관상 + 사주)</h3>
+                <div className="space-y-3">
+                    {Object.entries(personality_analysis || {}).map(([key, value]) => {
+                        const titles = { face_shape: '얼굴형', forehead: '이마', eyes: '눈', nose: '코', mouth: '입/턱', summary: '종합' };
+                        return <p key={key} className="font-gowun text-gray-700"><strong>{titles[key]}:</strong> {value}</p>;
+                    })}
+                </div>
             </div>
+
+            {renderSection('과거 돌아보기', 
+                Object.entries(past_verification || {}).map(([key, value]) => {
+                    const titles = { period_2018_2019: '2018-19년', period_2020_2021: '2020-21년', recent_years: '최근' };
+                    return `[${titles[key]}] ${value}`;
+                }).join('\n\n'), 
+                '🔥')}
+            
+            {renderSection('재물운 & 직업운', wealth_career, '💰')}
+            {renderSection('연애운 & 결혼운', love_marriage, '💕')}
+            {renderSection('2024 하반기 ~ 2025년 운세', future_fortune, '🚀')}
+            {renderSection('주의사항 & 조언', advice_caution, '⚠️', 'bg-red-50 border-red-200')}
+
+            <div className="mb-6 p-5 rounded-xl shadow-lg bg-white/80 backdrop-blur-sm border border-gray-200">
+                <h3 className="text-2xl font-bold text-indigo-800 mb-4 font-gaegu flex items-center"><span className="text-3xl mr-3">📊</span> 운세 요약</h3>
+                <div className="space-y-2">
+                    {summary_table && Object.entries(summary_table).map(([key, value]) => {
+                        const titles = { wealth: '재물운', love: '연애운', health: '건강운', career: '직업운', relationship: '관계운' };
+                        return (
+                            <div key={key} className="grid grid-cols-3 items-center gap-2">
+                                <span className="font-bold text-gray-800">{titles[key]}</span>
+                                <StarRating score={value.score} />
+                                <span className="text-sm text-gray-600">{value.description}</span>
+                            </div>
+                        );
+                    })}
+                </div>
+            </div>
+            
+            <div className="text-center p-4 bg-indigo-50 rounded-lg">
+                <h4 className="font-bold font-gaegu text-indigo-700">🎯 핵심 키워드</h4>
+                <div className="flex flex-wrap justify-center gap-2 mt-2">
+                    {(keywords || []).map((tag, index) => (
+                        <span key={index} className="text-sm bg-indigo-200 text-indigo-800 px-3 py-1 rounded-full font-semibold">{tag}</span>
+                    ))}
+                </div>
+            </div>
+
         </div>
     );
 });
@@ -511,9 +560,10 @@ const App = () => {
 
     useEffect(() => {
         const lang = (typeof window !== 'undefined' && translations[window.navigator.language?.split('-')[0]]) ? window.navigator.language.split('-')[0] : 'ko';
-        setLanguage(lang);
-        setCurrentStrings(translations[lang]);
-        setLoadingText(translations[lang].loadingMessage);
+        const validLang = translations[lang] ? lang : 'ko';
+        setLanguage(validLang);
+        setCurrentStrings(translations[validLang]);
+        setLoadingText(translations[validLang].loadingMessage);
     }, []);
 
     useEffect(() => {
@@ -523,8 +573,9 @@ const App = () => {
             setIsLoading(true);
             const fetchResult = async () => {
                 if (!db) { setTimeout(fetchResult, 300); return; }
-                const lang = (typeof window !== 'undefined' && translations[window.navigator.language?.split('-')[0]]) ? window.navigator.language.split('-')[0] : 'ko';
-                setLoadingText(translations[lang].resultLoading);
+                 const lang = (typeof window !== 'undefined' && translations[window.navigator.language?.split('-')[0]]) ? window.navigator.language.split('-')[0] : 'ko';
+                const validLang = translations[lang] ? lang : 'ko';
+                setLoadingText(translations[validLang].resultLoading);
                 try {
                     const docRef = doc(db, "results", id);
                     const docSnap = await getDoc(docRef);
@@ -541,13 +592,12 @@ const App = () => {
                         setResultId(id);
                         setPageState('result');
                     } else {
-                        setError(translations[lang].resultNotFound);
+                        setError(translations[validLang].resultNotFound);
                         setPageState('main');
                     }
                 } catch (e) {
                     console.error("Error fetching result:", e);
-                    const lang = (typeof window !== 'undefined' && translations[window.navigator.language?.split('-')[0]]) ? window.navigator.language.split('-')[0] : 'ko';
-                    setError(translations[lang].resultNotFound);
+                    setError(translations[validLang].resultNotFound);
                     setPageState('main');
                 } finally {
                     setIsLoading(false);
@@ -603,7 +653,7 @@ const App = () => {
         setError('');
 
         try {
-            const prompt = isCoupleAnalysis ? currentStrings.aiPromptCouple : currentStrings.aiPromptSingle;
+            const prompt = isCoupleAnalysis ? currentStrings.aiPromptCouple : currentStrings.aiPromptSingle.replace("YYYY년 MM월 DD일생", `${person1Dob}생`);
             
             const image1Base64 = await getBase64(person1ImageFile);
             const parts = [{ text: prompt }, { inlineData: { mimeType: person1ImageFile.type, data: image1Base64 } }];
@@ -617,12 +667,24 @@ const App = () => {
             const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
             const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
 
-            if (!response.ok) throw new Error(currentStrings.apiErrorGeneric);
-
-            const result = await response.json();
-            if (!result.candidates?.[0]?.content?.parts?.[0]) throw new Error(currentStrings.apiErrorResponseFormat);
+            if (!response.ok) throw new Error(`${currentStrings.apiErrorGeneric} (${response.status})`);
             
-            const parsedJson = JSON.parse(result.candidates[0].content.parts[0].text);
+            const result = await response.json();
+            
+            if (!result.candidates?.[0]?.content?.parts?.[0]?.text) {
+                 console.error("Invalid API Response:", result);
+                 throw new Error(currentStrings.apiErrorResponseFormat);
+            }
+            
+            let parsedJson;
+            try {
+                 parsedJson = JSON.parse(result.candidates[0].content.parts[0].text);
+            } catch(e) {
+                 console.error("JSON parsing error:", e);
+                 console.error("Raw text from API:", result.candidates[0].content.parts[0].text);
+                 throw new Error(currentStrings.apiErrorResponseFormat);
+            }
+
             if (parsedJson.error === 'NO_FACE_DETECTED') throw new Error(currentStrings.noFaceDetectedError);
             
             setAnalysisResult(parsedJson);
@@ -640,6 +702,7 @@ const App = () => {
             }
             setPageState('result');
         } catch (err) {
+            console.error(err);
             setError(err.message);
         } finally {
             setIsLoading(false);
@@ -668,7 +731,7 @@ const App = () => {
                     <p className="text-xl text-white mt-3 drop-shadow-md">{currentStrings.appSubtitle}</p>
                 </header>
                 
-                <main className="w-full max-w-4xl mx-auto bg-white/95 backdrop-blur-md shadow-2xl rounded-xl p-6 sm:p-8">
+                <main className="w-full max-w-4xl mx-auto bg-white/90 backdrop-blur-md shadow-2xl rounded-xl p-6 sm:p-8">
                     {pageState === 'main' && (
                         <MainPageComponent
                             currentStrings={currentStrings}
@@ -689,13 +752,10 @@ const App = () => {
                         <div>
                             <ResultPageComponent 
                                 analysisResult={analysisResult}
-                                currentStrings={currentStrings}
                                 person1ImagePreview={person1ImagePreview}
                                 person2ImagePreview={person2ImagePreview}
-                                handleSummaryCopy={handleCopyToClipboard}
                             />
                             <div className="mt-10 pt-6 border-t border-gray-300 flex flex-col sm:flex-row items-center justify-center gap-4">
-                                
                                 <button onClick={() => handleCopyToClipboard(`${window.location.origin}/result/${resultId}`)} disabled={!resultId} className="flex items-center justify-center px-4 py-3 bg-gray-600 hover:bg-gray-700 text-white font-bold rounded-lg shadow-lg transition-colors disabled:bg-gray-400 font-gaegu">
                                     <LinkIcon className="w-5 h-5 mr-2" /> {currentStrings.copyButton}
                                 </button>
