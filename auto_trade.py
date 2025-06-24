@@ -6,18 +6,16 @@ import base64
 import json
 from datetime import datetime
 
-# === 수정된 설정 ===
+# === 설정 ===
 ACCESS_TOKEN = 'ae437cfc-b806-4798-88e7-5954b8745fb7'
 SECRET_KEY = '0810c158-7bf7-47f0-97c1-a4c90e85a8e5'
-CURRENCY = 'VIRTUAL'  # 🔥 VIRTUAL → BTC로 변경!
-REWARD_THRESHOLD = 0.005
-ORDER_OFFSET = 0.003
-KRW_AMOUNT = 40000
+CURRENCY = 'VIRTUAL'  # 실제 지원되는 코인
+REWARD_THRESHOLD = 0.005  # 리워드 범위: -0.5%
+ORDER_OFFSET = 0.003      # 실제 주문가: -0.3%
+KRW_AMOUNT = 47000         # 🔥 40000 → 5000으로 줄임
 MONITOR_INTERVAL = 3
 EXECUTION_RISK_THRESHOLD = 0.001
 CANCEL_WAIT_TIME = 2.0
-ORDER_RETRY_COUNT = 3
-STATUS_VERIFY_COUNT = 2
 
 API_BASE = 'https://api.coinone.co.kr'
 
@@ -28,28 +26,6 @@ current_order_base_price = None
 
 def log(message):
     print(f"[{datetime.now().strftime('%H:%M:%S')}] {message}")
-
-def debug_response(response, context=""):
-    """🔍 API 응답 상세 디버깅"""
-    log(f"🔍 API 응답 디버깅 ({context}):")
-    log(f"   상태 코드: {response.status_code}")
-    log(f"   헤더: {dict(response.headers)}")
-    log(f"   Raw 응답 (처음 200자): {response.text[:200]}")
-    log(f"   응답 길이: {len(response.text)}바이트")
-    
-    # Content-Type 확인
-    content_type = response.headers.get('content-type', 'unknown')
-    log(f"   Content-Type: {content_type}")
-    
-    # JSON 파싱 시도
-    try:
-        parsed = response.json()
-        log(f"   JSON 파싱 성공: {parsed}")
-        return parsed
-    except json.JSONDecodeError as e:
-        log(f"   ❌ JSON 파싱 실패: {e}")
-        log(f"   전체 Raw 응답: {response.text}")
-        return None
 
 def get_price():
     """현재가 조회"""
@@ -85,8 +61,8 @@ def build_headers(payload):
         log(f"❌ 헤더 생성 에러: {e}")
         return {}
 
-def send_request_debug(endpoint, body):
-    """🔥 디버깅 강화된 API 요청"""
+def send_request(endpoint, body):
+    """API 요청"""
     try:
         payload = {
             'access_token': ACCESS_TOKEN,
@@ -94,250 +70,181 @@ def send_request_debug(endpoint, body):
             **body
         }
         
-        log(f"🌐 API 요청 시작:")
-        log(f"   엔드포인트: {endpoint}")
-        log(f"   요청 데이터: {body}")
-        
         headers = build_headers(payload)
         if not headers:
             return {'result': 'error', 'errorMsg': 'Header generation failed'}
         
         url = API_BASE + endpoint
-        log(f"   전체 URL: {url}")
-        
-        # 요청 전 대기 (Rate Limit 방지)
-        time.sleep(0.5)
-        
+        time.sleep(0.3)  # API 호출 간격
         response = requests.post(url, headers=headers, timeout=15)
         
-        # 🔥 응답 상세 디버깅
-        parsed_data = debug_response(response, endpoint)
-        
-        if parsed_data is None:
-            # JSON 파싱 실패 시 대체 처리
-            if response.status_code == 200:
-                log("   ⚠️ 200 OK이지만 JSON 아님 - HTML 에러 페이지일 가능성")
+        try:
+            result = response.json()
+            return result
+        except json.JSONDecodeError:
+            log(f"❌ JSON 파싱 실패 ({endpoint}): 상태코드 {response.status_code}")
+            log(f"   Raw 응답: {response.text[:100]}...")
+            return {'result': 'error', 'errorMsg': 'JSON parsing failed'}
             
-            return {
-                'result': 'error', 
-                'errorMsg': 'JSON parsing failed',
-                'raw_response': response.text,
-                'status_code': response.status_code
-            }
-        
-        return parsed_data
-            
-    except requests.exceptions.Timeout:
-        log(f"❌ 요청 타임아웃: {endpoint}")
-        return {'result': 'error', 'errorMsg': 'Request timeout'}
-    except requests.exceptions.ConnectionError:
-        log(f"❌ 연결 에러: {endpoint}")
-        return {'result': 'error', 'errorMsg': 'Connection error'}
     except Exception as e:
-        log(f"❌ 요청 에러: {e}")
+        log(f"❌ 요청 에러 ({endpoint}): {e}")
         return {'result': 'error', 'errorMsg': str(e)}
 
-def test_supported_currencies():
-    """🔍 지원 화폐 확인"""
-    log("🔍 지원 화폐 목록 확인")
+def get_target_balance():
+    """🔥 타겟 코인 잔고만 조회 (깔끔하게)"""
+    result = send_request('/v2/account/balance', {})
     
-    url = f'{API_BASE}/ticker/?currency=all'
-    try:
-        response = requests.get(url, timeout=10)
-        data = response.json()
-        
-        if data.get('result') == 'success':
-            currencies = [key for key in data.keys() 
-                         if key not in ['result', 'errorCode', 'timestamp']]
-            log(f"✅ 지원 화폐: {currencies}")
-            
-            if CURRENCY.lower() in [c.lower() for c in currencies]:
-                log(f"✅ {CURRENCY}는 지원됨")
-                return True
-            else:
-                log(f"❌ {CURRENCY}는 지원되지 않음!")
-                log(f"   사용 가능: {currencies}")
-                return False
-        else:
-            log(f"❌ 화폐 목록 조회 실패: {data}")
-            return False
-    except Exception as e:
-        log(f"❌ 화폐 목록 조회 에러: {e}")
-        return False
+    if result.get('result') != 'success':
+        log(f"❌ 잔고 조회 실패: {result.get('errorMsg', 'Unknown')}")
+        return {'krw': 0, 'coin': 0}
+    
+    # KRW 잔고
+    krw_data = result.get('krw', {})
+    krw_balance = float(krw_data.get('avail', '0'))
+    
+    # 타겟 코인 잔고만
+    coin_key = CURRENCY.lower()
+    coin_data = result.get(coin_key, {})
+    coin_balance = float(coin_data.get('avail', '0'))
+    
+    log(f"💰 잔고 - KRW: {krw_balance:,.0f}원, {CURRENCY}: {coin_balance:.8f}")
+    
+    return {'krw': krw_balance, 'coin': coin_balance}
 
-def get_account_balance_debug():
-    """🔍 잔고 조회 디버깅"""
-    log("💰 계정 잔고 상세 조회")
+def calculate_buy_quantity(price):
+    """매수 수량 계산"""
+    balance = get_target_balance()
+    available_krw = min(balance['krw'], KRW_AMOUNT)
     
-    result = send_request_debug('/v2/account/balance', {})
-    
-    if result.get('result') == 'success':
-        log("✅ 잔고 조회 성공:")
-        
-        # KRW 잔고
-        krw_data = result.get('krw', {})
-        krw_avail = float(krw_data.get('avail', '0'))
-        krw_balance = float(krw_data.get('balance', '0'))
-        log(f"   KRW - 사용가능: {krw_avail:,.0f}원, 총잔고: {krw_balance:,.0f}원")
-        
-        # 코인 잔고
-        coin_key = CURRENCY.lower()
-        coin_data = result.get(coin_key, {})
-        if coin_data:
-            coin_avail = float(coin_data.get('avail', '0'))
-            coin_balance = float(coin_data.get('balance', '0'))
-            log(f"   {CURRENCY} - 사용가능: {coin_avail:.8f}, 총잔고: {coin_balance:.8f}")
-            return coin_avail
-        else:
-            log(f"   ❌ {CURRENCY} 잔고 정보 없음")
-            return 0
-    else:
-        log(f"❌ 잔고 조회 실패: {result}")
+    if available_krw < 1000:  # 최소 1000원
+        log(f"⚠️ 사용 가능 KRW 부족: {available_krw:,.0f}원")
         return 0
+    
+    # 수수료 고려
+    qty = (available_krw * 0.999) / price
+    return max(qty, 0.0001)
 
-def test_market_sell_debug(test_qty=None):
-    """🔍 시장가 매도 테스트"""
-    log("🚨 시장가 매도 테스트 시작")
+def place_buy_order(current_price):
+    """매수 주문 등록"""
+    global current_order_id, current_order_price, current_order_base_price
     
-    # 실제 잔고 확인
-    actual_balance = get_account_balance_debug()
+    order_price = round(current_price * (1 - ORDER_OFFSET))
+    qty = calculate_buy_quantity(order_price)
     
-    if actual_balance <= 0.0001:
-        log("❌ 매도할 코인 잔고 없음")
-        return False
+    if qty <= 0.0001:
+        log("❌ 매수 주문 불가 (잔고 부족)")
+        return None
     
-    # 테스트 수량 결정
-    if test_qty is None:
-        test_qty = min(actual_balance, 0.001)  # 최대 0.001개만 테스트
+    qty_formatted = f"{qty:.8f}"
+    log(f"🛒 매수 주문: {qty_formatted} {CURRENCY} @ {order_price:,}원")
     
-    qty_formatted = f"{test_qty:.8f}"
-    
-    log(f"🧪 테스트 매도 실행:")
-    log(f"   수량: {qty_formatted} {CURRENCY}")
-    log(f"   실제 잔고: {actual_balance:.8f}")
-    
-    # 🔥 시장가 매도 API 호출
-    result = send_request_debug('/v2/order/market_sell', {
-        'qty': qty_formatted,
-        'currency': CURRENCY
-    })
-    
-    log(f"📊 매도 결과 분석:")
-    
-    if result.get('result') == 'success':
-        log("🎉 시장가 매도 성공!")
-        order_id = result.get('orderId', 'Unknown')
-        log(f"   주문 ID: {order_id}")
-        return True
-    else:
-        error_code = result.get('errorCode', 'Unknown')
-        error_msg = result.get('errorMsg', 'No message')
-        log(f"❌ 시장가 매도 실패:")
-        log(f"   에러 코드: {error_code}")
-        log(f"   에러 메시지: {error_msg}")
-        
-        # 공통 에러 패턴 분석
-        if 'insufficient' in error_msg.lower():
-            log("   💡 분석: 잔고 부족 에러")
-        elif 'minimum' in error_msg.lower():
-            log("   💡 분석: 최소 주문 수량 미달")
-        elif 'currency' in error_msg.lower():
-            log("   💡 분석: 화폐 코드 문제")
-        elif 'permission' in error_msg.lower():
-            log("   💡 분석: API 권한 문제")
-        
-        return False
-
-def test_limit_sell_fallback(test_qty):
-    """🔍 지정가 매도 대안 테스트"""
-    log("🔄 지정가 매도 대안 테스트")
-    
-    # 현재가 조회
-    current_price = get_price()
-    if not current_price:
-        log("❌ 현재가 조회 실패")
-        return False
-    
-    # 현재가보다 1% 낮은 가격으로 빠른 체결 유도
-    sell_price = int(current_price * 0.99)
-    qty_formatted = f"{test_qty:.8f}"
-    
-    log(f"🔄 지정가 매도 시도:")
-    log(f"   수량: {qty_formatted} {CURRENCY}")
-    log(f"   가격: {sell_price:,}원 (현재가 대비 -1%)")
-    
-    result = send_request_debug('/v2/order/limit_sell', {
-        'price': str(sell_price),
+    result = send_request('/v2/order/limit_buy', {
+        'price': str(order_price),
         'qty': qty_formatted,
         'currency': CURRENCY
     })
     
     if result.get('result') == 'success':
-        log("✅ 지정가 매도 성공!")
-        return True
+        current_order_id = result.get('orderId')
+        current_order_price = order_price
+        current_order_base_price = current_price
+        log(f"✅ 매수 주문 성공: {current_order_id}")
+        return current_order_id
     else:
-        log(f"❌ 지정가 매도도 실패: {result.get('errorMsg', 'Unknown')}")
-        return False
+        error_msg = result.get('errorMsg', 'Unknown error')
+        log(f"❌ 매수 주문 실패: {error_msg}")
+        return None
 
-def comprehensive_sell_test():
-    """🔍 종합 매도 테스트"""
-    log("🧪 === 종합 매도 테스트 시작 ===")
+def check_order_status():
+    """주문 상태 확인"""
+    global current_order_id
     
-    # 1. 지원 화폐 확인
-    if not test_supported_currencies():
-        log("🛑 지원되지 않는 화폐로 인해 테스트 중단")
-        return
+    if not current_order_id:
+        return "NO_ORDER"
     
-    # 2. 잔고 확인
-    balance = get_account_balance_debug()
-    if balance <= 0:
-        log("🛑 매도할 잔고가 없어서 테스트 불가")
-        return
-    
-    # 3. 시장가 매도 테스트
-    test_qty = min(balance * 0.1, 0.001)  # 잔고의 10% 또는 0.001개 중 작은 값
-    
-    log(f"💡 테스트 수량: {test_qty:.8f} {CURRENCY}")
-    
-    market_sell_success = test_market_sell_debug(test_qty)
-    
-    if not market_sell_success:
-        log("🔄 시장가 실패 → 지정가 대안 테스트")
-        limit_sell_success = test_limit_sell_fallback(test_qty)
+    result = send_request('/v2/order/limit_orders', {'currency': CURRENCY})
+    if result.get('result') == 'success':
+        open_orders = result.get('limitOrders', [])
         
-        if limit_sell_success:
-            log("💡 결론: 시장가는 안되지만 지정가는 됨")
-        else:
-            log("💡 결론: 매도 자체에 문제 있음")
-    else:
-        log("💡 결론: 시장가 매도 정상 동작")
+        # 내 주문 찾기
+        for order in open_orders:
+            if order['orderId'] == current_order_id:
+                return "PENDING"
+        
+        return "FILLED"
     
-    log("🧪 === 종합 매도 테스트 완료 ===")
+    return "ERROR"
 
-def place_immediate_market_sell_fixed():
+def should_keep_order(current_price):
+    """주문 유지 여부 판단"""
+    global current_order_price, current_order_base_price
+    
+    if not current_order_price or not current_order_base_price:
+        return False, "NO_ORDER_INFO"
+    
+    # 리워드 범위 체크
+    current_reward_threshold = current_price * (1 - REWARD_THRESHOLD)
+    original_reward_threshold = current_order_base_price * (1 - REWARD_THRESHOLD)
+    
+    range_ok1 = current_order_price >= current_reward_threshold
+    range_ok2 = current_order_price >= original_reward_threshold
+    
+    # 체결 위험 체크
+    price_gap = (current_price - current_order_price) / current_price
+    risk_ok = price_gap >= EXECUTION_RISK_THRESHOLD
+    
+    log(f"📋 주문 분석: 현재가 {current_price:,}원, 주문가 {current_order_price:,}원")
+    log(f"   갭: {price_gap*100:.2f}%, 리워드범위: {'✅' if range_ok1 and range_ok2 else '❌'}, 위험도: {'✅' if risk_ok else '⚠️'}")
+    
+    if range_ok1 and range_ok2 and risk_ok:
+        return True, "KEEP"
+    elif not risk_ok:
+        return False, "EXECUTION_RISK"
+    else:
+        return False, "RANGE_VIOLATION"
+
+def cancel_current_order():
+    """주문 취소"""
+    global current_order_id, current_order_price, current_order_base_price
+    
+    if not current_order_id:
+        return True
+    
+    order_id_backup = current_order_id
+    log(f"🗑️ 주문 취소: {order_id_backup}")
+    
+    result = send_request('/v2/order/cancel', {
+        'order_id': order_id_backup,
+        'currency': CURRENCY
+    })
+    
+    # 전역 변수 초기화
+    current_order_id = None
+    current_order_price = None
+    current_order_base_price = None
+    
+    success = result.get('result') == 'success'
+    if success:
+        log("✅ 취소 완료")
+        time.sleep(CANCEL_WAIT_TIME)  # 취소 처리 대기
+    else:
+        log(f"❌ 취소 실패: {result.get('errorMsg', 'Unknown')}")
+    
+    return success
+
+def place_market_sell():
     """🔥 수정된 시장가 매도"""
-    log("🚨 수정된 시장가 매도 시작")
-    
-    # 1. 잔고 조회
-    balance_result = send_request_debug('/v2/account/balance', {})
-    if balance_result.get('result') != 'success':
-        log("❌ 잔고 조회 실패")
-        return False
-    
-    # 2. 코인 잔고 확인
-    coin_balance = float(balance_result.get(CURRENCY.lower(), {}).get('avail', '0'))
-    log(f"💰 현재 {CURRENCY} 잔고: {coin_balance:.8f}")
+    balance = get_target_balance()
+    coin_balance = balance['coin']
     
     if coin_balance <= 0.0001:
-        log("⚠️ 매도할 코인 잔고 없음")
+        log("⚠️ 매도할 코인 없음")
         return False
     
-    # 3. 수량 포맷팅 (최대 8자리)
     qty_formatted = f"{coin_balance:.8f}"
-    log(f"📊 매도 수량: {qty_formatted} {CURRENCY}")
+    log(f"🚨 시장가 매도: {qty_formatted} {CURRENCY}")
     
-    # 4. 시장가 매도 시도
-    result = send_request_debug('/v2/order/market_sell', {
+    result = send_request('/v2/order/market_sell', {
         'qty': qty_formatted,
         'currency': CURRENCY
     })
@@ -349,34 +256,126 @@ def place_immediate_market_sell_fixed():
         error_msg = result.get('errorMsg', 'Unknown error')
         log(f"❌ 시장가 매도 실패: {error_msg}")
         
-        # 5. 대안: 지정가 매도
-        log("🔄 지정가 매도 대안 시도")
-        return place_backup_limit_sell_fixed(coin_balance)
-
-def place_backup_limit_sell_fixed(qty):
-    """🔥 수정된 백업 지정가 매도"""
-    current_price = get_price()
-    if not current_price:
-        log("❌ 현재가 조회 실패")
+        # 백업: 지정가 매도
+        current_price = get_price()
+        if current_price:
+            sell_price = int(current_price * 0.98)  # 2% 할인
+            log(f"🔄 백업 지정가 매도: {sell_price:,}원")
+            
+            backup_result = send_request('/v2/order/limit_sell', {
+                'price': str(sell_price),
+                'qty': qty_formatted,
+                'currency': CURRENCY
+            })
+            
+            return backup_result.get('result') == 'success'
+        
         return False
+
+def run_clean_trading():
+    """🔥 깔끔한 메인 매매 로직"""
+    log("🚀 코인원 리워드 자동매매 시작")
+    log(f"📊 설정: {CURRENCY}, 주문금액: {KRW_AMOUNT:,}원")
     
-    # 현재가보다 2% 낮은 가격 (빠른 체결)
-    sell_price = int(current_price * 0.98)
-    qty_formatted = f"{qty:.8f}"
+    # 🔥 초기 상태 확인
+    balance = get_target_balance()
+    current_price = get_price()
     
-    log(f"🔄 백업 지정가 매도: {qty_formatted} @ {sell_price:,}원")
+    if not current_price:
+        log("❌ 초기 가격 조회 실패")
+        return
     
-    result = send_request_debug('/v2/order/limit_sell', {
-        'price': str(sell_price),
-        'qty': qty_formatted,
-        'currency': CURRENCY
-    })
+    log(f"📈 시작 가격: {current_price:,}원")
     
-    return result.get('result') == 'success'
+    # 🔥 이미 코인을 보유중이면 매도부터
+    if balance['coin'] > 0.0001:
+        log("🔍 기존 코인 보유 감지 → 매도 먼저 진행")
+        place_market_sell()
+        time.sleep(3)
+    
+    consecutive_errors = 0
+    
+    while True:
+        try:
+            # 에러 카운트 체크
+            if consecutive_errors >= 5:
+                log("🛑 연속 에러 5회 초과, 종료")
+                break
+            
+            log(f"\n{'='*40}")
+            
+            # 현재가 조회
+            current_price = get_price()
+            if not current_price:
+                log("⚠️ 가격 조회 실패")
+                consecutive_errors += 1
+                time.sleep(MONITOR_INTERVAL)
+                continue
+            
+            log(f"📈 현재가: {current_price:,}원")
+            
+            # 주문 상태 확인
+            order_status = check_order_status()
+            log(f"📊 주문 상태: {order_status}")
+            
+            if order_status == "FILLED":
+                # 체결됨 → 즉시 매도
+                log("🎯 매수 체결! 즉시 매도 실행")
+                if place_market_sell():
+                    log("💰 거래 완료 - 수익 실현!")
+                consecutive_errors = 0
+                time.sleep(3)
+                continue
+            
+            elif order_status == "PENDING":
+                # 미체결 → 유지 여부 판단
+                keep_order, reason = should_keep_order(current_price)
+                
+                if keep_order:
+                    log("✅ 기존 주문 유지")
+                    consecutive_errors = 0
+                    time.sleep(MONITOR_INTERVAL)
+                    continue
+                else:
+                    log(f"🔄 주문 갱신: {reason}")
+                    cancel_current_order()
+            
+            elif order_status == "NO_ORDER":
+                log("📝 활성 주문 없음")
+            
+            else:  # ERROR
+                log("❌ 주문 상태 확인 실패")
+                consecutive_errors += 1
+                time.sleep(MONITOR_INTERVAL)
+                continue
+            
+            # 새로운 매수 주문
+            if place_buy_order(current_price):
+                consecutive_errors = 0
+            else:
+                consecutive_errors += 1
+            
+            time.sleep(MONITOR_INTERVAL)
+            
+        except KeyboardInterrupt:
+            log("🛑 사용자 종료")
+            if current_order_id:
+                cancel_current_order()
+            break
+        except Exception as e:
+            log(f"❌ 예상치 못한 오류: {e}")
+            consecutive_errors += 1
+            time.sleep(MONITOR_INTERVAL)
+    
+    log("🏁 프로그램 종료")
 
 if __name__ == '__main__':
-    log("🔍 시장가 매도 문제 진단 시작")
-    log(f"현재 설정 화폐: {CURRENCY}")
+    log("🔍 초기 연결 테스트")
     
-    # 종합 테스트 실행
-    comprehensive_sell_test()
+    # 간단한 연결 테스트
+    test_price = get_price()
+    if test_price:
+        log(f"✅ 연결 성공. 현재가: {test_price:,}원")
+        run_clean_trading()
+    else:
+        log("❌ 연결 실패. 설정을 확인하세요.")
