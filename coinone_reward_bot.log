@@ -1,0 +1,177 @@
+2025-06-24 18:05:47,059 - INFO - === 코인원 주문 리워드 봇 시작 ===
+2025-06-24 18:05:47,064 - INFO - 대상 코인: VIRTUAL
+2025-06-24 18:05:47,064 - INFO - 주문 금액: 5,000원 ~ 50,000원
+2025-06-24 18:05:47,064 - INFO - 가격 범위: ±0.5%
+2025-06-24 18:05:47,067 - INFO - 현재 리워드 점수: 0, 순위: 0
+2025-06-24 18:05:47,240 - ERROR - API 요청 중 오류 발생: 404 Client Error: Not Found for url: https://api.coinone.co.kr/private/v2/balance
+2025-06-24 18:05:47,291 - WARNING - 현재가 조회 실패
+2025-06-24 18:05:52,243 - INFO - 현재 리워드 점수: 0, 순위: 0
+2025-06-24 18:05:52,316 - ERROR - API 요청 중 오류 발생: 404 Client Error: Not Found for url: https://api.coinone.co.kr/private/v2/balance
+2025-06-24 18:05:57,319 - INFO - 현재 리워드 점수: 0, 순위: 0
+2025-06-24 18:05:57,401 - ERROR - API 요청 중 오류 발생: 404 Client Error: Not Found for url: https://api.coinone.co.kr/private/v2/balance
+2025-06-24 18:06:00,324 - INFO - 사용자에 의해 중단됨
+2025-06-24 18:06:00,325 - INFO - 봇 중지 중...
+2025-06-24 18:06:00,424 - ERROR - API 요청 중 오류 발생: 404 Client Error: Not Found for url: https://api.coinone.co.kr/private/v2/orders
+2025-06-24 18:06:00,425 - INFO - === 봇 종료 ===
+2025-06-24 18:06:00,425 - INFO - 봇 중지 중...
+2025-06-24 18:06:00,491 - ERROR - API 요청 중 오류 발생: 404 Client Error: Not Found for url: https://api.coinone.co.kr/private/v2/orders
+2025-06-24 18:06:00,492 - INFO - === 봇 종료 ===
+2025-06-24 18:09:02,549 - INFO - === 코인원 주문 리워드 봇 시작 ===
+2025-06-24 18:09:02,550 - INFO - 대상 코인: VIRTUAL
+2025-06-24 18:09:02,550 - INFO - 주문 금액: 5,000원 ~ 50,000원
+2025-06-24 18:09:02,551 - INFO - 가격 범위: ±0.5%
+2025-06-24 18:09:02,552 - INFO - 현재 리워드 점수: 0, 순위: 0
+2025-06-24 18:09:02,692 - ERROR - API 요청 중 오류 발생: 404 Client Error: Not Found for url: https://api.coinone.co.kr/v2.1/balances
+2025-06-24 18:09:02,704 - WARNING - 현재가 조회 실패
+2025-06-24 18:09:12,693 - INFO - 현재 리워드 점수: 0, 순위: 0
+2025-06-24 18:09:12,767 - ERROR - API 요청 중 오류 발생: 404 Client Error: Not Found for url: https://api.coinone.co.kr/v2.1/balances
+2025-06-24 18:09:12,768 - WARNING - 현재가 조회 실패
+2025-06-24 18:09:16,150 - INFO - 사용자에 의해 중단됨
+2025-06-24 18:09:16,150 - INFO - 봇 중지 중...
+2025-06-24 18:09:16,221 - ERROR - API 요청 중 오류 발생: 404 Client Error: Not Found for url: https://api.coinone.co.kr/v2.1/orders_limit
+2025-06-24 18:09:16,222 - INFO - === 봇 종료 ===
+2025-06-24 18:09:16,222 - INFO - 봇 중지 중...
+2025-06-24 18:09:16,292 - ERROR - API 요청 중 오류 발생: 404 Client Error: Not Found for url: https://api.coinone.co.kr/v2.1/orders_limit
+2025-06-24 18:09:16,293 - INFO - === 봇 종료 ===
+2025-06-24 18:10:48,716 - INFO - === 코인원 주문 리워드 봇 시작 ===
+2025-06-24 18:10:48,716 - INFO - 대상 코인: BTC
+2025-06-24 18:10:48,716 - INFO - 주문 금액: 5,000원 ~ 50,000원
+2025-06-24 18:10:48,717 - INFO - 가격 범위: ±0.5%
+2025-06-24 18:10:48,718 - INFO - 현재 리워드 점수: 0, 순위: 0
+2025-06-24 18:10:48,937 - ERROR - API 요청 중 오류 발생: 404 Client Error: Not Found for url: https://api.coinone.co.kr/v2.1/balances
+2025-06-24 18:10:48,944 - WARNING - 현재가 조회 실패
+2025-06-24 18:10:51,645 - INFO - 사용자에 의해 중단됨
+2025-06-24 18:10:51,646 - INFO - 봇 중지 중...
+2025-06-24 18:10:51,713 - ERROR - API 요청 중 오류 발생: 404 Client Error: Not Found for url: https://api.coinone.co.kr/v2.1/orders_limit
+2025-06-24 18:10:51,714 - INFO - === 봇 종료 ===
+2025-06-24 18:10:51,714 - INFO - 봇 중지 중...
+2025-06-24 18:10:51,793 - ERROR - API 요청 중 오류 발생: 404 Client Error: Not Found for url: https://api.coinone.co.kr/v2.1/orders_limit
+2025-06-24 18:10:51,794 - INFO - === 봇 종료 ===
+2025-06-24 18:15:54,338 - INFO - === 코인원 주문 리워드 봇 시작 ===
+2025-06-24 18:15:54,347 - INFO - 대상 코인: BTC
+2025-06-24 18:15:54,348 - INFO - 주문 금액: 5,000원 ~ 50,000원
+2025-06-24 18:15:54,348 - INFO - 가격 범위: ±0.5%
+2025-06-24 18:15:54,350 - INFO - 현재 리워드 점수: 0, 순위: 0
+2025-06-24 18:15:54,585 - ERROR - API 요청 실패: {'result': 'error', 'errorCode': '130', 'errorMsg': 'V2 API Nonce value must be a positive integer'}
+2025-06-24 18:15:55,104 - ERROR - 현재가 조회 실패: Expecting value: line 1 column 1 (char 0)
+2025-06-24 18:15:55,105 - WARNING - 현재가 조회 실패
+2025-06-24 18:16:04,587 - INFO - 현재 리워드 점수: 0, 순위: 0
+2025-06-24 18:16:04,679 - ERROR - API 요청 실패: {'result': 'error', 'errorCode': '130', 'errorMsg': 'V2 API Nonce value must be a positive integer'}
+2025-06-24 18:16:09,978 - INFO - 사용자에 의해 중단됨
+2025-06-24 18:16:09,978 - INFO - 봇 중지 중...
+2025-06-24 18:16:10,037 - ERROR - API 요청 중 오류 발생: 404 Client Error: Not Found for url: https://api.coinone.co.kr/v2/account/orders/
+2025-06-24 18:16:10,038 - INFO - === 봇 종료 ===
+2025-06-24 18:16:10,038 - INFO - 봇 중지 중...
+2025-06-24 18:16:10,105 - ERROR - API 요청 중 오류 발생: 404 Client Error: Not Found for url: https://api.coinone.co.kr/v2/account/orders/
+2025-06-24 18:16:10,105 - INFO - === 봇 종료 ===
+2025-06-24 18:16:17,640 - INFO - === 코인원 주문 리워드 봇 시작 ===
+2025-06-24 18:16:17,641 - INFO - 대상 코인: BTC
+2025-06-24 18:16:17,641 - INFO - 주문 금액: 5,000원 ~ 50,000원
+2025-06-24 18:16:17,641 - INFO - 가격 범위: ±0.5%
+2025-06-24 18:16:17,643 - INFO - 현재 리워드 점수: 0, 순위: 0
+2025-06-24 18:16:17,807 - ERROR - API 요청 실패: {'result': 'error', 'errorCode': '130', 'errorMsg': 'V2 API Nonce value must be a positive integer'}
+2025-06-24 18:16:18,303 - ERROR - 현재가 조회 실패: Expecting value: line 1 column 1 (char 0)
+2025-06-24 18:16:18,304 - WARNING - 현재가 조회 실패
+2025-06-24 18:16:20,746 - INFO - 사용자에 의해 중단됨
+2025-06-24 18:16:20,746 - INFO - 봇 중지 중...
+2025-06-24 18:16:20,836 - ERROR - API 요청 중 오류 발생: 404 Client Error: Not Found for url: https://api.coinone.co.kr/v2/account/orders/
+2025-06-24 18:16:20,837 - INFO - === 봇 종료 ===
+2025-06-24 18:16:20,837 - INFO - 봇 중지 중...
+2025-06-24 18:16:20,915 - ERROR - API 요청 중 오류 발생: 404 Client Error: Not Found for url: https://api.coinone.co.kr/v2/account/orders/
+2025-06-24 18:16:20,915 - INFO - === 봇 종료 ===
+2025-06-24 21:15:02,067 - INFO - === 코인원 주문 리워드 봇 시작 ===
+2025-06-24 21:15:02,071 - INFO - 대상 코인: BTC
+2025-06-24 21:15:02,071 - INFO - 주문 금액: 5,000원 ~ 50,000원
+2025-06-24 21:15:02,071 - INFO - 가격 범위: ±0.5%
+2025-06-24 21:15:02,074 - INFO - 현재 리워드 점수: 0, 순위: 0
+2025-06-24 21:15:02,322 - ERROR - API 요청 실패: {'result': 'error', 'errorCode': '12', 'errorMsg': 'Invalid access_token'}
+2025-06-24 21:15:02,921 - ERROR - 현재가 조회 실패: Expecting value: line 1 column 1 (char 0)
+2025-06-24 21:15:02,922 - WARNING - 현재가 조회 실패
+2025-06-24 21:15:12,324 - INFO - 현재 리워드 점수: 0, 순위: 0
+2025-06-24 21:15:12,398 - ERROR - API 요청 실패: {'result': 'error', 'errorCode': '12', 'errorMsg': 'Invalid access_token'}
+2025-06-24 21:15:22,399 - INFO - 현재 리워드 점수: 0, 순위: 0
+2025-06-24 21:15:22,470 - ERROR - API 요청 실패: {'result': 'error', 'errorCode': '12', 'errorMsg': 'Invalid access_token'}
+2025-06-24 21:15:29,292 - INFO - 사용자에 의해 중단됨
+2025-06-24 21:15:29,293 - INFO - 봇 중지 중...
+2025-06-24 21:15:29,365 - ERROR - API 요청 중 오류 발생: 404 Client Error: Not Found for url: https://api.coinone.co.kr/v2/account/user_orders/
+2025-06-24 21:15:29,426 - ERROR - API 요청 실패: {'result': 'error', 'errorCode': '12', 'errorMsg': 'Invalid access_token'}
+2025-06-24 21:15:29,478 - ERROR - API 요청 중 오류 발생: 404 Client Error: Not Found for url: https://api.coinone.co.kr/v2.1/order/limit_orders/
+2025-06-24 21:15:29,478 - WARNING - 모든 주문 조회 엔드포인트 실패
+2025-06-24 21:15:29,479 - INFO - === 봇 종료 ===
+2025-06-24 21:15:29,479 - INFO - 봇 중지 중...
+2025-06-24 21:15:29,549 - ERROR - API 요청 중 오류 발생: 404 Client Error: Not Found for url: https://api.coinone.co.kr/v2/account/user_orders/
+2025-06-24 21:15:29,612 - ERROR - API 요청 실패: {'result': 'error', 'errorCode': '12', 'errorMsg': 'Invalid access_token'}
+2025-06-24 21:15:29,673 - ERROR - API 요청 중 오류 발생: 404 Client Error: Not Found for url: https://api.coinone.co.kr/v2.1/order/limit_orders/
+2025-06-24 21:15:29,673 - WARNING - 모든 주문 조회 엔드포인트 실패
+2025-06-24 21:15:29,673 - INFO - === 봇 종료 ===
+2025-06-24 21:19:28,505 - INFO - === 코인원 주문 리워드 봇 시작 ===
+2025-06-24 21:19:28,505 - INFO - 대상 코인: BTC
+2025-06-24 21:19:28,506 - INFO - 주문 금액: 5,000원 ~ 50,000원
+2025-06-24 21:19:28,506 - INFO - 가격 범위: ±0.5%
+2025-06-24 21:19:29,119 - INFO - 이벤트 대상 종목: , , 
+2025-06-24 21:19:29,120 - WARNING - BTC는 이벤트 대상 종목이 아닙니다!
+2025-06-24 21:19:29,120 - INFO - 대상 종목 중 하나로 변경하세요: ['', '', '']
+2025-06-24 21:19:29,233 - WARNING - 현재가 조회 실패: BTC
+2025-06-24 21:19:29,235 - WARNING - 현재가 조회 실패
+2025-06-24 21:19:29,256 - ERROR - API 요청 중 오류 발생: /v2.1/event/order-reward/histories - 404 Client Error: Not Found for url: https://api.coinone.co.kr/v2.1/event/order-reward/histories
+2025-06-24 21:19:29,331 - ERROR - API 요청 중 오류 발생: /v2.1/balances - 404 Client Error: Not Found for url: https://api.coinone.co.kr/v2.1/balances
+2025-06-24 21:19:33,944 - INFO - 사용자에 의해 중단됨
+2025-06-24 21:19:33,944 - INFO - 봇 중지 중...
+2025-06-24 21:19:34,019 - ERROR - API 요청 중 오류 발생: /v2.1/order/orders-pending/ - 404 Client Error: Not Found for url: https://api.coinone.co.kr/v2.1/order/orders-pending/
+2025-06-24 21:19:34,021 - INFO - === 봇 종료 ===
+2025-06-24 21:19:34,021 - INFO - 봇 중지 중...
+2025-06-24 21:20:07,272 - INFO - === 코인원 주문 리워드 봇 시작 ===
+2025-06-24 21:20:07,272 - INFO - 대상 코인: VIRTUAL
+2025-06-24 21:20:07,273 - INFO - 주문 금액: 5,000원 ~ 50,000원
+2025-06-24 21:20:07,273 - INFO - 가격 범위: ±0.5%
+2025-06-24 21:20:07,933 - INFO - 이벤트 대상 종목: , , 
+2025-06-24 21:20:07,933 - WARNING - VIRTUAL는 이벤트 대상 종목이 아닙니다!
+2025-06-24 21:20:07,934 - INFO - 대상 종목 중 하나로 변경하세요: ['', '', '']
+2025-06-24 21:20:08,052 - WARNING - 현재가 조회 실패: VIRTUAL
+2025-06-24 21:20:08,052 - WARNING - 현재가 조회 실패
+2025-06-24 21:20:08,134 - ERROR - API 요청 중 오류 발생: /v2.1/event/order-reward/histories - 404 Client Error: Not Found for url: https://api.coinone.co.kr/v2.1/event/order-reward/histories
+2025-06-24 21:20:08,199 - ERROR - API 요청 중 오류 발생: /v2.1/balances - 404 Client Error: Not Found for url: https://api.coinone.co.kr/v2.1/balances
+2025-06-24 21:20:15,364 - INFO - 사용자에 의해 중단됨
+2025-06-24 21:20:15,365 - INFO - 봇 중지 중...
+2025-06-24 21:20:15,444 - ERROR - API 요청 중 오류 발생: /v2.1/order/orders-pending/ - 404 Client Error: Not Found for url: https://api.coinone.co.kr/v2.1/order/orders-pending/
+2025-06-24 21:20:15,445 - INFO - === 봇 종료 ===
+2025-06-24 21:20:15,445 - INFO - 봇 중지 중...
+2025-06-24 21:20:15,507 - ERROR - API 요청 중 오류 발생: /v2.1/order/orders-pending/ - 404 Client Error: Not Found for url: https://api.coinone.co.kr/v2.1/order/orders-pending/
+2025-06-24 21:20:15,508 - INFO - === 봇 종료 ===
+2025-06-24 21:22:46,558 - INFO - === 코인원 주문 리워드 봇 시작 ===
+2025-06-24 21:22:46,559 - INFO - 대상 코인: BTC
+2025-06-24 21:22:46,559 - INFO - 주문 금액: 5,000원
+2025-06-24 21:22:46,560 - INFO - 가격 범위: ±0.5%
+2025-06-24 21:22:46,560 - INFO - API 연결 테스트 중...
+2025-06-24 21:22:47,323 - ERROR - 현재가 조회 오류: Expecting value: line 1 column 1 (char 0)
+2025-06-24 21:22:47,327 - INFO - 다른 코인(BTC, ETH, XRP 등)으로 변경해보세요.
+2025-06-24 21:22:47,477 - INFO - KRW 잔고: 47,418원 (사용가능: 47,418원)
+2025-06-24 21:22:47,528 - ERROR - HTTP 오류: /v2/account/user_orders/ - 404
+2025-06-24 21:22:47,576 - ERROR - 현재가 조회 오류: Expecting value: line 1 column 1 (char 0)
+2025-06-24 21:22:47,577 - WARNING - 현재가 조회 실패
+2025-06-24 21:22:47,647 - ERROR - HTTP 오류: /v2/order/open_orders/ - 404
+2025-06-24 21:22:47,648 - WARNING - 모든 주문 조회 엔드포인트 실패
+2025-06-24 21:22:57,486 - INFO - 사용자에 의해 중단됨
+2025-06-24 21:22:57,487 - INFO - 봇 중지 중...
+2025-06-24 21:22:57,545 - ERROR - HTTP 오류: /v2/account/user_orders/ - 404
+2025-06-24 21:22:57,676 - ERROR - HTTP 오류: /v2/order/open_orders/ - 404
+2025-06-24 21:22:57,676 - WARNING - 모든 주문 조회 엔드포인트 실패
+2025-06-24 21:22:57,677 - INFO - === 봇 종료 ===
+2025-06-24 21:22:57,677 - INFO - 봇 중지 중...
+2025-06-24 21:22:57,754 - ERROR - HTTP 오류: /v2/account/user_orders/ - 404
+2025-06-24 21:22:57,860 - ERROR - HTTP 오류: /v2/order/open_orders/ - 404
+2025-06-24 21:22:57,861 - WARNING - 모든 주문 조회 엔드포인트 실패
+2025-06-24 21:22:57,861 - INFO - === 봇 종료 ===
+2025-06-24 21:26:24,020 - INFO - === 코인원 주문 리워드 봇 시작 ===
+2025-06-24 21:26:24,021 - INFO - 대상 코인: BTC
+2025-06-24 21:26:24,021 - INFO - 주문 금액: 5,000원
+2025-06-24 21:26:24,021 - INFO - 가격 범위: ±0.5%
+2025-06-24 21:26:24,021 - INFO - API 연결 테스트 중...
+2025-06-24 21:26:24,022 - ERROR - API 요청 오류: /v2.1/account/balance/ - 'CoinoneAPI' object has no attribute '_create_v2_signature'
+2025-06-24 21:26:24,025 - INFO - 봇 중지 중...
+2025-06-24 21:26:24,230 - ERROR - V2.1 HTTP 오류: /v2.1/order/orders/pending/ - 404
+2025-06-24 21:26:24,297 - ERROR - V2.1 HTTP 오류: /v2.1/order/unfilled-orders/ - 404
+2025-06-24 21:26:24,298 - ERROR - API 요청 오류: /v2/account/user_orders/ - 'CoinoneAPI' object has no attribute '_create_v2_signature'
+2025-06-24 21:26:24,298 - ERROR - API 요청 오류: /v2/order/limit_orders/ - 'CoinoneAPI' object has no attribute '_create_v2_signature'
+2025-06-24 21:26:24,299 - WARNING - 모든 주문 조회 엔드포인트 실패
+2025-06-24 21:26:24,299 - INFO - === 봇 종료 ===

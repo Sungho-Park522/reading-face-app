@@ -1,0 +1,411 @@
+2025-06-24 21:39:27,022 - INFO - API 연결 테스트 중...
+2025-06-24 21:39:27,223 - ERROR - 현재가 정보 없음: {'result': 'error', 'errorCode': '108', 'errorMsg': 'Unknown CryptoCurrency'}
+2025-06-24 21:39:27,224 - ERROR - ❌ 현재가 조회 실패! 코인 심볼을 확인하세요.
+2025-06-24 21:39:38,542 - INFO - API 연결 테스트 중...
+2025-06-24 21:39:38,709 - ERROR - 현재가 정보 없음: {'result': 'error', 'errorCode': '108', 'errorMsg': 'Unknown CryptoCurrency'}
+2025-06-24 21:39:38,710 - ERROR - ❌ 현재가 조회 실패! 코인 심볼을 확인하세요.
+2025-06-24 21:39:45,367 - INFO - API 연결 테스트 중...
+2025-06-24 21:39:45,557 - ERROR - 현재가 정보 없음: {'result': 'error', 'errorCode': '108', 'errorMsg': 'Unknown CryptoCurrency'}
+2025-06-24 21:39:45,558 - ERROR - ❌ 현재가 조회 실패! 코인 심볼을 확인하세요.
+2025-06-24 21:42:22,121 - INFO - API 연결 테스트 중...
+2025-06-24 21:42:22,362 - INFO - Ticker 응답: {'result': 'success', 'errorCode': '0', 'timestamp': '1750768942', 'currency': 'virtual', 'first': '1938.0', 'low': '1900.0', 'high': '2587.0', 'last': '2290.0', 'volume': '31226.00338536', 'yesterday_first': '1856.0', 'yesterday_low': '1775.0', 'yesterday_high': '2598.0', 'yesterday_last': '1938.0', 'yesterday_volume': '10576.50172263'}
+2025-06-24 21:42:22,363 - INFO - ✅ VIRTUAL 현재가 조회 성공: 2,290원
+2025-06-24 21:42:22,486 - ERROR - 요청 오류: /v2.1/account/balances/ - 404 Client Error: Not Found for url: https://api.coinone.co.kr/v2.1/account/balances/
+2025-06-24 21:42:22,487 - ERROR - ❌ 잔고 조회 실패! API 키를 확인하세요.
+2025-06-24 21:46:40,765 - INFO - API 연결 테스트 중...
+2025-06-24 21:46:40,950 - INFO - ✅ VIRTUAL 현재가: 2,269원
+2025-06-24 21:46:41,107 - INFO - ✅ 잔고 조회 성공
+2025-06-24 21:46:41,107 - INFO - ✅ API 연결 성공!
+2025-06-24 21:46:41,107 - INFO - 
+🔄 사이클 1 시작
+2025-06-24 21:46:41,259 - INFO - ✅ VIRTUAL 현재가: 2,269원
+2025-06-24 21:46:41,260 - INFO - 목표가 - 매수: 2,257원, 매도: 2,280원
+2025-06-24 21:46:41,426 - ERROR - HTTP 오류: /v2/account/user_orders/ - 404 - 
+2025-06-24 21:46:41,817 - ERROR - HTTP 오류: /v2/account/user_orders/ - 404 - 
+2025-06-24 21:46:42,022 - ERROR - HTTP 오류: /v2/order/ - 404 - 
+2025-06-24 21:46:42,023 - ERROR - ❌ BUY 주문 실패: 2.215330 VIRTUAL @ 2,257원
+2025-06-24 21:46:42,730 - INFO - ✅ 잔고 조회 성공
+2025-06-24 21:46:42,730 - INFO - 매도 가능 수량: 0.000000 → 매도 예정: 0.000000
+2025-06-24 21:46:42,731 - INFO - ✅ 사이클 1 완료 - 30초 대기
+2025-06-24 21:47:02,847 - INFO - 사용자에 의해 중단됨
+2025-06-24 21:47:02,848 - INFO - 🛑 봇 중지 중...
+2025-06-24 21:47:02,989 - ERROR - HTTP 오류: /v2/account/user_orders/ - 404 - 
+2025-06-24 21:47:02,990 - INFO - === 봇 종료 ===
+2025-06-24 21:49:47,601 - INFO - API 연결 테스트 중...
+2025-06-24 21:49:47,803 - INFO - ✅ VIRTUAL 현재가: 2,275원
+2025-06-24 21:49:48,019 - ERROR - API 오류: /v2.1/account/balance - {'result': 'error', 'error_code': '107', 'error_msg': 'Parameter error'}
+2025-06-24 21:49:48,183 - ERROR - API 오류: /v2/account/balance - {'result': 'error', 'errorCode': '130', 'errorMsg': 'V2 API Nonce value must be a positive integer'}
+2025-06-24 21:49:48,361 - ERROR - HTTP 오류: /v2.1/account/balances - 404 - 
+2025-06-24 21:49:48,363 - ERROR - ❌ 모든 잔고 조회 방법 실패
+2025-06-24 21:49:48,363 - ERROR - ❌ 잔고 조회 실패! API 키를 확인하세요.
+2025-06-24 21:53:18,900 - INFO - API 연결 테스트 중...
+2025-06-24 21:53:19,066 - INFO - ✅ VIRTUAL 현재가: 2,268원
+2025-06-24 21:53:19,243 - INFO - ✅ 잔고 조회 성공
+2025-06-24 21:53:19,243 - INFO - ✅ API 연결 성공!
+2025-06-24 21:53:19,244 - INFO - 
+🔄 사이클 1 시작
+2025-06-24 21:53:19,429 - INFO - ✅ VIRTUAL 현재가: 2,268원
+2025-06-24 21:53:19,431 - INFO - 목표가 - 매수: 2,256원, 매도: 2,279원
+2025-06-24 21:53:19,578 - ERROR - HTTP 오류: /v2/account/user_orders/ - 404 - 
+2025-06-24 21:53:19,733 - ERROR - HTTP 오류: /v2/account/user_orders/ - 404 - 
+2025-06-24 21:53:19,892 - ERROR - HTTP 오류: /v2/order/ - 404 - 
+2025-06-24 21:53:19,893 - ERROR - ❌ BUY 주문 실패: 2.216312 VIRTUAL @ 2,256원
+2025-06-24 21:53:20,578 - INFO - ✅ 잔고 조회 성공
+2025-06-24 21:53:20,578 - INFO - 매도 가능 수량: 0.000000 → 매도 예정: 0.000000
+2025-06-24 21:53:20,579 - INFO - ✅ 사이클 1 완료 - 30초 대기
+2025-06-24 21:53:25,273 - INFO - 사용자에 의해 중단됨
+2025-06-24 21:53:25,273 - INFO - 🛑 봇 중지 중...
+2025-06-24 21:53:25,451 - ERROR - HTTP 오류: /v2/account/user_orders/ - 404 - 
+2025-06-24 21:53:25,452 - INFO - === 봇 종료 ===
+2025-06-24 21:58:16,202 - INFO - API 연결 테스트 중...
+2025-06-24 21:58:16,403 - INFO - ✅ VIRTUAL 현재가: 2,272원
+2025-06-24 21:58:16,619 - ERROR - API 응답 오류: /v2.1/account/balance - {'result': 'error', 'error_code': '107', 'error_msg': 'Parameter error'}
+2025-06-24 21:58:16,826 - ERROR - HTTP 오류: /v2.1/account/balances - 404 - 
+2025-06-24 21:58:17,053 - ERROR - HTTP 오류: /v2.1/balance - 404 - 
+2025-06-24 21:58:17,054 - ERROR - ❌ 모든 잔고 조회 엔드포인트 실패
+2025-06-24 21:58:17,054 - ERROR - ❌ 잔고 조회 실패! API 키를 확인하세요.
+2025-06-24 22:02:25,044 - INFO - API 연결 테스트 중...
+2025-06-24 22:02:25,207 - INFO - ✅ VIRTUAL 현재가: 2,272원
+2025-06-24 22:02:25,209 - INFO - API 호출: /v2.1/account/balance/ - 파라미터: {'access_token': 'ae437cfc-b806-4798-88e7-5954b8745fb7', 'nonce': '4ff623ad-8391-4099-91cd-84d4f8b9c828'}
+2025-06-24 22:02:25,397 - INFO - 응답 상태: 200
+2025-06-24 22:02:25,397 - INFO - 응답 내용: {'result': 'error', 'error_code': '107', 'error_msg': 'Parameter error'}
+2025-06-24 22:02:25,398 - ERROR - API 오류: /v2.1/account/balance/ - {'result': 'error', 'error_code': '107', 'error_msg': 'Parameter error'}
+2025-06-24 22:02:25,398 - ERROR - ❌ 잔고 조회 실패: {'result': 'error', 'error_code': '107', 'error_msg': 'Parameter error'}
+2025-06-24 22:02:25,399 - ERROR - ❌ 잔고 조회 실패! API 키를 확인하세요.
+2025-06-24 22:06:25,772 - INFO - API 연결 테스트 중...
+2025-06-24 22:06:25,942 - INFO - ✅ VIRTUAL 현재가: 2,272원
+2025-06-24 22:06:25,943 - INFO - v2.1 잔고 조회 시도 (currency: VIRTUAL)
+2025-06-24 22:06:25,944 - INFO - API 호출: /v2.1/account/balance/ - 파라미터: {'currency': 'virtual', 'access_token': 'ae437cfc-b806-4798-88e7-5954b8745fb7', 'nonce': 'e49afa00-ef8c-42fc-a684-2c761bd9f4e0'}
+2025-06-24 22:06:26,123 - INFO - 응답 상태: 200
+2025-06-24 22:06:26,123 - INFO - 응답 내용: {'result': 'error', 'error_code': '107', 'error_msg': 'Parameter error'}
+2025-06-24 22:06:26,123 - ERROR - API 오류: /v2.1/account/balance/ - {'result': 'error', 'error_code': '107', 'error_msg': 'Parameter error'}
+2025-06-24 22:06:26,125 - INFO - v2.1 잔고 조회 시도 (currency 없음)
+2025-06-24 22:06:26,125 - INFO - API 호출: /v2.1/account/balance/ - 파라미터: {'access_token': 'ae437cfc-b806-4798-88e7-5954b8745fb7', 'nonce': 'be523abc-22bc-43cd-8f7f-371e73b85158'}
+2025-06-24 22:06:26,273 - INFO - 응답 상태: 200
+2025-06-24 22:06:26,274 - INFO - 응답 내용: {'result': 'error', 'error_code': '107', 'error_msg': 'Parameter error'}
+2025-06-24 22:06:26,274 - ERROR - API 오류: /v2.1/account/balance/ - {'result': 'error', 'error_code': '107', 'error_msg': 'Parameter error'}
+2025-06-24 22:06:26,275 - INFO - v2 fallback 잔고 조회 시도
+2025-06-24 22:06:26,467 - INFO - ✅ v2 fallback 잔고 조회 성공
+2025-06-24 22:06:26,468 - INFO - ✅ API 연결 성공!
+2025-06-24 22:06:26,468 - INFO - 
+🔄 사이클 1 시작
+2025-06-24 22:06:26,604 - INFO - ✅ VIRTUAL 현재가: 2,272원
+2025-06-24 22:06:26,604 - INFO - 목표가 - 매수: 2,260원, 매도: 2,283원
+2025-06-24 22:06:26,605 - INFO - API 호출: /v2.1/order/orders-pending/ - 파라미터: {'currency': 'virtual', 'access_token': 'ae437cfc-b806-4798-88e7-5954b8745fb7', 'nonce': '6de56892-1f5e-41f1-9da7-cec4ce0533a8'}
+2025-06-24 22:06:26,758 - INFO - 응답 상태: 404
+2025-06-24 22:06:26,759 - ERROR - HTTP 오류: /v2.1/order/orders-pending/ - 404 - 
+2025-06-24 22:06:26,760 - INFO - API 호출: /v2.1/account/user_orders/ - 파라미터: {'currency': 'virtual', 'access_token': 'ae437cfc-b806-4798-88e7-5954b8745fb7', 'nonce': '2fdd7109-0633-4f3e-8087-85d023f89391'}
+2025-06-24 22:06:26,909 - INFO - 응답 상태: 404
+2025-06-24 22:06:26,909 - ERROR - HTTP 오류: /v2.1/account/user_orders/ - 404 - 
+2025-06-24 22:06:26,910 - INFO - API 호출: /v2.1/order/open_orders/ - 파라미터: {'currency': 'virtual', 'access_token': 'ae437cfc-b806-4798-88e7-5954b8745fb7', 'nonce': 'f9e58efa-6d5f-4f14-a9cf-62225219a910'}
+2025-06-24 22:06:27,055 - INFO - 응답 상태: 200
+2025-06-24 22:06:27,056 - INFO - 응답 내용: {'result': 'error', 'error_code': '107', 'error_msg': 'Parameter error'}
+2025-06-24 22:06:27,056 - ERROR - API 오류: /v2.1/order/open_orders/ - {'result': 'error', 'error_code': '107', 'error_msg': 'Parameter error'}
+2025-06-24 22:06:27,057 - WARNING - 모든 미체결 주문 조회 엔드포인트 실패
+2025-06-24 22:06:27,057 - INFO - API 호출: /v2.1/order/orders-pending/ - 파라미터: {'currency': 'virtual', 'access_token': 'ae437cfc-b806-4798-88e7-5954b8745fb7', 'nonce': '99b41b25-b386-4781-b8b5-1f13cc05cea4'}
+2025-06-24 22:06:27,208 - INFO - 응답 상태: 404
+2025-06-24 22:06:27,209 - ERROR - HTTP 오류: /v2.1/order/orders-pending/ - 404 - 
+2025-06-24 22:06:27,210 - INFO - API 호출: /v2.1/account/user_orders/ - 파라미터: {'currency': 'virtual', 'access_token': 'ae437cfc-b806-4798-88e7-5954b8745fb7', 'nonce': '7f8100ca-fbbe-40de-ba0e-f1fe04033d6b'}
+2025-06-24 22:06:27,361 - INFO - 응답 상태: 404
+2025-06-24 22:06:27,361 - ERROR - HTTP 오류: /v2.1/account/user_orders/ - 404 - 
+2025-06-24 22:06:27,362 - INFO - API 호출: /v2.1/order/open_orders/ - 파라미터: {'currency': 'virtual', 'access_token': 'ae437cfc-b806-4798-88e7-5954b8745fb7', 'nonce': 'd467c6a1-9719-485c-a036-b12c5a216c02'}
+2025-06-24 22:06:27,486 - INFO - 응답 상태: 200
+2025-06-24 22:06:27,486 - INFO - 응답 내용: {'result': 'error', 'error_code': '107', 'error_msg': 'Parameter error'}
+2025-06-24 22:06:27,487 - ERROR - API 오류: /v2.1/order/open_orders/ - {'result': 'error', 'error_code': '107', 'error_msg': 'Parameter error'}
+2025-06-24 22:06:27,488 - WARNING - 모든 미체결 주문 조회 엔드포인트 실패
+2025-06-24 22:06:27,488 - INFO - 매수 수량 계산: 5,000원 ÷ 2,260원 = 2.21238938
+2025-06-24 22:06:27,489 - INFO - 주문 생성 시도: BUY 2.21238938 VIRTUAL @ 2,260원
+2025-06-24 22:06:27,489 - INFO - API 호출: /v2.1/order/ - 파라미터: {'currency': 'virtual', 'type': 'buy', 'price': '2260', 'qty': '2.21238938', 'access_token': 'ae437cfc-b806-4798-88e7-5954b8745fb7', 'nonce': 'b5c92b87-dcf8-4e0f-a6e6-27418c93facf'}
+2025-06-24 22:06:27,636 - INFO - 응답 상태: 200
+2025-06-24 22:06:27,638 - INFO - 응답 내용: {'result': 'error', 'error_code': '107', 'error_msg': 'Parameter error'}
+2025-06-24 22:06:27,638 - ERROR - API 오류: /v2.1/order/ - {'result': 'error', 'error_code': '107', 'error_msg': 'Parameter error'}
+2025-06-24 22:06:27,639 - ERROR - ❌ BUY 주문 실패: {'result': 'error', 'error_code': '107', 'error_msg': 'Parameter error'}
+2025-06-24 22:06:28,140 - INFO - v2.1 잔고 조회 시도 (currency: VIRTUAL)
+2025-06-24 22:06:28,140 - INFO - API 호출: /v2.1/account/balance/ - 파라미터: {'currency': 'virtual', 'access_token': 'ae437cfc-b806-4798-88e7-5954b8745fb7', 'nonce': 'd496b9a2-b819-4f37-9b13-3306a51900c9'}
+2025-06-24 22:06:28,277 - INFO - 응답 상태: 200
+2025-06-24 22:06:28,278 - INFO - 응답 내용: {'result': 'error', 'error_code': '107', 'error_msg': 'Parameter error'}
+2025-06-24 22:06:28,278 - ERROR - API 오류: /v2.1/account/balance/ - {'result': 'error', 'error_code': '107', 'error_msg': 'Parameter error'}
+2025-06-24 22:06:28,279 - INFO - v2.1 잔고 조회 시도 (currency 없음)
+2025-06-24 22:06:28,280 - INFO - API 호출: /v2.1/account/balance/ - 파라미터: {'access_token': 'ae437cfc-b806-4798-88e7-5954b8745fb7', 'nonce': 'fb758c3e-cc55-4156-8b72-f948f4dad16e'}
+2025-06-24 22:06:28,422 - INFO - 응답 상태: 200
+2025-06-24 22:06:28,422 - INFO - 응답 내용: {'result': 'error', 'error_code': '107', 'error_msg': 'Parameter error'}
+2025-06-24 22:06:28,422 - ERROR - API 오류: /v2.1/account/balance/ - {'result': 'error', 'error_code': '107', 'error_msg': 'Parameter error'}
+2025-06-24 22:06:28,423 - INFO - v2 fallback 잔고 조회 시도
+2025-06-24 22:06:28,654 - INFO - ✅ v2 fallback 잔고 조회 성공
+2025-06-24 22:06:28,655 - INFO - 매도 가능: 0.00000000 → 매도 예정: 0.00000000
+2025-06-24 22:06:28,655 - INFO - ✅ 사이클 1 완료 - 30초 대기
+2025-06-24 22:06:31,266 - INFO - 사용자에 의해 중단됨
+2025-06-24 22:06:31,267 - INFO - 🛑 봇 중지 중...
+2025-06-24 22:06:31,352 - INFO - API 호출: /v2.1/order/orders-pending/ - 파라미터: {'currency': 'virtual', 'access_token': 'ae437cfc-b806-4798-88e7-5954b8745fb7', 'nonce': '382a2f5f-fe0b-4ed5-b475-27f38b67d022'}
+2025-06-24 22:06:31,659 - INFO - 응답 상태: 404
+2025-06-24 22:06:31,660 - ERROR - HTTP 오류: /v2.1/order/orders-pending/ - 404 - 
+2025-06-24 22:06:31,661 - INFO - API 호출: /v2.1/account/user_orders/ - 파라미터: {'currency': 'virtual', 'access_token': 'ae437cfc-b806-4798-88e7-5954b8745fb7', 'nonce': 'a650d4d6-8311-49ac-8c48-7d70f1789564'}
+2025-06-24 22:06:31,964 - INFO - 응답 상태: 404
+2025-06-24 22:06:31,964 - ERROR - HTTP 오류: /v2.1/account/user_orders/ - 404 - 
+2025-06-24 22:06:31,966 - INFO - API 호출: /v2.1/order/open_orders/ - 파라미터: {'currency': 'virtual', 'access_token': 'ae437cfc-b806-4798-88e7-5954b8745fb7', 'nonce': 'bfaa715b-ca0e-4543-a858-445551795dcb'}
+2025-06-24 22:06:32,236 - INFO - 응답 상태: 200
+2025-06-24 22:06:32,248 - INFO - 응답 내용: {'result': 'error', 'error_code': '107', 'error_msg': 'Parameter error'}
+2025-06-24 22:06:32,250 - ERROR - API 오류: /v2.1/order/open_orders/ - {'result': 'error', 'error_code': '107', 'error_msg': 'Parameter error'}
+2025-06-24 22:06:32,259 - WARNING - 모든 미체결 주문 조회 엔드포인트 실패
+2025-06-24 22:06:32,270 - INFO - === 봇 종료 ===
+2025-06-24 22:11:40,302 - INFO - API 연결 테스트 중...
+2025-06-24 22:11:40,473 - INFO - ✅ VIRTUAL 현재가: 2,272원
+2025-06-24 22:11:40,474 - INFO - v2.1 잔고 조회 시도 (currency: VIRTUAL)
+2025-06-24 22:11:40,475 - INFO - API 호출: /v2.1/account/balance/
+2025-06-24 22:11:40,475 - INFO - 파라미터: {'currency': 'virtual'}
+2025-06-24 22:11:40,475 - INFO - nonce: 84a98ce7-bc18-494e-bc30-68ce37720478
+2025-06-24 22:11:40,605 - INFO - 응답 상태: 200
+2025-06-24 22:11:40,606 - INFO - 응답 내용: {'result': 'error', 'error_code': '122', 'error_msg': 'API nonce is missing'}
+2025-06-24 22:11:40,607 - ERROR - API 오류: /v2.1/account/balance/ - {'result': 'error', 'error_code': '122', 'error_msg': 'API nonce is missing'}
+2025-06-24 22:11:40,608 - ERROR - ❌ v2.1 잔고 조회 실패: {'result': 'error', 'error_code': '122', 'error_msg': 'API nonce is missing'}
+2025-06-24 22:11:40,608 - ERROR - ❌ 잔고 조회 실패! API 키를 확인하세요.
+2025-06-24 22:15:27,987 - INFO - API 연결 테스트 중...
+2025-06-24 22:15:28,187 - INFO - ✅ VIRTUAL 현재가: 2,260원
+2025-06-24 22:15:28,188 - INFO - v2.1 잔고 조회 시도 (currency: VIRTUAL)
+2025-06-24 22:15:28,189 - INFO - API 호출: /v2.1/account/balance/
+2025-06-24 22:15:28,189 - INFO - 파라미터: {'currency': 'virtual'}
+2025-06-24 22:15:28,189 - INFO - nonce: 48fb26b7-04ef-4c25-b712-fcff70106de5
+2025-06-24 22:15:28,360 - INFO - 응답 상태: 200
+2025-06-24 22:15:28,360 - INFO - 응답 내용: {'result': 'error', 'error_code': '122', 'error_msg': 'API nonce is missing'}
+2025-06-24 22:15:28,361 - INFO - v2.1 잔고 조회 시도 (currency 없음)
+2025-06-24 22:15:28,361 - INFO - API 호출: /v2.1/account/balance/
+2025-06-24 22:15:28,362 - INFO - 파라미터: {}
+2025-06-24 22:15:28,362 - INFO - nonce: 6ac7248a-bf13-40ed-85f8-11d4587ffce7
+2025-06-24 22:15:28,566 - INFO - 응답 상태: 200
+2025-06-24 22:15:28,566 - INFO - 응답 내용: {'result': 'error', 'error_code': '122', 'error_msg': 'API nonce is missing'}
+2025-06-24 22:15:28,567 - INFO - v2 fallback 잔고 조회 시도
+2025-06-24 22:15:28,760 - INFO - ✅ v2 fallback 잔고 조회 성공
+2025-06-24 22:15:28,761 - INFO - ✅ API 연결 성공!
+2025-06-24 22:15:28,761 - INFO - 
+🔄 사이클 1 시작
+2025-06-24 22:15:28,930 - INFO - ✅ VIRTUAL 현재가: 2,260원
+2025-06-24 22:15:28,931 - INFO - 목표가 - 매수: 2,248원, 매도: 2,271원
+2025-06-24 22:15:28,931 - INFO - API 호출: /v2.1/order/orders-pending/
+2025-06-24 22:15:28,932 - INFO - 파라미터: {'currency': 'virtual'}
+2025-06-24 22:15:28,932 - INFO - nonce: ba9ccf7e-5b79-4797-8a7a-54d0051a724f
+2025-06-24 22:15:29,180 - INFO - 응답 상태: 404
+2025-06-24 22:15:29,181 - ERROR - 요청 예외: Expecting value: line 1 column 1 (char 0)
+2025-06-24 22:15:29,182 - INFO - API 호출: /v2.1/account/user_orders/
+2025-06-24 22:15:29,182 - INFO - 파라미터: {'currency': 'virtual'}
+2025-06-24 22:15:29,183 - INFO - nonce: d59bc993-fbb2-4f18-b1ec-a8685835b126
+2025-06-24 22:15:29,333 - INFO - 응답 상태: 404
+2025-06-24 22:15:29,334 - ERROR - 요청 예외: Expecting value: line 1 column 1 (char 0)
+2025-06-24 22:15:29,334 - INFO - API 호출: /v2.1/order/open_orders/
+2025-06-24 22:15:29,335 - INFO - 파라미터: {'currency': 'virtual'}
+2025-06-24 22:15:29,335 - INFO - nonce: 4d5a4fcb-8694-45f6-ba35-b44ca7125568
+2025-06-24 22:15:29,489 - INFO - 응답 상태: 200
+2025-06-24 22:15:29,489 - INFO - 응답 내용: {'result': 'error', 'error_code': '122', 'error_msg': 'API nonce is missing'}
+2025-06-24 22:15:29,491 - WARNING - 모든 미체결 주문 조회 엔드포인트 실패
+2025-06-24 22:15:29,491 - INFO - API 호출: /v2.1/order/orders-pending/
+2025-06-24 22:15:29,492 - INFO - 파라미터: {'currency': 'virtual'}
+2025-06-24 22:15:29,492 - INFO - nonce: 7937e0fb-0cea-4507-a15b-a8efb3375046
+2025-06-24 22:15:29,658 - INFO - 응답 상태: 404
+2025-06-24 22:15:29,658 - ERROR - 요청 예외: Expecting value: line 1 column 1 (char 0)
+2025-06-24 22:15:29,659 - INFO - API 호출: /v2.1/account/user_orders/
+2025-06-24 22:15:29,659 - INFO - 파라미터: {'currency': 'virtual'}
+2025-06-24 22:15:29,659 - INFO - nonce: cc67f4c3-c7dd-4893-bb68-e01858b446ce
+2025-06-24 22:15:29,925 - INFO - 응답 상태: 404
+2025-06-24 22:15:29,925 - ERROR - 요청 예외: Expecting value: line 1 column 1 (char 0)
+2025-06-24 22:15:29,926 - INFO - API 호출: /v2.1/order/open_orders/
+2025-06-24 22:15:29,926 - INFO - 파라미터: {'currency': 'virtual'}
+2025-06-24 22:15:29,927 - INFO - nonce: ea071346-569f-4551-836b-1e7f1f0fd4f1
+2025-06-24 22:15:30,084 - INFO - 응답 상태: 200
+2025-06-24 22:15:30,084 - INFO - 응답 내용: {'result': 'error', 'error_code': '122', 'error_msg': 'API nonce is missing'}
+2025-06-24 22:15:30,085 - WARNING - 모든 미체결 주문 조회 엔드포인트 실패
+2025-06-24 22:15:30,085 - INFO - 매수 수량 계산: 5,000원 ÷ 2,248원 = 2.22419929
+2025-06-24 22:15:30,086 - INFO - 주문 생성 시도: BUY 2.22419929 VIRTUAL @ 2,248원
+2025-06-24 22:15:30,086 - INFO - API 호출: /v2.1/order/
+2025-06-24 22:15:30,086 - INFO - 파라미터: {'currency': 'virtual', 'type': 'buy', 'price': '2248', 'qty': '2.22419929'}
+2025-06-24 22:15:30,086 - INFO - nonce: 2d1bed63-717c-4372-97e5-c19d38cc68a8
+2025-06-24 22:15:30,281 - INFO - 응답 상태: 200
+2025-06-24 22:15:30,281 - INFO - 응답 내용: {'result': 'error', 'error_code': '122', 'error_msg': 'API nonce is missing'}
+2025-06-24 22:15:30,282 - ERROR - ❌ BUY 주문 실패: {'result': 'error', 'error_code': '122', 'error_msg': 'API nonce is missing'}
+2025-06-24 22:15:30,783 - INFO - v2.1 잔고 조회 시도 (currency: VIRTUAL)
+2025-06-24 22:15:30,784 - INFO - API 호출: /v2.1/account/balance/
+2025-06-24 22:15:30,784 - INFO - 파라미터: {'currency': 'virtual'}
+2025-06-24 22:15:30,784 - INFO - nonce: 8a767a76-5f6e-42bc-bb78-dd2e1f458cec
+2025-06-24 22:15:30,954 - INFO - 응답 상태: 200
+2025-06-24 22:15:30,955 - INFO - 응답 내용: {'result': 'error', 'error_code': '122', 'error_msg': 'API nonce is missing'}
+2025-06-24 22:15:30,956 - INFO - v2.1 잔고 조회 시도 (currency 없음)
+2025-06-24 22:15:30,956 - INFO - API 호출: /v2.1/account/balance/
+2025-06-24 22:15:30,956 - INFO - 파라미터: {}
+2025-06-24 22:15:30,957 - INFO - nonce: 6959a4e9-e838-49a0-8df0-f321b1320cd4
+2025-06-24 22:15:31,087 - INFO - 응답 상태: 200
+2025-06-24 22:15:31,088 - INFO - 응답 내용: {'result': 'error', 'error_code': '122', 'error_msg': 'API nonce is missing'}
+2025-06-24 22:15:31,089 - INFO - v2 fallback 잔고 조회 시도
+2025-06-24 22:15:31,313 - INFO - ✅ v2 fallback 잔고 조회 성공
+2025-06-24 22:15:31,314 - INFO - 매도 가능: 0.00000000 → 매도 예정: 0.00000000
+2025-06-24 22:15:31,314 - INFO - ✅ 사이클 1 완료 - 30초 대기
+2025-06-24 22:15:52,386 - INFO - 사용자에 의해 중단됨
+2025-06-24 22:15:52,387 - INFO - 🛑 봇 중지 중...
+2025-06-24 22:15:52,387 - INFO - API 호출: /v2.1/order/orders-pending/
+2025-06-24 22:15:52,388 - INFO - 파라미터: {'currency': 'virtual'}
+2025-06-24 22:15:52,388 - INFO - nonce: 9619ee28-adf6-47fb-aa84-0bb9f9cd536f
+2025-06-24 22:15:52,582 - INFO - 응답 상태: 404
+2025-06-24 22:15:52,583 - ERROR - 요청 예외: Expecting value: line 1 column 1 (char 0)
+2025-06-24 22:15:52,584 - INFO - API 호출: /v2.1/account/user_orders/
+2025-06-24 22:15:52,584 - INFO - 파라미터: {'currency': 'virtual'}
+2025-06-24 22:15:52,584 - INFO - nonce: d4edda4e-5d41-4c9a-9ba2-b1fd6ae3e30a
+2025-06-24 22:15:52,746 - INFO - 응답 상태: 404
+2025-06-24 22:15:52,747 - ERROR - 요청 예외: Expecting value: line 1 column 1 (char 0)
+2025-06-24 22:15:52,747 - INFO - API 호출: /v2.1/order/open_orders/
+2025-06-24 22:15:52,747 - INFO - 파라미터: {'currency': 'virtual'}
+2025-06-24 22:15:52,748 - INFO - nonce: 26e8d166-9b85-4771-9d29-58c289e07a7f
+2025-06-24 22:15:52,889 - INFO - 응답 상태: 200
+2025-06-24 22:15:52,890 - INFO - 응답 내용: {'result': 'error', 'error_code': '122', 'error_msg': 'API nonce is missing'}
+2025-06-24 22:15:52,891 - WARNING - 모든 미체결 주문 조회 엔드포인트 실패
+2025-06-24 22:15:52,891 - INFO - === 봇 종료 ===
+2025-06-24 22:18:14,993 - INFO - API 연결 테스트 중...
+2025-06-24 22:18:15,205 - INFO - ✅ VIRTUAL 현재가: 2,260원
+2025-06-24 22:18:15,206 - INFO - v2.1 잔고 조회 시도 (currency: VIRTUAL)
+2025-06-24 22:18:15,206 - INFO - API 호출: /v2.1/account/balance/
+2025-06-24 22:18:15,206 - INFO - 파라미터: {'currency': 'virtual'}
+2025-06-24 22:18:15,207 - INFO - nonce: b82b606a-638a-4eac-83f1-08d53c44304a
+2025-06-24 22:18:15,347 - INFO - 응답 상태: 200
+2025-06-24 22:18:15,347 - INFO - 응답 내용: {'result': 'error', 'error_code': '122', 'error_msg': 'API nonce is missing'}
+2025-06-24 22:18:15,348 - INFO - v2.1 잔고 조회 시도 (currency 없음)
+2025-06-24 22:18:15,348 - INFO - API 호출: /v2.1/account/balance/
+2025-06-24 22:18:15,349 - INFO - 파라미터: {}
+2025-06-24 22:18:15,349 - INFO - nonce: 539a9215-a93b-4dfc-8088-965bc01919bb
+2025-06-24 22:18:15,485 - INFO - 응답 상태: 200
+2025-06-24 22:18:15,486 - INFO - 응답 내용: {'result': 'error', 'error_code': '122', 'error_msg': 'API nonce is missing'}
+2025-06-24 22:18:15,487 - INFO - v2 fallback 잔고 조회 시도
+2025-06-24 22:18:15,675 - INFO - ✅ v2 fallback 잔고 조회 성공
+2025-06-24 22:18:15,676 - INFO - ✅ API 연결 성공!
+2025-06-24 22:18:15,676 - INFO - 
+🔄 사이클 1 시작
+2025-06-24 22:18:15,869 - INFO - ✅ VIRTUAL 현재가: 2,260원
+2025-06-24 22:18:15,870 - INFO - 목표가 - 매수: 2,248원, 매도: 2,271원
+2025-06-24 22:18:15,870 - INFO - API 호출: /v2.1/order/orders-pending/
+2025-06-24 22:18:15,871 - INFO - 파라미터: {'currency': 'virtual'}
+2025-06-24 22:18:15,871 - INFO - nonce: cac2e678-5ef9-4747-b954-4bace81f6524
+2025-06-24 22:18:16,016 - INFO - 응답 상태: 404
+2025-06-24 22:18:16,017 - ERROR - 요청 예외: Expecting value: line 1 column 1 (char 0)
+2025-06-24 22:18:16,018 - INFO - API 호출: /v2.1/account/user_orders/
+2025-06-24 22:18:16,018 - INFO - 파라미터: {'currency': 'virtual'}
+2025-06-24 22:18:16,018 - INFO - nonce: 5e6c7668-562a-415e-aea5-edf1f589866a
+2025-06-24 22:18:16,212 - INFO - 응답 상태: 404
+2025-06-24 22:18:16,213 - ERROR - 요청 예외: Expecting value: line 1 column 1 (char 0)
+2025-06-24 22:18:16,214 - INFO - API 호출: /v2.1/order/open_orders/
+2025-06-24 22:18:16,214 - INFO - 파라미터: {'currency': 'virtual'}
+2025-06-24 22:18:16,214 - INFO - nonce: be7dc3e8-edf7-4236-8683-15473d5439b5
+2025-06-24 22:18:16,376 - INFO - 응답 상태: 200
+2025-06-24 22:18:16,377 - INFO - 응답 내용: {'result': 'error', 'error_code': '122', 'error_msg': 'API nonce is missing'}
+2025-06-24 22:18:16,378 - WARNING - 모든 미체결 주문 조회 엔드포인트 실패
+2025-06-24 22:18:16,378 - INFO - API 호출: /v2.1/order/orders-pending/
+2025-06-24 22:18:16,379 - INFO - 파라미터: {'currency': 'virtual'}
+2025-06-24 22:18:16,379 - INFO - nonce: 1f971b01-bc58-4120-bd0b-0ad80f67ffa3
+2025-06-24 22:18:16,513 - INFO - 응답 상태: 404
+2025-06-24 22:18:16,513 - ERROR - 요청 예외: Expecting value: line 1 column 1 (char 0)
+2025-06-24 22:18:16,514 - INFO - API 호출: /v2.1/account/user_orders/
+2025-06-24 22:18:16,515 - INFO - 파라미터: {'currency': 'virtual'}
+2025-06-24 22:18:16,515 - INFO - nonce: 08a44c9e-1048-447e-a884-1d6d2cf5d939
+2025-06-24 22:18:17,106 - INFO - 응답 상태: 404
+2025-06-24 22:18:17,106 - ERROR - 요청 예외: Expecting value: line 1 column 1 (char 0)
+2025-06-24 22:18:17,107 - INFO - API 호출: /v2.1/order/open_orders/
+2025-06-24 22:18:17,108 - INFO - 파라미터: {'currency': 'virtual'}
+2025-06-24 22:18:17,108 - INFO - nonce: 4353a4d3-1af6-43aa-a88e-2136116b3ae4
+2025-06-24 22:18:17,288 - INFO - 응답 상태: 200
+2025-06-24 22:18:17,288 - INFO - 응답 내용: {'result': 'error', 'error_code': '122', 'error_msg': 'API nonce is missing'}
+2025-06-24 22:18:17,289 - WARNING - 모든 미체결 주문 조회 엔드포인트 실패
+2025-06-24 22:18:17,290 - INFO - 매수 수량 계산: 5,000원 ÷ 2,248원 = 2.22419929
+2025-06-24 22:18:17,290 - INFO - 주문 생성 시도: BUY 2.22419929 VIRTUAL @ 2,248원
+2025-06-24 22:18:17,291 - INFO - API 호출: /v2.1/order/
+2025-06-24 22:18:17,291 - INFO - 파라미터: {'currency': 'virtual', 'type': 'buy', 'price': '2248', 'qty': '2.22419929'}
+2025-06-24 22:18:17,291 - INFO - nonce: 64927224-800b-4dec-b279-078abbcc958a
+2025-06-24 22:18:17,451 - INFO - 응답 상태: 200
+2025-06-24 22:18:17,451 - INFO - 응답 내용: {'result': 'error', 'error_code': '122', 'error_msg': 'API nonce is missing'}
+2025-06-24 22:18:17,452 - ERROR - ❌ BUY 주문 실패: {'result': 'error', 'error_code': '122', 'error_msg': 'API nonce is missing'}
+2025-06-24 22:18:17,953 - INFO - v2.1 잔고 조회 시도 (currency: VIRTUAL)
+2025-06-24 22:18:17,953 - INFO - API 호출: /v2.1/account/balance/
+2025-06-24 22:18:17,954 - INFO - 파라미터: {'currency': 'virtual'}
+2025-06-24 22:18:17,954 - INFO - nonce: 5741c081-5df9-4c9d-ba3d-d7ba4e7638b3
+2025-06-24 22:18:18,127 - INFO - 응답 상태: 200
+2025-06-24 22:18:18,127 - INFO - 응답 내용: {'result': 'error', 'error_code': '122', 'error_msg': 'API nonce is missing'}
+2025-06-24 22:18:18,128 - INFO - v2.1 잔고 조회 시도 (currency 없음)
+2025-06-24 22:18:18,129 - INFO - API 호출: /v2.1/account/balance/
+2025-06-24 22:18:18,129 - INFO - 파라미터: {}
+2025-06-24 22:18:18,129 - INFO - nonce: 826c311c-5d14-48ed-80d7-1bdedaed3f9d
+2025-06-24 22:18:18,295 - INFO - 응답 상태: 200
+2025-06-24 22:18:18,295 - INFO - 응답 내용: {'result': 'error', 'error_code': '122', 'error_msg': 'API nonce is missing'}
+2025-06-24 22:18:18,296 - INFO - v2 fallback 잔고 조회 시도
+2025-06-24 22:18:18,477 - INFO - ✅ v2 fallback 잔고 조회 성공
+2025-06-24 22:18:18,478 - INFO - 매도 가능: 0.00000000 → 매도 예정: 0.00000000
+2025-06-24 22:18:18,478 - INFO - ✅ 사이클 1 완료 - 30초 대기
+2025-06-24 22:18:24,946 - INFO - 사용자에 의해 중단됨
+2025-06-24 22:18:24,946 - INFO - 🛑 봇 중지 중...
+2025-06-24 22:18:24,947 - INFO - API 호출: /v2.1/order/orders-pending/
+2025-06-24 22:18:24,947 - INFO - 파라미터: {'currency': 'virtual'}
+2025-06-24 22:18:24,947 - INFO - nonce: 00e45703-12ed-4615-91cd-7ffb79e29c13
+2025-06-24 22:18:25,063 - INFO - 응답 상태: 404
+2025-06-24 22:18:25,063 - ERROR - 요청 예외: Expecting value: line 1 column 1 (char 0)
+2025-06-24 22:18:25,064 - INFO - API 호출: /v2.1/account/user_orders/
+2025-06-24 22:18:25,065 - INFO - 파라미터: {'currency': 'virtual'}
+2025-06-24 22:18:25,065 - INFO - nonce: 9aa1c5f3-604b-4726-a077-55f5e5e95415
+2025-06-24 22:18:25,210 - INFO - 응답 상태: 404
+2025-06-24 22:18:25,211 - ERROR - 요청 예외: Expecting value: line 1 column 1 (char 0)
+2025-06-24 22:18:25,211 - INFO - API 호출: /v2.1/order/open_orders/
+2025-06-24 22:18:25,212 - INFO - 파라미터: {'currency': 'virtual'}
+2025-06-24 22:18:25,212 - INFO - nonce: ebdc6cbf-ed8a-4fc7-8830-04c3a1fdb3ad
+2025-06-24 22:18:25,346 - INFO - 응답 상태: 200
+2025-06-24 22:18:25,347 - INFO - 응답 내용: {'result': 'error', 'error_code': '122', 'error_msg': 'API nonce is missing'}
+2025-06-24 22:18:25,347 - WARNING - 모든 미체결 주문 조회 엔드포인트 실패
+2025-06-24 22:18:25,348 - INFO - === 봇 종료 ===
+2025-06-24 22:25:08,564 - INFO - API 연결 테스트 중...
+2025-06-24 22:25:08,785 - INFO - ✅ VIRTUAL 현재가: 2,260원
+2025-06-24 22:25:08,786 - INFO - API 호출: /v2/account/balance/
+2025-06-24 22:25:08,786 - INFO - 파라미터: {}
+2025-06-24 22:25:08,978 - INFO - 응답 상태: 200
+2025-06-24 22:25:08,980 - INFO - 응답 내용: {'result': 'success', 'errorCode': '0', 'normalWallets': [], 'krw': {'avail': '47417.8531', 'balance': '47417.8531'}, 'chillguy': {'avail': '0.0', 'balance': '0.0'}, 'hippo': {'avail': '0.0', 'balance': '0.0'}, 'cookie': {'avail': '0.0', 'balance': '0.0'}, 'sonic': {'avail': '0.0', 'balance': '0.0'}, 'moodeng': {'avail': '0.0', 'balance': '0.0'}, 'acx': {'avail': '0.0', 'balance': '0.0'}, 'safe': {'avail': '0.0', 'balance': '0.0'}, 'ethf': {'avail': '0.0', 'balance': '0.0'}, 'ethw': {'avail': '0.0', 'balance': '0.0'}, 'pepper': {'avail': '0.0', 'balance': '0.0'}, 'init': {'avail': '0.0', 'balance': '0.0'}, 'flr': {'avail': '0.0', 'balance': '0.0'}, 'ogv': {'avail': '0.0', 'balance': '0.0'}, 'luna2': {'avail': '0.0', 'balance': '0.0'}, 'ctx': {'avail': '0.0', 'balance': '0.0'}, 'aqua': {'avail': '0.0', 'balance': '0.0'}, 'icz': {'avail': '0.0', 'balance': '0.0'}, 'solo': {'avail': '0.0', 'balance': '0.0'}, 'boba': {'avail': '0.0', 'balance': '0.0'}, 'nftold': {'avail': '0.0', 'balance': '0.0'}, 'exfi': {'avail': '0.0', 'balance': '0.0'}, 'wecash': {'avail': '0.0', 'balance': '0.0'}, 'eox': {'avail': '0.0', 'balance': '0.0'}, 'chl': {'avail': '0.0', 'balance': '0.0'}, 'edna': {'avail': '0.0', 'balance': '0.0'}, 'black': {'avail': '0.0', 'balance': '0.0'}, 'add': {'avail': '0.0', 'balance': '0.0'}, 'atd': {'avail': '0.0', 'balance': '0.0'}, 'horus': {'avail': '0.0', 'balance': '0.0'}, 'zrc': {'avail': '0.0', 'balance': '0.0'}, 'scr': {'avail': '0.0', 'balance': '0.0'}, 'neiro': {'avail': '0.0', 'balance': '0.0'}, 'puffer': {'avail': '0.0', 'balance': '0.0'}, 'dapp': {'avail': '0.0', 'balance': '0.0'}, 'dbr': {'avail': '0.0', 'balance': '0.0'}, 'bera': {'avail': '0.0', 'balance': '0.0'}, 'eigen': {'avail': '0.0', 'balance': '0.0'}, 'cati': {'avail': '0.0', 'balance': '0.0'}, 'aero': {'avail': '0.0', 'balance': '0.0'}, 'sundog': {'avail': '0.0', 'balance': '0.0'}, 'g': {'avail': '0.0', 'balance': '0.0'}, 'lista': {'avail': '0.0', 'balance': '0.0'}, 'cloud': {'avail': '0.0', 'balance': '0.0'}, 'wen': {'avail': '0.0', 'balance': '0.0'}, 'zro': {'avail': '0.0', 'balance': '0.0'}, 'sca': {'avail': '0.0', 'balance': '0.0'}, 'masa': {'avail': '0.0', 'balance': '0.0'}, 'order': {'avail': '0.0', 'balance': '0.0'}, 'woo': {'avail': '0.0', 'balance': '0.0'}, 'moca': {'avail': '0.0', 'balance': '0.0'}, 'brett': {'avail': '0.0', 'balance': '0.0'}, 'bome': {'avail': '0.0', 'balance': '0.0'}, 'blast': {'avail': '0.0', 'balance': '0.0'}, 'mew': {'avail': '0.0', 'balance': '0.0'}, 'io': {'avail': '0.0', 'balance': '0.0'}, 'aark': {'avail': '0.0', 'balance': '0.0'}, 'zk': {'avail': '0.0', 'balance': '0.0'}, 'every': {'avail': '0.0', 'balance': '0.0'}, 'ath': {'avail': '0.0', 'balance': '0.0'}, 'taiko': {'avail': '0.0', 'balance': '0.0'}, 'zkl': {'avail': '0.0', 'balance': '0.0'}, 'ethfi': {'avail': '0.0', 'balance': '0.0'}, 'mon': {'avail': '0.0', 'balance': '0.0'}, 'core': {'avail': '0.0', 'balance': '0.0'}, 'oas': {'avail': '0.0', 'balance': '0.0'}, 'cfg': {'avail': '0.0', 'balance': '0.0'}, 'rez': {'avail': '0.0', 'balance': '0.0'}, 'ron': {'avail': '0.0', 'balance': '0.0'}, 'neon': {'avail': '0.0', 'balance': '0.0'}, 'alt': {'avail': '0.0', 'balance': '0.0'}, 'jup': {'avail': '0.0', 'balance': '0.0'}, 'dmail': {'avail': '0.0', 'balance': '0.0'}, 'mkr': {'avail': '0.0', 'balance': '0.0'}, 'ondo': {'avail': '0.0', 'balance': '0.0'}, 'zeta': {'avail': '0.0', 'balance': '0.0'}, 'manta': {'avail': '0.0', 'balance': '0.0'}, 'app': {'avail': '0.0', 'balance': '0.0'}, 'beam': {'avail': '0.0', 'balance': '0.0'}, 'ai': {'avail': '0.0', 'balance': '0.0'}, 'alex': {'avail': '0.0', 'balance': '0.0'}, 'prime': {'avail': '0.0', 'balance': '0.0'}, 'nfp': {'avail': '0.0', 'balance': '0.0'}, 'tokamak': {'avail': '0.0', 'balance': '0.0'}, 'paxg': {'avail': '0.0', 'balance': '0.0'}, 'ntrn': {'avail': '0.0', 'balance': '0.0'}, 'bonk': {'avail': '0.0', 'balance': '0.0'}, 'icp': {'avail': '0.0', 'balance': '0.0'}, 'jto': {'avail': '0.0', 'balance': '0.0'}, 'vet': {'avail': '0.0', 'balance': '0.0'}, 'ssg': {'avail': '0.0', 'balance': '0.0'}, 'render': {'avail': '0.0', 'balance': '0.0'}, 'edu': {'avail': '0.0', 'balance': '0.0'}, 'pyth': {'avail': '0.0', 'balance': '0.0'}, 'hbar': {'avail': '0.0', 'balance': '0.0'}, 'tide': {'avail': '0.0', 'balance': '0.0'}, 'hunt': {'avail': '0.0', 'balance': '0.0'}, 'fnsa': {'avail': '0.0', 'balance': '0.0'}, 'gal': {'avail': '0.0', 'balance': '0.0'}, 'meme': {'avail': '0.0', 'balance': '0.0'}, 'snt': {'avail': '0.0', 'balance': '0.0'}, 'iq': {'avail': '0.0', 'balance': '0.0'}, 'spurs': {'avail': '0.0', 'balance': '0.0'}, 'mtl': {'avail': '0.0', 'balance': '0.0'}, 'bigtime': {'avail': '0.0', 'balance': '0.0'}, 'tia': {'avail': '0.0', 'balance': '0.0'}, 'ztx': {'avail': '0.0', 'balance': '0.0'}, 'isk': {'avail': '0.0', 'balance': '0.0'}, 't': {'avail': '0.0', 'balance': '0.0'}, 'glm': {'avail': '0.0', 'balance': '0.0'}, 'kas': {'avail': '0.0', 'balance': '0.0'}, 'ton': {'avail': '0.0', 'balance': '0.0'}, 'dydx': {'avail': '0.0', 'balance': '0.0'}, 'gmt': {'avail': '0.0', 'balance': '0.0'}, 'imx': {'avail': '0.0', 'balance': '0.0'}, 'algo': {'avail': '0.0', 'balance': '0.0'}, 'blur': {'avail': '0.0', 'balance': '0.0'}, 'hifi': {'avail': '0.0', 'balance': '0.0'}, 'rune': {'avail': '0.0', 'balance': '0.0'}, 'waves': {'avail': '0.0', 'balance': '0.0'}, 'amp': {'avail': '0.0', 'balance': '0.0'}, 'xpla': {'avail': '0.0', 'balance': '0.0'}, 'seilor': {'avail': '0.0', 'balance': '0.0'}, 'clear': {'avail': '0.0', 'balance': '0.0'}, 'celo': {'avail': '0.0', 'balance': '0.0'}, 'twt': {'avail': '0.0', 'balance': '0.0'}, 'near': {'avail': '0.0', 'balance': '0.0'}, 'ape': {'avail': '0.0', 'balance': '0.0'}, 'lqty': {'avail': '0.0', 'balance': '0.0'}, 'fxs': {'avail': '0.0', 'balance': '0.0'}, 'cyber': {'avail': '0.0', 'balance': '0.0'}, 'forth': {'avail': '0.0', 'balance': '0.0'}, 'bnb': {'avail': '0.0', 'balance': '0.0'}, 'mav': {'avail': '0.0', 'balance': '0.0'}, 'lbr': {'avail': '0.0', 'balance': '0.0'}, 'volt': {'avail': '0.0', 'balance': '0.0'}, 'high': {'avail': '0.0', 'balance': '0.0'}, 'hft': {'avail': '0.0', 'balance': '0.0'}, 'mnt': {'avail': '0.0', 'balance': '0.0'}, 'mina': {'avail': '0.0', 'balance': '0.0'}, 'wld': {'avail': '0.0', 'balance': '0.0'}, 'arkm': {'avail': '0.0', 'balance': '0.0'}, 'shib': {'avail': '0.0', 'balance': '0.0'}, 'mask': {'avail': '0.0', 'balance': '0.0'}, 'pendle': {'avail': '0.0', 'balance': '0.0'}, 'pepe': {'avail': '0.0', 'balance': '0.0'}, 'agix': {'avail': '0.0', 'balance': '0.0'}, 'stg': {'avail': '0.0', 'balance': '0.0'}, 'rdnt': {'avail': '0.0', 'balance': '0.0'}, 'aixbt': {'avail': '0.0', 'balance': '0.0'}, 'skl': {'avail': '0.0', 'balance': '0.0'}, 'home': {'avail': '0.0', 'balance': '0.0'}, 'cfx': {'avail': '0.0', 'balance': '0.0'}, 'gxa': {'avail': '0.0', 'balance': '0.0'}, 'op': {'avail': '0.0', 'balance': '0.0'}, 'sei': {'avail': '0.0', 'balance': '0.0'}, 'pundix': {'avail': '0.0', 'balance': '0.0'}, 'waxl': {'avail': '0.0', 'balance': '0.0'}, 'pundiai': {'avail': '0.0', 'balance': '0.0'}, 'apt': {'avail': '0.0', 'balance': '0.0'}, 'al': {'avail': '0.0', 'balance': '0.0'}, 'hvh': {'avail': '0.0', 'balance': '0.0'}, 'syrup': {'avail': '0.0', 'balance': '0.0'}, 'grnd': {'avail': '0.0', 'balance': '0.0'}, 'la': {'avail': '0.0', 'balance': '0.0'}, 'rpl': {'avail': '0.0', 'balance': '0.0'}, 'port3': {'avail': '0.0', 'balance': '0.0'}, 'astr': {'avail': '0.0', 'balance': '0.0'}, 'skyai': {'avail': '0.0', 'balance': '0.0'}, 'lwa': {'avail': '0.0', 'balance': '0.0'}, 'strax': {'avail': '0.0', 'balance': '0.0'}, 'arb': {'avail': '0.0', 'balance': '0.0'}, 'haedal': {'avail': '0.0', 'balance': '0.0'}, 'sui': {'avail': '0.0', 'balance': '0.0'}, 'blue': {'avail': '0.0', 'balance': '0.0'}, 'orb': {'avail': '0.0', 'balance': '0.0'}, 'huma': {'avail': '0.0', 'balance': '0.0'}, 'stx': {'avail': '0.0', 'balance': '0.0'}, 'drift': {'avail': '0.0', 'balance': '0.0'}, 'iost': {'avail': '0.0', 'balance': '0.0'}, 'dood': {'avail': '0.0', 'balance': '0.0'}, 'wemix': {'avail': '0.0', 'balance': '0.0'}, 'virtual': {'avail': '0.0', 'balance': '0.0'}, 'sml': {'avail': '0.0', 'balance': '0.0'}, 'nxpc': {'avail': '0.0', 'balance': '0.0'}, 'fncy': {'avail': '0.0', 'balance': '0.0'}, 'bwo': {'avail': '0.0', 'balance': '0.0'}, 'kaito': {'avail': '0.0', 'balance': '0.0'}, 'tari': {'avail': '0.0', 'balance': '0.0'}, 'zkj': {'avail': '0.0', 'balance': '0.0'}, 'we': {'avail': '0.0', 'balance': '0.0'}, 'aqt': {'avail': '0.0', 'balance': '0.0'}, 'reap': {'avail': '0.0', 'balance': '0.0'}, 'hyper': {'avail': '0.0', 'balance': '0.0'}, 'btr': {'avail': '0.0', 'balance': '0.0'}, 'bounty': {'avail': '0.0', 'balance': '0.0'}, 'ever': {'avail': '0.0', 'balance': '0.0'}, 'cow': {'avail': '0.0', 'balance': '0.0'}, 'noa': {'avail': '0.0', 'balance': '0.0'}, 'sign': {'avail': '0.0', 'balance': '0.0'}, 'orbr': {'avail': '0.0', 'balance': '0.0'}, 'zora': {'avail': '0.0', 'balance': '0.0'}, 'btt': {'avail': '0.0', 'balance': '0.0'}, 'myce': {'avail': '0.0', 'balance': '0.0'}, 'aergo': {'avail': '0.0', 'balance': '0.0'}, 'npt': {'avail': '0.0', 'balance': '0.0'}, 'wct': {'avail': '0.0', 'balance': '0.0'}, 'thn': {'avail': '0.0', 'balance': '0.0'}, 'gm': {'avail': '0.0', 'balance': '0.0'}, 'itamcube': {'avail': '0.0', 'balance': '0.0'}, 'kernel': {'avail': '0.0', 'balance': '0.0'}, 'spa': {'avail': '0.0', 'balance': '0.0'}, 'baby': {'avail': '0.0', 'balance': '0.0'}, 'lbl': {'avail': '0.0', 'balance': '0.0'}, 'wal': {'avail': '0.0', 'balance': '0.0'}, 'mev': {'avail': '0.0', 'balance': '0.0'}, 'ns': {'avail': '0.0', 'balance': '0.0'}, 'nft': {'avail': '0.0', 'balance': '0.0'}, 'ctc': {'avail': '0.0', 'balance': '0.0'}, 'ldn': {'avail': '0.0', 'balance': '0.0'}, 'red': {'avail': '0.0', 'balance': '0.0'}, 'ilv': {'avail': '0.0', 'balance': '0.0'}, 'solv': {'avail': '0.0', 'balance': '0.0'}, 'cvx': {'avail': '0.0', 'balance': '0.0'}, 'send': {'avail': '0.0', 'balance': '0.0'}, 'bit': {'avail': '0.0', 'balance': '0.0'}, 'b3': {'avail': '0.0', 'balance': '0.0'}, 'dao': {'avail': '0.0', 'balance': '0.0'}, 'avl': {'avail': '0.0', 'balance': '0.0'}, 'flux': {'avail': '0.0', 'balance': '0.0'}, 'shell': {'avail': '0.0', 'balance': '0.0'}, 'ern': {'avail': '0.0', 'balance': '0.0'}, 'layer': {'avail': '0.0', 'balance': '0.0'}, 'wemixc': {'avail': '0.0', 'balance': '0.0'}, 'agld': {'avail': '0.0', 'balance': '0.0'}, 'gala': {'avail': '0.0', 'balance': '0.0'}, 'plume': {'avail': '0.0', 'balance': '0.0'}, 'mana': {'avail': '0.0', 'balance': '0.0'}, 'nil': {'avail': '0.0', 'balance': '0.0'}, 'sgb': {'avail': '0.0', 'balance': '0.0'}, 'anime': {'avail': '0.0', 'balance': '0.0'}, 'cru': {'avail': '0.0', 'balance': '0.0'}, 'trump': {'avail': '0.0', 'balance': '0.0'}, 'sku': {'avail': '0.0', 'balance': '0.0'}, 'uxlink': {'avail': '0.0', 'balance': '0.0'}, 'wncg': {'avail': '0.0', 'balance': '0.0'}, 'game2': {'avail': '0.0', 'balance': '0.0'}, 'sol': {'avail': '0.0', 'balance': '0.0'}, 'ip': {'avail': '0.0', 'balance': '0.0'}, 'ach': {'avail': '0.0', 'balance': '0.0'}, 'ai16z': {'avail': '0.0', 'balance': '0.0'}, 'flow': {'avail': '0.0', 'balance': '0.0'}, 'pengu': {'avail': '0.0', 'balance': '0.0'}, 'xec': {'avail': '0.0', 'balance': '0.0'}, 'sky': {'avail': '0.0', 'balance': '0.0'}, 'move': {'avail': '0.0', 'balance': '0.0'}, 'clv': {'avail': '0.0', 'balance': '0.0'}, 'om': {'avail': '0.0', 'balance': '0.0'}, 'auction': {'avail': '0.0', 'balance': '0.0'}, 'me': {'avail': '0.0', 'balance': '0.0'}, 'sun': {'avail': '0.0', 'balance': '0.0'}, 'deep': {'avail': '0.0', 'balance': '0.0'}, 'stnd': {'avail': '0.0', 'balance': '0.0'}, 'pnut': {'avail': '0.0', 'balance': '0.0'}, 'doge': {'avail': '0.0', 'balance': '0.0'}, 'grass': {'avail': '0.0', 'balance': '0.0'}, 'fis': {'avail': '0.0', 'balance': '0.0'}, 'anc': {'avail': '0.0', 'balance': '0.0'}, 'hot': {'avail': '0.0', 'balance': '0.0'}, 'cro': {'avail': '0.0', 'balance': '0.0'}, 'hei': {'avail': '0.0', 'balance': '0.0'}, 'mega': {'avail': '0.0', 'balance': '0.0'}, 'sand': {'avail': '0.0', 'balance': '0.0'}, 'soba': {'avail': '0.0', 'balance': '0.0'}, 'tvk': {'avail': '0.0', 'balance': '0.0'}, 'pha': {'avail': '0.0', 'balance': '0.0'}, 'icx': {'avail': '0.0', 'balance': '0.0'}, 'uni': {'avail': '0.0', 'balance': '0.0'}, 'fil': {'avail': '0.0', 'balance': '0.0'}, 'idv': {'avail': '0.0', 'balance': '0.0'}, 'biot': {'avail': '0.0', 'balance': '0.0'}, 'att': {'avail': '0.0', 'balance': '0.0'}, 'lzm': {'avail': '0.0', 'balance': '0.0'}, 'mlk': {'avail': '0.0', 'balance': '0.0'}, 'celeb': {'avail': '0.0', 'balance': '0.0'}, 'qi': {'avail': '0.0', 'balance': '0.0'}, 'pod': {'avail': '0.0', 'balance': '0.0'}, 'mapo': {'avail': '0.0', 'balance': '0.0'}, 'cad': {'avail': '0.0', 'balance': '0.0'}, 'ten': {'avail': '0.0', 'balance': '0.0'}, 'vivi': {'avail': '0.0', 'balance': '0.0'}, 'trix': {'avail': '0.0', 'balance': '0.0'}, 'grt': {'avail': '0.0', 'balance': '0.0'}, 'ksp': {'avail': '0.0', 'balance': '0.0'}, 'torocus': {'avail': '0.0', 'balance': '0.0'}, 'crv': {'avail': '0.0', 'balance': '0.0'}, 'sushi': {'avail': '0.0', 'balance': '0.0'}, 'rush': {'avail': '0.0', 'balance': '0.0'}, 'cbk': {'avail': '0.0', 'balance': '0.0'}, 'cbank': {'avail': '0.0', 'balance': '0.0'}, 'lina': {'avail': '0.0', 'balance': '0.0'}, 'tip': {'avail': '0.0', 'balance': '0.0'}, 'basic': {'avail': '0.0', 'balance': '0.0'}, 'tom': {'avail': '0.0', 'balance': '0.0'}, 'mir': {'avail': '0.0', 'balance': '0.0'}, 'don': {'avail': '0.0', 'balance': '0.0'}, 'hard': {'avail': '0.0', 'balance': '0.0'}, 'ducato': {'avail': '0.0', 'balance': '0.0'}, 'mts': {'avail': '0.0', 'balance': '0.0'}, 'inj': {'avail': '0.0', 'balance': '0.0'}, 'handy': {'avail': '0.0', 'balance': '0.0'}, 'axs': {'avail': '0.0', 'balance': '0.0'}, 'bmp': {'avail': '0.0', 'balance': '0.0'}, 'front': {'avail': '0.0', 'balance': '0.0'}, 'bcha': {'avail': '0.0', 'balance': '0.0'}, 'sklay': {'avail': '0.0', 'balance': '0.0'}, 'pure': {'avail': '0.0', 'balance': '0.0'}, 'dodo': {'avail': '0.0', 'balance': '0.0'}, 'camp': {'avail': '0.0', 'balance': '0.0'}, 'bnt': {'avail': '0.0', 'balance': '0.0'}, 'orc': {'avail': '0.0', 'balance': '0.0'}, 'dvi': {'avail': '0.0', 'balance': '0.0'}, 'pica': {'avail': '0.0', 'balance': '0.0'}, 'stake': {'avail': '0.0', 'balance': '0.0'}, 'mvc': {'avail': '0.0', 'balance': '0.0'}, 'bel': {'avail': '0.0', 'balance': '0.0'}, 'weth': {'avail': '0.0', 'balance': '0.0'}, 'wbtc': {'avail': '0.0', 'balance': '0.0'}, 'asta': {'avail': '0.0', 'balance': '0.0'}, 'ckb': {'avail': '0.0', 'balance': '0.0'}, 'bfc': {'avail': '0.0', 'balance': '0.0'}, 'alpha': {'avail': '0.0', 'balance': '0.0'}, 'aave': {'avail': '0.0', 'balance': '0.0'}, 'lua': {'avail': '0.0', 'balance': '0.0'}, 'vic': {'avail': '0.0', 'balance': '0.0'}, 'sunold': {'avail': '0.0', 'balance': '0.0'}, 'tmc': {'avail': '0.0', 'balance': '0.0'}, 'msb': {'avail': '0.0', 'balance': '0.0'}, 'lend': {'avail': '0.0', 'balance': '0.0'}, 'usdc': {'avail': '0.0', 'balance': '0.0'}, 'dmg': {'avail': '0.0', 'balance': '0.0'}, 'ada': {'avail': '0.0', 'balance': '0.0'}, 'ren': {'avail': '0.0', 'balance': '0.0'}, 'bot': {'avail': '0.0', 'balance': '0.0'}, 'uma': {'avail': '0.0', 'balance': '0.0'}, 'dia': {'avail': '0.0', 'balance': '0.0'}, 'nest': {'avail': '0.0', 'balance': '0.0'}, 'bal': {'avail': '0.0', 'balance': '0.0'}, 'dot': {'avail': '0.0', 'balance': '0.0'}, 'ctsi': {'avail': '0.0', 'balance': '0.0'}, 'srm': {'avail': '0.0', 'balance': '0.0'}, 'sxp': {'avail': '0.0', 'balance': '0.0'}, 'ksm': {'avail': '0.0', 'balance': '0.0'}, 'ipx': {'avail': '0.0', 'balance': '0.0'}, 'vsys': {'avail': '0.0', 'balance': '0.0'}, 'aoa': {'avail': '0.0', 'balance': '0.0'}, 'ftt': {'avail': '0.0', 'balance': '0.0'}, 'isdt': {'avail': '0.0', 'balance': '0.0'}, 'band': {'avail': '0.0', 'balance': '0.0'}, 'ella': {'avail': '0.0', 'balance': '0.0'}, 'link': {'avail': '0.0', 'balance': '0.0'}, 'mta': {'avail': '0.0', 'balance': '0.0'}, 'kai': {'avail': '0.0', 'balance': '0.0'}, 'bzrx': {'avail': '0.0', 'balance': '0.0'}, 'stpl': {'avail': '0.0', 'balance': '0.0'}, 'mov': {'avail': '0.0', 'balance': '0.0'}, 'six': {'avail': '0.0', 'balance': '0.0'}, 'nfup': {'avail': '0.0', 'balance': '0.0'}, 'ibp': {'avail': '0.0', 'balance': '0.0'}, 'get': {'avail': '0.0', 'balance': '0.0'}, 'krt': {'avail': '0.0', 'balance': '0.0'}, 'comp': {'avail': '0.0', 'balance': '0.0'}, 'trcl': {'avail': '0.0', 'balance': '0.0'}, 'show': {'avail': '0.0', 'balance': '0.0'}, 'kaia': {'avail': '0.0', 'balance': '0.0'}, 'exe': {'avail': '0.0', 'balance': '0.0'}, 'lmch': {'avail': '0.0', 'balance': '0.0'}, 'tmtg': {'avail': '0.0', 'balance': '0.0'}, 'dvx': {'avail': '0.0', 'balance': '0.0'}, 'jst': {'avail': '0.0', 'balance': '0.0'}, 'asm': {'avail': '0.0', 'balance': '0.0'}, 'kdag': {'avail': '0.0', 'balance': '0.0'}, 'rnx': {'avail': '0.0', 'balance': '0.0'}, 'bora': {'avail': '0.0', 'balance': '0.0'}, 'qtcon': {'avail': '0.0', 'balance': '0.0'}, 'kava': {'avail': '0.0', 'balance': '0.0'}, 'usds': {'avail': '0.0', 'balance': '0.0'}, 'cos': {'avail': '0.0', 'balance': '0.0'}, 'lbxc': {'avail': '0.0', 'balance': '0.0'}, 'wiken': {'avail': '0.0', 'balance': '0.0'}, 'ogn': {'avail': '0.0', 'balance': '0.0'}, 'xpn': {'avail': '0.0', 'balance': '0.0'}, 'hibs': {'avail': '0.0', 'balance': '0.0'}, 'bna': {'avail': '0.0', 'balance': '0.0'}, 'kvi': {'avail': '0.0', 'balance': '0.0'}, 'soc': {'avail': '0.0', 'balance': '0.0'}, 'psc': {'avail': '0.0', 'balance': '0.0'}, 'iotx': {'avail': '0.0', 'balance': '0.0'}, 'cep': {'avail': '0.0', 'balance': '0.0'}, 'troy': {'avail': '0.0', 'balance': '0.0'}, 'mbl': {'avail': '0.0', 'balance': '0.0'}, 'axl': {'avail': '0.0', 'balance': '0.0'}, 'stpt': {'avail': '0.0', 'balance': '0.0'}, 'pci': {'avail': '0.0', 'balance': '0.0'}, 'chz': {'avail': '0.0', 'balance': '0.0'}, 's': {'avail': '0.0', 'balance': '0.0'}, 'redi': {'avail': '0.0', 'balance': '0.0'}, 'isr': {'avail': '0.0', 'balance': '0.0'}, 'fleta': {'avail': '0.0', 'balance': '0.0'}, 'baas': {'avail': '0.0', 'balance': '0.0'}, 'clbk': {'avail': '0.0', 'balance': '0.0'}, 'uos': {'avail': '0.0', 'balance': '0.0'}, 'vanta': {'avail': '0.0', 'balance': '0.0'}, 'arpa': {'avail': '0.0', 'balance': '0.0'}, 'hp': {'avail': '0.0', 'balance': '0.0'}, 'dad': {'avail': '0.0', 'balance': '0.0'}, 'lamb': {'avail': '0.0', 'balance': '0.0'}, 'prom': {'avail': '0.0', 'balance': '0.0'}, 'pol': {'avail': '0.0', 'balance': '0.0'}, 'egg': {'avail': '0.0', 'balance': '0.0'}, 'dappt': {'avail': '0.0', 'balance': '0.0'}, 'ksc': {'avail': '0.0', 'balance': '0.0'}, 'pib': {'avail': '0.0', 'balance': '0.0'}, 'hint': {'avail': '0.0', 'balance': '0.0'}, 'temco': {'avail': '0.0', 'balance': '0.0'}, 'spin': {'avail': '0.0', 'balance': '0.0'}, 'ankr': {'avail': '0.0', 'balance': '0.0'}, 'orbs': {'avail': '0.0', 'balance': '0.0'}, 'cpt': {'avail': '0.0', 'balance': '0.0'}, 'amo': {'avail': '0.0', 'balance': '0.0'}, 'gas': {'avail': '0.0', 'balance': '0.0'}, 'ong': {'avail': '0.0', 'balance': '0.0'}, 'ont': {'avail': '0.0', 'balance': '0.0'}, 'tfuel': {'avail': '0.0', 'balance': '0.0'}, 'cosm': {'avail': '0.0', 'balance': '0.0'}, 'enj': {'avail': '0.0', 'balance': '0.0'}, 'vnt': {'avail': '0.0', 'balance': '0.0'}, 'mzk': {'avail': '0.0', 'balance': '0.0'}, 'bttold': {'avail': '0.0', 'balance': '0.0'}, 'trx': {'avail': '0.0', 'balance': '0.0'}, 'neo': {'avail': '0.0', 'balance': '0.0'}, 'xlm': {'avail': '0.0', 'balance': '0.0'}, 'abl': {'avail': '0.0', 'balance': '0.0'}, 'bsv': {'avail': '0.0', 'balance': '0.0'}, 'gno': {'avail': '0.0', 'balance': '0.0'}, 'credo': {'avail': '0.0', 'balance': '0.0'}, 'storm': {'avail': '0.0', 'balance': '0.0'}, 'theta': {'avail': '0.0', 'balance': '0.0'}, 'bat': {'avail': '0.0', 'balance': '0.0'}, 'usdt': {'avail': '0.0', 'balance': '0.0'}, 'loom': {'avail': '0.0', 'balance': '0.0'}, 'storj': {'avail': '0.0', 'balance': '0.0'}, 'adt': {'avail': '0.0', 'balance': '0.0'}, 'snm': {'avail': '0.0', 'balance': '0.0'}, 'zeus': {'avail': '0.0', 'balance': '0.0'}, 'rep': {'avail': '0.0', 'balance': '0.0'}, 'tnsr': {'avail': '0.0', 'balance': '0.0'}, 'xtz': {'avail': '0.0', 'balance': '0.0'}, 'prcl': {'avail': '0.0', 'balance': '0.0'}, 'zrx': {'avail': '0.0', 'balance': '0.0'}, 'w': {'avail': '0.0', 'balance': '0.0'}, 'knc': {'avail': '0.0', 'balance': '0.0'}, 'ena': {'avail': '0.0', 'balance': '0.0'}, 'zil': {'avail': '0.0', 'balance': '0.0'}, 'aevo': {'avail': '0.0', 'balance': '0.0'}, 'data': {'avail': '0.0', 'balance': '0.0'}, 'orca': {'avail': '0.0', 'balance': '0.0'}, 'omg': {'avail': '0.0', 'balance': '0.0'}, 'navx': {'avail': '0.0', 'balance': '0.0'}, 'btg': {'avail': '0.0', 'balance': '0.0'}, 'mavia': {'avail': '0.0', 'balance': '0.0'}, 'ltc': {'avail': '0.0', 'balance': '0.0'}, 'mbx': {'avail': '0.0', 'balance': '0.0'}, 'iota': {'avail': '0.0', 'balance': '0.0'}, 'sln': {'avail': '0.0', 'balance': '0.0'}, 'qtum': {'avail': '0.0', 'balance': '0.0'}, 'mnr': {'avail': '0.0', 'balance': '0.0'}, 'aip': {'avail': '0.0', 'balance': '0.0'}, 'vtho': {'avail': '0.0', 'balance': '0.0'}, 'a': {'avail': '0.0', 'balance': '0.0'}, '1inch': {'avail': '0.0', 'balance': '0.0'}, 'ens': {'avail': '0.0', 'balance': '0.0'}, 'bch': {'avail': '0.0', 'balance': '0.0'}, 'gom2': {'avail': '0.0', 'balance': '0.0'}, 'avax': {'avail': '0.0', 'balance': '0.0'}, 'strk': {'avail': '0.0', 'balance': '0.0'}, 'atom': {'avail': '0.0', 'balance': '0.0'}, 'pxl': {'avail': '0.0', 'balance': '0.0'}, 'fet': {'avail': '0.0', 'balance': '0.0'}, 'qtbk': {'avail': '0.0', 'balance': '0.0'}, 'pixel': {'avail': '0.0', 'balance': '0.0'}, 'xrp': {'avail': '0.0', 'balance': '0.0'}, 'celr': {'avail': '0.0', 'balance': '0.0'}, 'obsr': {'avail': '0.0', 'balance': '0.0'}, 'fcr': {'avail': '0.0', 'balance': '0.0'}, 'cetus': {'avail': '0.0', 'balance': '0.0'}, 'etc': {'avail': '0.0', 'balance': '0.0'}, 'mch': {'avail': '0.0', 'balance': '0.0'}, 'onx': {'avail': '0.0', 'balance': '0.0'}, 'myro': {'avail': '0.0', 'balance': '0.0'}, 'eth': {'avail': '0.0', 'balance': '0.0'}, 'lunc': {'avail': '0.0', 'balance': '0.0'}, 'snx': {'avail': '0.0', 'balance': '0.0'}, 'drc': {'avail': '0.0', 'balance': '0.0'}, 'cake': {'avail': '0.0', 'balance': '0.0'}, 'btc': {'avail': '0.0', 'balance': '0.0'}}
+2025-06-24 22:25:08,987 - INFO - ✅ v2 잔고 조회 성공
+2025-06-24 22:25:08,988 - INFO - ✅ API 연결 성공!
+2025-06-24 22:25:08,988 - INFO - 
+🔄 사이클 1 시작
+2025-06-24 22:25:09,176 - INFO - ✅ VIRTUAL 현재가: 2,260원
+2025-06-24 22:25:09,177 - INFO - 목표가 - 매수: 2,248원, 매도: 2,271원
+2025-06-24 22:25:09,178 - INFO - API 호출: /v2/account/user_orders/
+2025-06-24 22:25:09,178 - INFO - 파라미터: {'currency': 'virtual'}
+2025-06-24 22:25:09,333 - INFO - 응답 상태: 404
+2025-06-24 22:25:09,334 - ERROR - HTTP 오류: /v2/account/user_orders/ - 404 - 
+2025-06-24 22:25:09,334 - WARNING - v2 미체결 주문 조회 실패
+2025-06-24 22:25:09,335 - INFO - API 호출: /v2/account/user_orders/
+2025-06-24 22:25:09,335 - INFO - 파라미터: {'currency': 'virtual'}
+2025-06-24 22:25:09,530 - INFO - 응답 상태: 404
+2025-06-24 22:25:09,532 - ERROR - HTTP 오류: /v2/account/user_orders/ - 404 - 
+2025-06-24 22:25:09,532 - WARNING - v2 미체결 주문 조회 실패
+2025-06-24 22:25:09,532 - INFO - 매수 수량 계산: 5,000원 ÷ 2,248원 = 2.22419929
+2025-06-24 22:25:09,532 - INFO - 주문 생성 시도: BUY 2.22419929 VIRTUAL @ 2,248원
+2025-06-24 22:25:09,533 - INFO - API 호출: /v2/order/
+2025-06-24 22:25:09,533 - INFO - 파라미터: {'currency': 'virtual', 'type': 'buy', 'price': '2248', 'qty': '2.22419929'}
+2025-06-24 22:25:09,937 - INFO - 응답 상태: 404
+2025-06-24 22:25:09,938 - ERROR - HTTP 오류: /v2/order/ - 404 - 
+2025-06-24 22:25:09,938 - ERROR - ❌ BUY 주문 실패: None
+2025-06-24 22:25:10,439 - INFO - API 호출: /v2/account/balance/
+2025-06-24 22:25:10,439 - INFO - 파라미터: {}
+2025-06-24 22:25:10,611 - INFO - 응답 상태: 200
+2025-06-24 22:25:10,612 - INFO - 응답 내용: {'result': 'success', 'errorCode': '0', 'normalWallets': [], 'krw': {'avail': '47417.8531', 'balance': '47417.8531'}, 'chillguy': {'avail': '0.0', 'balance': '0.0'}, 'hippo': {'avail': '0.0', 'balance': '0.0'}, 'cookie': {'avail': '0.0', 'balance': '0.0'}, 'sonic': {'avail': '0.0', 'balance': '0.0'}, 'moodeng': {'avail': '0.0', 'balance': '0.0'}, 'acx': {'avail': '0.0', 'balance': '0.0'}, 'safe': {'avail': '0.0', 'balance': '0.0'}, 'ethf': {'avail': '0.0', 'balance': '0.0'}, 'ethw': {'avail': '0.0', 'balance': '0.0'}, 'pepper': {'avail': '0.0', 'balance': '0.0'}, 'init': {'avail': '0.0', 'balance': '0.0'}, 'flr': {'avail': '0.0', 'balance': '0.0'}, 'ogv': {'avail': '0.0', 'balance': '0.0'}, 'luna2': {'avail': '0.0', 'balance': '0.0'}, 'ctx': {'avail': '0.0', 'balance': '0.0'}, 'aqua': {'avail': '0.0', 'balance': '0.0'}, 'icz': {'avail': '0.0', 'balance': '0.0'}, 'solo': {'avail': '0.0', 'balance': '0.0'}, 'boba': {'avail': '0.0', 'balance': '0.0'}, 'nftold': {'avail': '0.0', 'balance': '0.0'}, 'exfi': {'avail': '0.0', 'balance': '0.0'}, 'wecash': {'avail': '0.0', 'balance': '0.0'}, 'eox': {'avail': '0.0', 'balance': '0.0'}, 'chl': {'avail': '0.0', 'balance': '0.0'}, 'edna': {'avail': '0.0', 'balance': '0.0'}, 'black': {'avail': '0.0', 'balance': '0.0'}, 'add': {'avail': '0.0', 'balance': '0.0'}, 'atd': {'avail': '0.0', 'balance': '0.0'}, 'horus': {'avail': '0.0', 'balance': '0.0'}, 'zrc': {'avail': '0.0', 'balance': '0.0'}, 'scr': {'avail': '0.0', 'balance': '0.0'}, 'neiro': {'avail': '0.0', 'balance': '0.0'}, 'puffer': {'avail': '0.0', 'balance': '0.0'}, 'dapp': {'avail': '0.0', 'balance': '0.0'}, 'dbr': {'avail': '0.0', 'balance': '0.0'}, 'bera': {'avail': '0.0', 'balance': '0.0'}, 'eigen': {'avail': '0.0', 'balance': '0.0'}, 'cati': {'avail': '0.0', 'balance': '0.0'}, 'aero': {'avail': '0.0', 'balance': '0.0'}, 'sundog': {'avail': '0.0', 'balance': '0.0'}, 'g': {'avail': '0.0', 'balance': '0.0'}, 'lista': {'avail': '0.0', 'balance': '0.0'}, 'cloud': {'avail': '0.0', 'balance': '0.0'}, 'wen': {'avail': '0.0', 'balance': '0.0'}, 'zro': {'avail': '0.0', 'balance': '0.0'}, 'sca': {'avail': '0.0', 'balance': '0.0'}, 'masa': {'avail': '0.0', 'balance': '0.0'}, 'order': {'avail': '0.0', 'balance': '0.0'}, 'woo': {'avail': '0.0', 'balance': '0.0'}, 'moca': {'avail': '0.0', 'balance': '0.0'}, 'brett': {'avail': '0.0', 'balance': '0.0'}, 'bome': {'avail': '0.0', 'balance': '0.0'}, 'blast': {'avail': '0.0', 'balance': '0.0'}, 'mew': {'avail': '0.0', 'balance': '0.0'}, 'io': {'avail': '0.0', 'balance': '0.0'}, 'aark': {'avail': '0.0', 'balance': '0.0'}, 'zk': {'avail': '0.0', 'balance': '0.0'}, 'every': {'avail': '0.0', 'balance': '0.0'}, 'ath': {'avail': '0.0', 'balance': '0.0'}, 'taiko': {'avail': '0.0', 'balance': '0.0'}, 'zkl': {'avail': '0.0', 'balance': '0.0'}, 'ethfi': {'avail': '0.0', 'balance': '0.0'}, 'mon': {'avail': '0.0', 'balance': '0.0'}, 'core': {'avail': '0.0', 'balance': '0.0'}, 'oas': {'avail': '0.0', 'balance': '0.0'}, 'cfg': {'avail': '0.0', 'balance': '0.0'}, 'rez': {'avail': '0.0', 'balance': '0.0'}, 'ron': {'avail': '0.0', 'balance': '0.0'}, 'neon': {'avail': '0.0', 'balance': '0.0'}, 'alt': {'avail': '0.0', 'balance': '0.0'}, 'jup': {'avail': '0.0', 'balance': '0.0'}, 'dmail': {'avail': '0.0', 'balance': '0.0'}, 'mkr': {'avail': '0.0', 'balance': '0.0'}, 'ondo': {'avail': '0.0', 'balance': '0.0'}, 'zeta': {'avail': '0.0', 'balance': '0.0'}, 'manta': {'avail': '0.0', 'balance': '0.0'}, 'app': {'avail': '0.0', 'balance': '0.0'}, 'beam': {'avail': '0.0', 'balance': '0.0'}, 'ai': {'avail': '0.0', 'balance': '0.0'}, 'alex': {'avail': '0.0', 'balance': '0.0'}, 'prime': {'avail': '0.0', 'balance': '0.0'}, 'nfp': {'avail': '0.0', 'balance': '0.0'}, 'tokamak': {'avail': '0.0', 'balance': '0.0'}, 'paxg': {'avail': '0.0', 'balance': '0.0'}, 'ntrn': {'avail': '0.0', 'balance': '0.0'}, 'bonk': {'avail': '0.0', 'balance': '0.0'}, 'icp': {'avail': '0.0', 'balance': '0.0'}, 'jto': {'avail': '0.0', 'balance': '0.0'}, 'vet': {'avail': '0.0', 'balance': '0.0'}, 'ssg': {'avail': '0.0', 'balance': '0.0'}, 'render': {'avail': '0.0', 'balance': '0.0'}, 'edu': {'avail': '0.0', 'balance': '0.0'}, 'pyth': {'avail': '0.0', 'balance': '0.0'}, 'hbar': {'avail': '0.0', 'balance': '0.0'}, 'tide': {'avail': '0.0', 'balance': '0.0'}, 'hunt': {'avail': '0.0', 'balance': '0.0'}, 'fnsa': {'avail': '0.0', 'balance': '0.0'}, 'gal': {'avail': '0.0', 'balance': '0.0'}, 'meme': {'avail': '0.0', 'balance': '0.0'}, 'snt': {'avail': '0.0', 'balance': '0.0'}, 'iq': {'avail': '0.0', 'balance': '0.0'}, 'spurs': {'avail': '0.0', 'balance': '0.0'}, 'mtl': {'avail': '0.0', 'balance': '0.0'}, 'bigtime': {'avail': '0.0', 'balance': '0.0'}, 'tia': {'avail': '0.0', 'balance': '0.0'}, 'ztx': {'avail': '0.0', 'balance': '0.0'}, 'isk': {'avail': '0.0', 'balance': '0.0'}, 't': {'avail': '0.0', 'balance': '0.0'}, 'glm': {'avail': '0.0', 'balance': '0.0'}, 'kas': {'avail': '0.0', 'balance': '0.0'}, 'ton': {'avail': '0.0', 'balance': '0.0'}, 'dydx': {'avail': '0.0', 'balance': '0.0'}, 'gmt': {'avail': '0.0', 'balance': '0.0'}, 'imx': {'avail': '0.0', 'balance': '0.0'}, 'algo': {'avail': '0.0', 'balance': '0.0'}, 'blur': {'avail': '0.0', 'balance': '0.0'}, 'hifi': {'avail': '0.0', 'balance': '0.0'}, 'rune': {'avail': '0.0', 'balance': '0.0'}, 'waves': {'avail': '0.0', 'balance': '0.0'}, 'amp': {'avail': '0.0', 'balance': '0.0'}, 'xpla': {'avail': '0.0', 'balance': '0.0'}, 'seilor': {'avail': '0.0', 'balance': '0.0'}, 'clear': {'avail': '0.0', 'balance': '0.0'}, 'celo': {'avail': '0.0', 'balance': '0.0'}, 'twt': {'avail': '0.0', 'balance': '0.0'}, 'near': {'avail': '0.0', 'balance': '0.0'}, 'ape': {'avail': '0.0', 'balance': '0.0'}, 'lqty': {'avail': '0.0', 'balance': '0.0'}, 'fxs': {'avail': '0.0', 'balance': '0.0'}, 'cyber': {'avail': '0.0', 'balance': '0.0'}, 'forth': {'avail': '0.0', 'balance': '0.0'}, 'bnb': {'avail': '0.0', 'balance': '0.0'}, 'mav': {'avail': '0.0', 'balance': '0.0'}, 'lbr': {'avail': '0.0', 'balance': '0.0'}, 'volt': {'avail': '0.0', 'balance': '0.0'}, 'high': {'avail': '0.0', 'balance': '0.0'}, 'hft': {'avail': '0.0', 'balance': '0.0'}, 'mnt': {'avail': '0.0', 'balance': '0.0'}, 'mina': {'avail': '0.0', 'balance': '0.0'}, 'wld': {'avail': '0.0', 'balance': '0.0'}, 'arkm': {'avail': '0.0', 'balance': '0.0'}, 'shib': {'avail': '0.0', 'balance': '0.0'}, 'mask': {'avail': '0.0', 'balance': '0.0'}, 'pendle': {'avail': '0.0', 'balance': '0.0'}, 'pepe': {'avail': '0.0', 'balance': '0.0'}, 'agix': {'avail': '0.0', 'balance': '0.0'}, 'stg': {'avail': '0.0', 'balance': '0.0'}, 'rdnt': {'avail': '0.0', 'balance': '0.0'}, 'aixbt': {'avail': '0.0', 'balance': '0.0'}, 'skl': {'avail': '0.0', 'balance': '0.0'}, 'home': {'avail': '0.0', 'balance': '0.0'}, 'cfx': {'avail': '0.0', 'balance': '0.0'}, 'gxa': {'avail': '0.0', 'balance': '0.0'}, 'op': {'avail': '0.0', 'balance': '0.0'}, 'sei': {'avail': '0.0', 'balance': '0.0'}, 'pundix': {'avail': '0.0', 'balance': '0.0'}, 'waxl': {'avail': '0.0', 'balance': '0.0'}, 'pundiai': {'avail': '0.0', 'balance': '0.0'}, 'apt': {'avail': '0.0', 'balance': '0.0'}, 'al': {'avail': '0.0', 'balance': '0.0'}, 'hvh': {'avail': '0.0', 'balance': '0.0'}, 'syrup': {'avail': '0.0', 'balance': '0.0'}, 'grnd': {'avail': '0.0', 'balance': '0.0'}, 'la': {'avail': '0.0', 'balance': '0.0'}, 'rpl': {'avail': '0.0', 'balance': '0.0'}, 'port3': {'avail': '0.0', 'balance': '0.0'}, 'astr': {'avail': '0.0', 'balance': '0.0'}, 'skyai': {'avail': '0.0', 'balance': '0.0'}, 'lwa': {'avail': '0.0', 'balance': '0.0'}, 'strax': {'avail': '0.0', 'balance': '0.0'}, 'arb': {'avail': '0.0', 'balance': '0.0'}, 'haedal': {'avail': '0.0', 'balance': '0.0'}, 'sui': {'avail': '0.0', 'balance': '0.0'}, 'blue': {'avail': '0.0', 'balance': '0.0'}, 'orb': {'avail': '0.0', 'balance': '0.0'}, 'huma': {'avail': '0.0', 'balance': '0.0'}, 'stx': {'avail': '0.0', 'balance': '0.0'}, 'drift': {'avail': '0.0', 'balance': '0.0'}, 'iost': {'avail': '0.0', 'balance': '0.0'}, 'dood': {'avail': '0.0', 'balance': '0.0'}, 'wemix': {'avail': '0.0', 'balance': '0.0'}, 'virtual': {'avail': '0.0', 'balance': '0.0'}, 'sml': {'avail': '0.0', 'balance': '0.0'}, 'nxpc': {'avail': '0.0', 'balance': '0.0'}, 'fncy': {'avail': '0.0', 'balance': '0.0'}, 'bwo': {'avail': '0.0', 'balance': '0.0'}, 'kaito': {'avail': '0.0', 'balance': '0.0'}, 'tari': {'avail': '0.0', 'balance': '0.0'}, 'zkj': {'avail': '0.0', 'balance': '0.0'}, 'we': {'avail': '0.0', 'balance': '0.0'}, 'aqt': {'avail': '0.0', 'balance': '0.0'}, 'reap': {'avail': '0.0', 'balance': '0.0'}, 'hyper': {'avail': '0.0', 'balance': '0.0'}, 'btr': {'avail': '0.0', 'balance': '0.0'}, 'bounty': {'avail': '0.0', 'balance': '0.0'}, 'ever': {'avail': '0.0', 'balance': '0.0'}, 'cow': {'avail': '0.0', 'balance': '0.0'}, 'noa': {'avail': '0.0', 'balance': '0.0'}, 'sign': {'avail': '0.0', 'balance': '0.0'}, 'orbr': {'avail': '0.0', 'balance': '0.0'}, 'zora': {'avail': '0.0', 'balance': '0.0'}, 'btt': {'avail': '0.0', 'balance': '0.0'}, 'myce': {'avail': '0.0', 'balance': '0.0'}, 'aergo': {'avail': '0.0', 'balance': '0.0'}, 'npt': {'avail': '0.0', 'balance': '0.0'}, 'wct': {'avail': '0.0', 'balance': '0.0'}, 'thn': {'avail': '0.0', 'balance': '0.0'}, 'gm': {'avail': '0.0', 'balance': '0.0'}, 'itamcube': {'avail': '0.0', 'balance': '0.0'}, 'kernel': {'avail': '0.0', 'balance': '0.0'}, 'spa': {'avail': '0.0', 'balance': '0.0'}, 'baby': {'avail': '0.0', 'balance': '0.0'}, 'lbl': {'avail': '0.0', 'balance': '0.0'}, 'wal': {'avail': '0.0', 'balance': '0.0'}, 'mev': {'avail': '0.0', 'balance': '0.0'}, 'ns': {'avail': '0.0', 'balance': '0.0'}, 'nft': {'avail': '0.0', 'balance': '0.0'}, 'ctc': {'avail': '0.0', 'balance': '0.0'}, 'ldn': {'avail': '0.0', 'balance': '0.0'}, 'red': {'avail': '0.0', 'balance': '0.0'}, 'ilv': {'avail': '0.0', 'balance': '0.0'}, 'solv': {'avail': '0.0', 'balance': '0.0'}, 'cvx': {'avail': '0.0', 'balance': '0.0'}, 'send': {'avail': '0.0', 'balance': '0.0'}, 'bit': {'avail': '0.0', 'balance': '0.0'}, 'b3': {'avail': '0.0', 'balance': '0.0'}, 'dao': {'avail': '0.0', 'balance': '0.0'}, 'avl': {'avail': '0.0', 'balance': '0.0'}, 'flux': {'avail': '0.0', 'balance': '0.0'}, 'shell': {'avail': '0.0', 'balance': '0.0'}, 'ern': {'avail': '0.0', 'balance': '0.0'}, 'layer': {'avail': '0.0', 'balance': '0.0'}, 'wemixc': {'avail': '0.0', 'balance': '0.0'}, 'agld': {'avail': '0.0', 'balance': '0.0'}, 'gala': {'avail': '0.0', 'balance': '0.0'}, 'plume': {'avail': '0.0', 'balance': '0.0'}, 'mana': {'avail': '0.0', 'balance': '0.0'}, 'nil': {'avail': '0.0', 'balance': '0.0'}, 'sgb': {'avail': '0.0', 'balance': '0.0'}, 'anime': {'avail': '0.0', 'balance': '0.0'}, 'cru': {'avail': '0.0', 'balance': '0.0'}, 'trump': {'avail': '0.0', 'balance': '0.0'}, 'sku': {'avail': '0.0', 'balance': '0.0'}, 'uxlink': {'avail': '0.0', 'balance': '0.0'}, 'wncg': {'avail': '0.0', 'balance': '0.0'}, 'game2': {'avail': '0.0', 'balance': '0.0'}, 'sol': {'avail': '0.0', 'balance': '0.0'}, 'ip': {'avail': '0.0', 'balance': '0.0'}, 'ach': {'avail': '0.0', 'balance': '0.0'}, 'ai16z': {'avail': '0.0', 'balance': '0.0'}, 'flow': {'avail': '0.0', 'balance': '0.0'}, 'pengu': {'avail': '0.0', 'balance': '0.0'}, 'xec': {'avail': '0.0', 'balance': '0.0'}, 'sky': {'avail': '0.0', 'balance': '0.0'}, 'move': {'avail': '0.0', 'balance': '0.0'}, 'clv': {'avail': '0.0', 'balance': '0.0'}, 'om': {'avail': '0.0', 'balance': '0.0'}, 'auction': {'avail': '0.0', 'balance': '0.0'}, 'me': {'avail': '0.0', 'balance': '0.0'}, 'sun': {'avail': '0.0', 'balance': '0.0'}, 'deep': {'avail': '0.0', 'balance': '0.0'}, 'stnd': {'avail': '0.0', 'balance': '0.0'}, 'pnut': {'avail': '0.0', 'balance': '0.0'}, 'doge': {'avail': '0.0', 'balance': '0.0'}, 'grass': {'avail': '0.0', 'balance': '0.0'}, 'fis': {'avail': '0.0', 'balance': '0.0'}, 'anc': {'avail': '0.0', 'balance': '0.0'}, 'hot': {'avail': '0.0', 'balance': '0.0'}, 'cro': {'avail': '0.0', 'balance': '0.0'}, 'hei': {'avail': '0.0', 'balance': '0.0'}, 'mega': {'avail': '0.0', 'balance': '0.0'}, 'sand': {'avail': '0.0', 'balance': '0.0'}, 'soba': {'avail': '0.0', 'balance': '0.0'}, 'tvk': {'avail': '0.0', 'balance': '0.0'}, 'pha': {'avail': '0.0', 'balance': '0.0'}, 'icx': {'avail': '0.0', 'balance': '0.0'}, 'uni': {'avail': '0.0', 'balance': '0.0'}, 'fil': {'avail': '0.0', 'balance': '0.0'}, 'idv': {'avail': '0.0', 'balance': '0.0'}, 'biot': {'avail': '0.0', 'balance': '0.0'}, 'att': {'avail': '0.0', 'balance': '0.0'}, 'lzm': {'avail': '0.0', 'balance': '0.0'}, 'mlk': {'avail': '0.0', 'balance': '0.0'}, 'celeb': {'avail': '0.0', 'balance': '0.0'}, 'qi': {'avail': '0.0', 'balance': '0.0'}, 'pod': {'avail': '0.0', 'balance': '0.0'}, 'mapo': {'avail': '0.0', 'balance': '0.0'}, 'cad': {'avail': '0.0', 'balance': '0.0'}, 'ten': {'avail': '0.0', 'balance': '0.0'}, 'vivi': {'avail': '0.0', 'balance': '0.0'}, 'trix': {'avail': '0.0', 'balance': '0.0'}, 'grt': {'avail': '0.0', 'balance': '0.0'}, 'ksp': {'avail': '0.0', 'balance': '0.0'}, 'torocus': {'avail': '0.0', 'balance': '0.0'}, 'crv': {'avail': '0.0', 'balance': '0.0'}, 'sushi': {'avail': '0.0', 'balance': '0.0'}, 'rush': {'avail': '0.0', 'balance': '0.0'}, 'cbk': {'avail': '0.0', 'balance': '0.0'}, 'cbank': {'avail': '0.0', 'balance': '0.0'}, 'lina': {'avail': '0.0', 'balance': '0.0'}, 'tip': {'avail': '0.0', 'balance': '0.0'}, 'basic': {'avail': '0.0', 'balance': '0.0'}, 'tom': {'avail': '0.0', 'balance': '0.0'}, 'mir': {'avail': '0.0', 'balance': '0.0'}, 'don': {'avail': '0.0', 'balance': '0.0'}, 'hard': {'avail': '0.0', 'balance': '0.0'}, 'ducato': {'avail': '0.0', 'balance': '0.0'}, 'mts': {'avail': '0.0', 'balance': '0.0'}, 'inj': {'avail': '0.0', 'balance': '0.0'}, 'handy': {'avail': '0.0', 'balance': '0.0'}, 'axs': {'avail': '0.0', 'balance': '0.0'}, 'bmp': {'avail': '0.0', 'balance': '0.0'}, 'front': {'avail': '0.0', 'balance': '0.0'}, 'bcha': {'avail': '0.0', 'balance': '0.0'}, 'sklay': {'avail': '0.0', 'balance': '0.0'}, 'pure': {'avail': '0.0', 'balance': '0.0'}, 'dodo': {'avail': '0.0', 'balance': '0.0'}, 'camp': {'avail': '0.0', 'balance': '0.0'}, 'bnt': {'avail': '0.0', 'balance': '0.0'}, 'orc': {'avail': '0.0', 'balance': '0.0'}, 'dvi': {'avail': '0.0', 'balance': '0.0'}, 'pica': {'avail': '0.0', 'balance': '0.0'}, 'stake': {'avail': '0.0', 'balance': '0.0'}, 'mvc': {'avail': '0.0', 'balance': '0.0'}, 'bel': {'avail': '0.0', 'balance': '0.0'}, 'weth': {'avail': '0.0', 'balance': '0.0'}, 'wbtc': {'avail': '0.0', 'balance': '0.0'}, 'asta': {'avail': '0.0', 'balance': '0.0'}, 'ckb': {'avail': '0.0', 'balance': '0.0'}, 'bfc': {'avail': '0.0', 'balance': '0.0'}, 'alpha': {'avail': '0.0', 'balance': '0.0'}, 'aave': {'avail': '0.0', 'balance': '0.0'}, 'lua': {'avail': '0.0', 'balance': '0.0'}, 'vic': {'avail': '0.0', 'balance': '0.0'}, 'sunold': {'avail': '0.0', 'balance': '0.0'}, 'tmc': {'avail': '0.0', 'balance': '0.0'}, 'msb': {'avail': '0.0', 'balance': '0.0'}, 'lend': {'avail': '0.0', 'balance': '0.0'}, 'usdc': {'avail': '0.0', 'balance': '0.0'}, 'dmg': {'avail': '0.0', 'balance': '0.0'}, 'ada': {'avail': '0.0', 'balance': '0.0'}, 'ren': {'avail': '0.0', 'balance': '0.0'}, 'bot': {'avail': '0.0', 'balance': '0.0'}, 'uma': {'avail': '0.0', 'balance': '0.0'}, 'dia': {'avail': '0.0', 'balance': '0.0'}, 'nest': {'avail': '0.0', 'balance': '0.0'}, 'bal': {'avail': '0.0', 'balance': '0.0'}, 'dot': {'avail': '0.0', 'balance': '0.0'}, 'ctsi': {'avail': '0.0', 'balance': '0.0'}, 'srm': {'avail': '0.0', 'balance': '0.0'}, 'sxp': {'avail': '0.0', 'balance': '0.0'}, 'ksm': {'avail': '0.0', 'balance': '0.0'}, 'ipx': {'avail': '0.0', 'balance': '0.0'}, 'vsys': {'avail': '0.0', 'balance': '0.0'}, 'aoa': {'avail': '0.0', 'balance': '0.0'}, 'ftt': {'avail': '0.0', 'balance': '0.0'}, 'isdt': {'avail': '0.0', 'balance': '0.0'}, 'band': {'avail': '0.0', 'balance': '0.0'}, 'ella': {'avail': '0.0', 'balance': '0.0'}, 'link': {'avail': '0.0', 'balance': '0.0'}, 'mta': {'avail': '0.0', 'balance': '0.0'}, 'kai': {'avail': '0.0', 'balance': '0.0'}, 'bzrx': {'avail': '0.0', 'balance': '0.0'}, 'stpl': {'avail': '0.0', 'balance': '0.0'}, 'mov': {'avail': '0.0', 'balance': '0.0'}, 'six': {'avail': '0.0', 'balance': '0.0'}, 'nfup': {'avail': '0.0', 'balance': '0.0'}, 'ibp': {'avail': '0.0', 'balance': '0.0'}, 'get': {'avail': '0.0', 'balance': '0.0'}, 'krt': {'avail': '0.0', 'balance': '0.0'}, 'comp': {'avail': '0.0', 'balance': '0.0'}, 'trcl': {'avail': '0.0', 'balance': '0.0'}, 'show': {'avail': '0.0', 'balance': '0.0'}, 'kaia': {'avail': '0.0', 'balance': '0.0'}, 'exe': {'avail': '0.0', 'balance': '0.0'}, 'lmch': {'avail': '0.0', 'balance': '0.0'}, 'tmtg': {'avail': '0.0', 'balance': '0.0'}, 'dvx': {'avail': '0.0', 'balance': '0.0'}, 'jst': {'avail': '0.0', 'balance': '0.0'}, 'asm': {'avail': '0.0', 'balance': '0.0'}, 'kdag': {'avail': '0.0', 'balance': '0.0'}, 'rnx': {'avail': '0.0', 'balance': '0.0'}, 'bora': {'avail': '0.0', 'balance': '0.0'}, 'qtcon': {'avail': '0.0', 'balance': '0.0'}, 'kava': {'avail': '0.0', 'balance': '0.0'}, 'usds': {'avail': '0.0', 'balance': '0.0'}, 'cos': {'avail': '0.0', 'balance': '0.0'}, 'lbxc': {'avail': '0.0', 'balance': '0.0'}, 'wiken': {'avail': '0.0', 'balance': '0.0'}, 'ogn': {'avail': '0.0', 'balance': '0.0'}, 'xpn': {'avail': '0.0', 'balance': '0.0'}, 'hibs': {'avail': '0.0', 'balance': '0.0'}, 'bna': {'avail': '0.0', 'balance': '0.0'}, 'kvi': {'avail': '0.0', 'balance': '0.0'}, 'soc': {'avail': '0.0', 'balance': '0.0'}, 'psc': {'avail': '0.0', 'balance': '0.0'}, 'iotx': {'avail': '0.0', 'balance': '0.0'}, 'cep': {'avail': '0.0', 'balance': '0.0'}, 'troy': {'avail': '0.0', 'balance': '0.0'}, 'mbl': {'avail': '0.0', 'balance': '0.0'}, 'axl': {'avail': '0.0', 'balance': '0.0'}, 'stpt': {'avail': '0.0', 'balance': '0.0'}, 'pci': {'avail': '0.0', 'balance': '0.0'}, 'chz': {'avail': '0.0', 'balance': '0.0'}, 's': {'avail': '0.0', 'balance': '0.0'}, 'redi': {'avail': '0.0', 'balance': '0.0'}, 'isr': {'avail': '0.0', 'balance': '0.0'}, 'fleta': {'avail': '0.0', 'balance': '0.0'}, 'baas': {'avail': '0.0', 'balance': '0.0'}, 'clbk': {'avail': '0.0', 'balance': '0.0'}, 'uos': {'avail': '0.0', 'balance': '0.0'}, 'vanta': {'avail': '0.0', 'balance': '0.0'}, 'arpa': {'avail': '0.0', 'balance': '0.0'}, 'hp': {'avail': '0.0', 'balance': '0.0'}, 'dad': {'avail': '0.0', 'balance': '0.0'}, 'lamb': {'avail': '0.0', 'balance': '0.0'}, 'prom': {'avail': '0.0', 'balance': '0.0'}, 'pol': {'avail': '0.0', 'balance': '0.0'}, 'egg': {'avail': '0.0', 'balance': '0.0'}, 'dappt': {'avail': '0.0', 'balance': '0.0'}, 'ksc': {'avail': '0.0', 'balance': '0.0'}, 'pib': {'avail': '0.0', 'balance': '0.0'}, 'hint': {'avail': '0.0', 'balance': '0.0'}, 'temco': {'avail': '0.0', 'balance': '0.0'}, 'spin': {'avail': '0.0', 'balance': '0.0'}, 'ankr': {'avail': '0.0', 'balance': '0.0'}, 'orbs': {'avail': '0.0', 'balance': '0.0'}, 'cpt': {'avail': '0.0', 'balance': '0.0'}, 'amo': {'avail': '0.0', 'balance': '0.0'}, 'gas': {'avail': '0.0', 'balance': '0.0'}, 'ong': {'avail': '0.0', 'balance': '0.0'}, 'ont': {'avail': '0.0', 'balance': '0.0'}, 'tfuel': {'avail': '0.0', 'balance': '0.0'}, 'cosm': {'avail': '0.0', 'balance': '0.0'}, 'enj': {'avail': '0.0', 'balance': '0.0'}, 'vnt': {'avail': '0.0', 'balance': '0.0'}, 'mzk': {'avail': '0.0', 'balance': '0.0'}, 'bttold': {'avail': '0.0', 'balance': '0.0'}, 'trx': {'avail': '0.0', 'balance': '0.0'}, 'neo': {'avail': '0.0', 'balance': '0.0'}, 'xlm': {'avail': '0.0', 'balance': '0.0'}, 'abl': {'avail': '0.0', 'balance': '0.0'}, 'bsv': {'avail': '0.0', 'balance': '0.0'}, 'gno': {'avail': '0.0', 'balance': '0.0'}, 'credo': {'avail': '0.0', 'balance': '0.0'}, 'storm': {'avail': '0.0', 'balance': '0.0'}, 'theta': {'avail': '0.0', 'balance': '0.0'}, 'bat': {'avail': '0.0', 'balance': '0.0'}, 'usdt': {'avail': '0.0', 'balance': '0.0'}, 'loom': {'avail': '0.0', 'balance': '0.0'}, 'storj': {'avail': '0.0', 'balance': '0.0'}, 'adt': {'avail': '0.0', 'balance': '0.0'}, 'snm': {'avail': '0.0', 'balance': '0.0'}, 'zeus': {'avail': '0.0', 'balance': '0.0'}, 'rep': {'avail': '0.0', 'balance': '0.0'}, 'tnsr': {'avail': '0.0', 'balance': '0.0'}, 'xtz': {'avail': '0.0', 'balance': '0.0'}, 'prcl': {'avail': '0.0', 'balance': '0.0'}, 'zrx': {'avail': '0.0', 'balance': '0.0'}, 'w': {'avail': '0.0', 'balance': '0.0'}, 'knc': {'avail': '0.0', 'balance': '0.0'}, 'ena': {'avail': '0.0', 'balance': '0.0'}, 'zil': {'avail': '0.0', 'balance': '0.0'}, 'aevo': {'avail': '0.0', 'balance': '0.0'}, 'data': {'avail': '0.0', 'balance': '0.0'}, 'orca': {'avail': '0.0', 'balance': '0.0'}, 'omg': {'avail': '0.0', 'balance': '0.0'}, 'navx': {'avail': '0.0', 'balance': '0.0'}, 'btg': {'avail': '0.0', 'balance': '0.0'}, 'mavia': {'avail': '0.0', 'balance': '0.0'}, 'ltc': {'avail': '0.0', 'balance': '0.0'}, 'mbx': {'avail': '0.0', 'balance': '0.0'}, 'iota': {'avail': '0.0', 'balance': '0.0'}, 'sln': {'avail': '0.0', 'balance': '0.0'}, 'qtum': {'avail': '0.0', 'balance': '0.0'}, 'mnr': {'avail': '0.0', 'balance': '0.0'}, 'aip': {'avail': '0.0', 'balance': '0.0'}, 'vtho': {'avail': '0.0', 'balance': '0.0'}, 'a': {'avail': '0.0', 'balance': '0.0'}, '1inch': {'avail': '0.0', 'balance': '0.0'}, 'ens': {'avail': '0.0', 'balance': '0.0'}, 'bch': {'avail': '0.0', 'balance': '0.0'}, 'gom2': {'avail': '0.0', 'balance': '0.0'}, 'avax': {'avail': '0.0', 'balance': '0.0'}, 'strk': {'avail': '0.0', 'balance': '0.0'}, 'atom': {'avail': '0.0', 'balance': '0.0'}, 'pxl': {'avail': '0.0', 'balance': '0.0'}, 'fet': {'avail': '0.0', 'balance': '0.0'}, 'qtbk': {'avail': '0.0', 'balance': '0.0'}, 'pixel': {'avail': '0.0', 'balance': '0.0'}, 'xrp': {'avail': '0.0', 'balance': '0.0'}, 'celr': {'avail': '0.0', 'balance': '0.0'}, 'obsr': {'avail': '0.0', 'balance': '0.0'}, 'fcr': {'avail': '0.0', 'balance': '0.0'}, 'cetus': {'avail': '0.0', 'balance': '0.0'}, 'etc': {'avail': '0.0', 'balance': '0.0'}, 'mch': {'avail': '0.0', 'balance': '0.0'}, 'onx': {'avail': '0.0', 'balance': '0.0'}, 'myro': {'avail': '0.0', 'balance': '0.0'}, 'eth': {'avail': '0.0', 'balance': '0.0'}, 'lunc': {'avail': '0.0', 'balance': '0.0'}, 'snx': {'avail': '0.0', 'balance': '0.0'}, 'drc': {'avail': '0.0', 'balance': '0.0'}, 'cake': {'avail': '0.0', 'balance': '0.0'}, 'btc': {'avail': '0.0', 'balance': '0.0'}}
+2025-06-24 22:25:10,620 - INFO - ✅ v2 잔고 조회 성공
+2025-06-24 22:25:10,620 - INFO - 매도 가능: 0.00000000 → 매도 예정: 0.00000000
+2025-06-24 22:25:10,621 - INFO - ✅ 사이클 1 완료 - 30초 대기
+2025-06-24 22:25:12,428 - INFO - 사용자에 의해 중단됨
+2025-06-24 22:25:12,428 - INFO - 🛑 봇 중지 중...
+2025-06-24 22:25:12,428 - INFO - API 호출: /v2/account/user_orders/
+2025-06-24 22:25:12,429 - INFO - 파라미터: {'currency': 'virtual'}
+2025-06-24 22:25:12,601 - INFO - 응답 상태: 404
+2025-06-24 22:25:12,602 - ERROR - HTTP 오류: /v2/account/user_orders/ - 404 - 
+2025-06-24 22:25:12,602 - WARNING - v2 미체결 주문 조회 실패
+2025-06-24 22:25:12,603 - INFO - === 봇 종료 ===
+2025-06-24 22:28:33,523 - INFO - API 연결 테스트 중...
+2025-06-24 22:28:33,711 - INFO - ✅ VIRTUAL 현재가: 2,260원
+2025-06-24 22:28:33,712 - INFO - API 호출: /v2.1/account/balance
+2025-06-24 22:28:33,712 - INFO - 파라미터: {'access_token': 'ae437cfc-b806-4798-88e7-5954b8745fb7', 'nonce': '45a70f4b-8d81-45c3-8ff1-b0a12063f015'}
+2025-06-24 22:28:33,892 - INFO - 응답 상태: 200
+2025-06-24 22:28:33,893 - INFO - 응답 내용: {'result': 'error', 'error_code': '107', 'error_msg': 'Parameter error'}
+2025-06-24 22:28:33,894 - ERROR - API 오류: /v2.1/account/balance - {'result': 'error', 'error_code': '107', 'error_msg': 'Parameter error'}
+2025-06-24 22:28:33,894 - INFO - API 호출: /v2/account/balance
+2025-06-24 22:28:33,895 - INFO - 파라미터: {'access_token': 'ae437cfc-b806-4798-88e7-5954b8745fb7', 'nonce': 'd9b0eb6b-7909-485f-b69c-df84f0dcf135'}
+2025-06-24 22:28:34,091 - INFO - 응답 상태: 200
+2025-06-24 22:28:34,092 - INFO - 응답 내용: {'result': 'error', 'errorCode': '130', 'errorMsg': 'V2 API Nonce value must be a positive integer'}
+2025-06-24 22:28:34,093 - ERROR - API 오류: /v2/account/balance - {'result': 'error', 'errorCode': '130', 'errorMsg': 'V2 API Nonce value must be a positive integer'}
+2025-06-24 22:28:34,094 - ERROR - ❌ 잔고 조회 실패
+2025-06-24 22:28:34,094 - ERROR - ❌ 잔고 조회 실패! API 키를 확인하세요.
