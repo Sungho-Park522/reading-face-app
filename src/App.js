@@ -63,11 +63,18 @@ const translations = {
         wealth: "💰 재물",
         honor: "🏆 명예",
         love: "💕 사랑",
+        health: "🩺 건강",
+        career: "🚀 직업운",
+        relationships: "👥 인간관계",
+        overall: "🔮 총운",
+        academics: "📚 학업/시험"
     },
     person1Title: "그대의 정보를",
     uploadInstruction: "가장 최근의 얼굴 사진을 올리시오.",
     dobLabel: "태어난 날",
     dobPlaceholder: "YYYY-MM-DD",
+    jobLabel: "직업 (선택)",
+    jobPlaceholder: "예: 학생, 개발자, 디자이너",
     analyzeButtonPersonalized: "운명의 길 열어보기",
     loadingMessage: "운명의 수레바퀴를 돌리는 중...",
     errorMessageDefault: "사진, 생년월일, 그리고 관심사를 모두 선택해야 하느니라.",
@@ -86,7 +93,9 @@ const translations = {
         "하늘의 뜻을 그대의 얼굴에 비추어 보고 있으니, 곧 알게 되리라."
     ],
     adPlaceholderBannerText: "광고 배너",
-    aiPromptSingle: `당신은 인간의 욕망과 운명을 꿰뚫어 보는, 압도적인 카리스마를 가진 예언가입니다. 사용자의 사진(관상), 생년월일(사주), 그리고 가장 절실한 관심사({interests})를 바탕으로, 마치 눈앞에서 운명의 비밀을 알려주는 것처럼 강렬하고 확신에 찬 어조로 운세 풀이를 제공해야 합니다.
+    aiPromptSingle: `당신은 인간의 욕망과 운명을 꿰뚫어 보는, 압도적인 카리스마를 가진 예언가입니다. 사용자의 사진(관상), 생년월일(사주), 그리고 다음 정보를 바탕으로 분석을 진행합니다.
+    - 가장 절실한 관심사: {interests}
+    - 추가 정보: {userInfo}
 
     **[분석 목표]**
     - 사용자가 자신의 미래에 대한 명확한 지침과 강한 인상을 받도록 해야 합니다.
@@ -108,18 +117,14 @@ const translations = {
       "analysis_type": "single",
       "introduction": "...",
       "analysis": {
-        "wealth": { 
-          "title": "💰 재물",
-          "nature": "...", "past_trace": "...", "prophecy": "...", "secret_to_success": "..."
-        },
-        "honor": {
-          "title": "🏆 명예",
-          "nature": "...", "past_trace": "...", "prophecy": "...", "secret_to_success": "..."
-        },
-        "love": {
-          "title": "💕 사랑",
-          "nature": "...", "past_trace": "...", "prophecy": "...", "secret_to_success": "..."
-        }
+        "wealth": { "title": "💰 재물", "nature": "...", "past_trace": "...", "prophecy": "...", "secret_to_success": "..." },
+        "honor": { "title": "🏆 명예", "nature": "...", "past_trace": "...", "prophecy": "...", "secret_to_success": "..." },
+        "love": { "title": "💕 사랑", "nature": "...", "past_trace": "...", "prophecy": "...", "secret_to_success": "..." },
+        "health": { "title": "🩺 건강", "nature": "...", "past_trace": "...", "prophecy": "...", "secret_to_success": "..." },
+        "career": { "title": "🚀 직업운", "nature": "...", "past_trace": "...", "prophecy": "...", "secret_to_success": "..." },
+        "relationships": { "title": "👥 인간관계", "nature": "...", "past_trace": "...", "prophecy": "...", "secret_to_success": "..." },
+        "overall": { "title": "🔮 총운", "nature": "...", "past_trace": "...", "prophecy": "...", "secret_to_success": "..." },
+        "academics": { "title": "📚 학업/시험", "nature": "...", "past_trace": "...", "prophecy": "...", "secret_to_success": "..." }
       },
       "final_advice": "..."
     }`,
@@ -159,24 +164,24 @@ const DobInput = React.memo(({ value, onChange, placeholder }) => {
 });
 
 // Components
-const InputSection = React.memo(({ personNum, title, onImageSelect, onDobChange, previewImage, dob, strings }) => {
+const InputSection = React.memo(({ onImageSelect, onDobChange, previewImage, dob, strings }) => {
     const [isDragging, setIsDragging] = useState(false);
     const handleDragEnter = useCallback((e) => { e.preventDefault(); e.stopPropagation(); setIsDragging(true); }, []);
     const handleDragLeave = useCallback((e) => { e.preventDefault(); e.stopPropagation(); setIsDragging(false); }, []);
     const handleDragOver = useCallback((e) => { e.preventDefault(); e.stopPropagation(); }, []);
-    const handleDrop = useCallback((e) => { e.preventDefault(); e.stopPropagation(); setIsDragging(false); const files = e.dataTransfer.files; if (files && files.length > 0) { onImageSelect(files[0], personNum); } }, [onImageSelect, personNum]);
-    const handleFileChange = useCallback((e) => { const files = e.target.files; if (files && files.length > 0) { onImageSelect(files[0], personNum); } }, [onImageSelect, personNum]);
-    const handleDobChangeCallback = useCallback((val) => { onDobChange(val, personNum); }, [onDobChange, personNum]);
+    const handleDrop = useCallback((e) => { e.preventDefault(); e.stopPropagation(); setIsDragging(false); const files = e.dataTransfer.files; if (files && files.length > 0) { onImageSelect(files[0]); } }, [onImageSelect]);
+    const handleFileChange = useCallback((e) => { const files = e.target.files; if (files && files.length > 0) { onImageSelect(files[0]); } }, [onImageSelect]);
+    const handleDobChangeCallback = useCallback((val) => { onDobChange(val); }, [onDobChange]);
     
     return (
         <div onDragEnter={handleDragEnter} onDragLeave={handleDragLeave} onDragOver={handleDragOver} onDrop={handleDrop} className={`w-full h-full border-2 border-dashed rounded-lg p-6 text-center transition-all duration-300 flex flex-col items-center justify-between border-rose-300 hover:border-rose-500 bg-rose-50/50 ${isDragging ? 'scale-105 shadow-2xl' : 'shadow-lg'}`}>
-            <h2 className="text-2xl font-bold mb-3 font-gaegu">{title}</h2>
+            <h2 className="text-2xl font-bold mb-3 font-gaegu">{strings.person1Title}</h2>
             <div className="relative mb-4">
-                <img src={previewImage} alt={`${title}`} className="w-40 h-40 md:w-48 md:h-48 object-cover mx-auto rounded-full shadow-xl border-4 border-white" onError={(e) => { e.target.onerror = null; e.target.src = `https://placehold.co/400x400/e2e8f0/cbd5e0?text=Error`; }} />
-                <label htmlFor={`person${personNum}ImageUpload`} className={`absolute bottom-0 right-0 cursor-pointer p-2 rounded-full shadow-lg transition-transform transform hover:scale-110 bg-rose-500 hover:bg-rose-600`}>
+                <img src={previewImage} alt="user" className="w-40 h-40 md:w-48 md:h-48 object-cover mx-auto rounded-full shadow-xl border-4 border-white" onError={(e) => { e.target.onerror = null; e.target.src = `https://placehold.co/400x400/e2e8f0/cbd5e0?text=Error`; }} />
+                <label htmlFor="userImageUpload" className={`absolute bottom-0 right-0 cursor-pointer p-2 rounded-full shadow-lg transition-transform transform hover:scale-110 bg-rose-500 hover:bg-rose-600`}>
                     <UploadCloudIcon className="w-6 h-6 text-white" />
                 </label>
-                <input type="file" id={`person${personNum}ImageUpload`} accept="image/*" onChange={handleFileChange} className="hidden" />
+                <input type="file" id="userImageUpload" accept="image/*" onChange={handleFileChange} className="hidden" />
             </div>
             <p className="text-sm font-bold text-indigo-600 mb-4" dangerouslySetInnerHTML={{ __html: strings.uploadInstruction }}></p>
             <div className="w-full max-w-xs">
@@ -187,47 +192,60 @@ const InputSection = React.memo(({ personNum, title, onImageSelect, onDobChange,
     );
 });
 
-const InterestSelector = React.memo(({ strings, selectedInterests, onInterestToggle }) => (
-    <div className="mb-6 p-4 bg-indigo-50 rounded-lg shadow-inner w-full h-full flex flex-col justify-center">
-        <h3 className="text-xl font-bold text-indigo-700 mb-3 text-center font-gaegu">{strings.interestSelectionTitle}</h3>
-        <div className="flex flex-wrap justify-center gap-3">
-            {Object.entries(strings.interests).map(([key, label]) => {
-                const isSelected = selectedInterests.includes(key);
-                return (
-                    <button key={key} onClick={() => onInterestToggle(key)}
-                        className={`px-5 py-2 text-lg font-bold rounded-full shadow-md transition-all duration-200 transform ${
-                            isSelected 
-                            ? 'bg-gradient-to-r from-purple-600 to-indigo-700 text-white scale-110 shadow-xl' 
-                            : 'bg-white text-gray-700 hover:bg-gray-200'
-                        } font-gaegu`}
-                    >
-                        {label}
-                    </button>
-                );
-            })}
+const UserInfoSection = React.memo(({ strings, selectedInterests, onInterestToggle, job, onJobChange }) => (
+    <div className="w-full h-full p-6 bg-gray-50/50 rounded-lg flex flex-col justify-center items-center shadow-lg border-2 border-dashed border-gray-300">
+        <div className="mb-6 p-4 bg-indigo-50 rounded-lg shadow-inner w-full">
+            <h3 className="text-xl font-bold text-indigo-700 mb-3 text-center font-gaegu">{strings.interestSelectionTitle}</h3>
+            <div className="flex flex-wrap justify-center gap-2">
+                {Object.entries(strings.interests).map(([key, label]) => {
+                    const isSelected = selectedInterests.includes(key);
+                    return (
+                        <button key={key} onClick={() => onInterestToggle(key)}
+                            className={`px-4 py-1.5 text-base font-bold rounded-full shadow-md transition-all duration-200 transform ${
+                                isSelected 
+                                ? 'bg-gradient-to-r from-purple-600 to-indigo-700 text-white scale-110 shadow-xl' 
+                                : 'bg-white text-gray-700 hover:bg-gray-200'
+                            } font-gaegu`}
+                        >
+                            {label}
+                        </button>
+                    );
+                })}
+            </div>
+        </div>
+        <div className="w-full max-w-xs">
+            <label className="font-bold text-gray-700 mb-1 flex items-center justify-center font-gaegu">
+                💼 {strings.jobLabel}
+            </label>
+            <input 
+                type="text" 
+                value={job}
+                onChange={(e) => onJobChange(e.target.value)}
+                className="w-full p-2 border border-gray-300 rounded-md text-center shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                placeholder={strings.jobPlaceholder}
+            />
         </div>
     </div>
 ));
 
-const MainPageComponent = React.memo(({ currentStrings, handleAnalysis, person1ImageFile, person1Dob, selectedInterests, onInterestToggle, handleImageChange, handleDobChange, person1ImagePreview }) => (
+
+const MainPageComponent = React.memo(({ currentStrings, handleAnalysis, person1ImageFile, person1Dob, selectedInterests, ...props }) => (
     <div className="font-gowun">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6 items-stretch">
             <InputSection 
-                personNum={1} 
-                title={currentStrings.person1Title} 
-                onImageSelect={handleImageChange} 
-                onDobChange={handleDobChange} 
-                previewImage={person1ImagePreview} 
+                onImageSelect={props.handleImageChange} 
+                onDobChange={props.handleDobChange} 
+                previewImage={props.person1ImagePreview} 
                 dob={person1Dob} 
                 strings={currentStrings} 
             />
-            <div className="w-full h-full p-6 bg-gray-50/50 rounded-lg flex flex-col justify-center items-center shadow-lg border-2 border-dashed border-gray-300">
-                <InterestSelector 
-                    strings={currentStrings} 
-                    selectedInterests={selectedInterests} 
-                    onInterestToggle={onInterestToggle} 
-                />
-            </div>
+            <UserInfoSection 
+                strings={currentStrings} 
+                selectedInterests={selectedInterests} 
+                onInterestToggle={props.onInterestToggle} 
+                job={props.job}
+                onJobChange={props.setJob}
+            />
         </div>
         <div className="my-6 p-3 bg-gray-100 rounded-lg text-center border border-gray-300"><p className="text-gray-600 text-xs">{currentStrings.adPlaceholderBannerText}</p><img src={`https://placehold.co/300x100/e0e0e0/757575?text=${currentStrings.adPlaceholderBannerText.replace(/\s/g, '+')}`} alt="Ad Banner" className="mx-auto mt-1 rounded" /></div>
         <section className="text-center mt-6">
@@ -277,7 +295,7 @@ const ResultPageComponent = React.memo(({ analysisResult, person1ImagePreview })
 
             <div className="bg-white/70 backdrop-blur-md rounded-xl p-4 sm:p-6 shadow-lg">
                 <div className="border-b border-gray-300 mb-4">
-                    <nav className="-mb-px flex justify-center space-x-2 sm:space-x-4" aria-label="Tabs">
+                    <nav className="-mb-px flex justify-center space-x-2 sm:space-x-4 overflow-x-auto" aria-label="Tabs">
                         {availableTabs.map(key => (
                             <button key={key} onClick={() => setActiveTab(key)}
                                 className={`${activeTab === key ? 'border-purple-600 text-purple-700 font-extrabold' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-400'} whitespace-nowrap py-3 px-2 sm:px-4 border-b-4 font-bold text-xl font-gaegu transition-all duration-300`}>
@@ -327,6 +345,7 @@ function App() {
     const [person1ImagePreview, setPerson1ImagePreview] = useState(`https://placehold.co/400x400/e2e8f0/cbd5e0?text=Person+1`);
     const [person1Dob, setPerson1Dob] = useState('');
     const [selectedInterests, setSelectedInterests] = useState([]);
+    const [job, setJob] = useState('');
     const [analysisResult, setAnalysisResult] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
@@ -335,7 +354,7 @@ function App() {
     const [loadingText, setLoadingText] = useState('');
 
     useEffect(() => {
-        const lang = 'ko'; // Hardcode to Korean for now
+        const lang = 'ko';
         setCurrentStrings(translations[lang]);
         setLoadingText(translations[lang].loadingMessage);
 
@@ -382,7 +401,7 @@ function App() {
         });
     }, []);
 
-    const resetAllStates = () => { window.history.pushState({}, '', '/'); setPageState('main'); setPerson1ImageFile(null); setPerson1ImagePreview(`https://placehold.co/400x400/e2e8f0/cbd5e0?text=Person+1`); setPerson1Dob(''); setSelectedInterests([]); setAnalysisResult(null); setError(''); setIsLoading(false); setResultId(null); };
+    const resetAllStates = () => { window.history.pushState({}, '', '/'); setPageState('main'); setPerson1ImageFile(null); setPerson1ImagePreview(`https://placehold.co/400x400/e2e8f0/cbd5e0?text=Person+1`); setPerson1Dob(''); setSelectedInterests([]); setJob(''); setAnalysisResult(null); setError(''); setIsLoading(false); setResultId(null); };
 
     const handleAnalysis = useCallback(async () => {
         if (!person1ImageFile || !person1Dob || selectedInterests.length === 0) { setError(currentStrings.errorMessageDefault); return; }
@@ -390,7 +409,10 @@ function App() {
         
         try {
             const interestsText = selectedInterests.map(key => currentStrings.interests[key]).join(', ');
-            let prompt = currentStrings.aiPromptSingle.replace("{interests}", interestsText);
+            const userInfoText = job ? `직업: ${job}` : '없음';
+            let prompt = currentStrings.aiPromptSingle
+                .replace("{interests}", interestsText)
+                .replace("{userInfo}", userInfoText);
             
             const image1Base64 = await getBase64(person1ImageFile);
             const parts = [{ text: prompt }, { inlineData: { mimeType: person1ImageFile.type, data: image1Base64 } }];
@@ -408,7 +430,6 @@ function App() {
             let parsedJson;
             try { parsedJson = JSON.parse(result.candidates[0].content.parts[0].text); } catch (e) { console.error("JSON parsing error:", e, "Raw text:", result.candidates[0].content.parts[0].text); throw new Error(currentStrings.apiErrorResponseFormat); }
 
-            // Filter analysis object based on selected interests
             const filteredAnalysis = {};
             selectedInterests.forEach(interest => {
                 if(parsedJson.analysis && parsedJson.analysis[interest]) {
@@ -433,7 +454,7 @@ function App() {
         } finally {
             setIsLoading(false);
         }
-    }, [person1ImageFile, person1Dob, selectedInterests, currentStrings]);
+    }, [person1ImageFile, person1Dob, selectedInterests, job, currentStrings]);
     
     const handleCopyToClipboard = useCallback((textToCopy) => { if (!textToCopy) return; navigator.clipboard.writeText(textToCopy).then(() => { setCopyStatus(currentStrings.copySuccessMessage); setTimeout(() => setCopyStatus(''), 2000); }); }, [currentStrings.copySuccessMessage]);
     
@@ -458,8 +479,11 @@ function App() {
                             handleDobChange={handleDobChange}
                             person1ImagePreview={person1ImagePreview}
                             person1Dob={person1Dob}
+                            person1ImageFile={person1ImageFile}
                             selectedInterests={selectedInterests}
                             onInterestToggle={handleInterestToggle}
+                            job={job}
+                            setJob={setJob}
                         />
                     )}
                     {pageState === 'result' && analysisResult && 
