@@ -100,7 +100,7 @@ const translations = {
     **[분석 목표]**
     - 사용자가 자신의 미래에 대한 명확한 지침과 강한 인상을 받도록 해야 합니다.
     - "아마도" 같은 모호한 표현은 절대 금물. "그렇게 될 것이다", "반드시 기억하게" 와 같이 단정적이고 힘 있는 말투를 사용하세요.
-    - 선택된 관심사({interests})에 대한 내용을 중심으로, 다른 내용은 과감히 생략하거나 축약하여 맞춤형 결과를 제공해야 합니다.
+    - **오직 사용자가 선택한 관심사({interests})에 대한 내용만 분석하고, 그 외의 관심사에 대한 내용은 JSON 객체에 아예 포함하지 마세요.**
 
     **[분석 지침]**
     1.  **도입 (introduction)**: "흠... 그대의 눈을 보니 보통내기가 아니군." 과 같이, 사용자를 압도하는 카리스마 넘치는 한마디로 시작하세요.
@@ -112,19 +112,13 @@ const translations = {
     3.  **최종 조언 (final_advice)**: 모든 분석을 마무리하며, 사용자가 운명을 개척하기 위해 마음에 새겨야 할 가장 중요한 핵심 메시지를 전달합니다.
 
     **[JSON 응답 형식]**
-    반드시 아래의 JSON 구조를 완벽하게 준수하여 응답해야 합니다. 다른 텍스트는 절대 포함하지 마세요.
+    반드시 아래의 JSON 구조를 완벽하게 준수하여 응답해야 합니다. `analysis` 객체 안에는 **오직 사용자가 선택한 관심사의 키만 포함**되어야 합니다. (예: 사용자가 '재물', '사랑'을 선택했다면 'wealth', 'love' 키만 포함)
     {
       "analysis_type": "single",
       "introduction": "...",
       "analysis": {
-        "wealth": { "title": "💰 재물", "nature": "...", "past_trace": "...", "prophecy": "...", "secret_to_success": "..." },
-        "honor": { "title": "🏆 명예", "nature": "...", "past_trace": "...", "prophecy": "...", "secret_to_success": "..." },
-        "love": { "title": "💕 사랑", "nature": "...", "past_trace": "...", "prophecy": "...", "secret_to_success": "..." },
-        "health": { "title": "🩺 건강", "nature": "...", "past_trace": "...", "prophecy": "...", "secret_to_success": "..." },
-        "career": { "title": "🚀 직업운", "nature": "...", "past_trace": "...", "prophecy": "...", "secret_to_success": "..." },
-        "relationships": { "title": "👥 인간관계", "nature": "...", "past_trace": "...", "prophecy": "...", "secret_to_success": "..." },
-        "overall": { "title": "🔮 총운", "nature": "...", "past_trace": "...", "prophecy": "...", "secret_to_success": "..." },
-        "academics": { "title": "📚 학업/시험", "nature": "...", "past_trace": "...", "prophecy": "...", "secret_to_success": "..." }
+        "{interest_key_1}": { "title": "...", "nature": "...", "past_trace": "...", "prophecy": "...", "secret_to_success": "..." },
+        "{interest_key_2}": { "title": "...", "nature": "...", "past_trace": "...", "prophecy": "...", "secret_to_success": "..." }
       },
       "final_advice": "..."
     }`,
@@ -193,8 +187,8 @@ const InputSection = React.memo(({ onImageSelect, onDobChange, previewImage, dob
 });
 
 const UserInfoSection = React.memo(({ strings, selectedInterests, onInterestToggle, job, onJobChange }) => (
-    <div className="w-full h-full p-6 bg-gray-50/50 rounded-lg flex flex-col justify-center items-center shadow-lg border-2 border-dashed border-gray-300">
-        <div className="mb-6 p-4 bg-indigo-50 rounded-lg shadow-inner w-full">
+    <div className="w-full h-full p-6 bg-gray-50/50 rounded-lg flex flex-col justify-center items-center shadow-lg border-2 border-dashed border-gray-300 space-y-6">
+        <div className="p-4 bg-indigo-50 rounded-lg shadow-inner w-full">
             <h3 className="text-xl font-bold text-indigo-700 mb-3 text-center font-gaegu">{strings.interestSelectionTitle}</h3>
             <div className="flex flex-wrap justify-center gap-2">
                 {Object.entries(strings.interests).map(([key, label]) => {
@@ -260,72 +254,104 @@ const MainPageComponent = React.memo(({ currentStrings, handleAnalysis, person1I
     </div>
 ));
 
-const ResultPageComponent = React.memo(({ analysisResult, person1ImagePreview }) => {
+const SpeechBubble = ({ text, isUser, show, children }) => (
+    <div className={`flex items-end max-w-lg mx-auto transition-all duration-500 ${isUser ? 'justify-end' : 'justify-start'} ${show ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+        <div className={`relative px-4 py-3 rounded-2xl ${isUser ? 'bg-indigo-500 text-white' : 'bg-gray-200 text-gray-800'} shadow-md`}>
+            {text && <p className="whitespace-pre-line font-gowun">{text}</p>}
+            {children}
+        </div>
+    </div>
+);
+
+const ResultPageComponent = React.memo(({ analysisResult }) => {
     const { introduction, analysis, final_advice } = analysisResult;
-    const availableTabs = Object.keys(analysis || {});
-    const [activeTab, setActiveTab] = useState(availableTabs[0]);
-    const contentRef = useRef(null);
+    const [messages, setMessages] = useState([]);
+    const chatContainerRef = useRef(null);
 
     useEffect(() => {
-        // Trigger reflow to restart animation
-        if (contentRef.current) {
-            contentRef.current.classList.remove('opacity-100', 'translate-y-0');
-            void contentRef.current.offsetWidth; // Trigger reflow
-            contentRef.current.classList.add('opacity-100', 'translate-y-0');
-        }
-    }, [activeTab]);
+        const createMessageQueue = () => {
+            const queue = [];
+            queue.push({ type: 'bubble', content: introduction, delay: 500 });
 
-    const renderSection = (title, content) => (
-        content && (
-            <div className="mb-4">
-                <h4 className="font-bold text-lg text-indigo-700 font-gaegu mb-1">{title}</h4>
-                <p className="text-gray-700 whitespace-pre-line font-gowun leading-relaxed">{content}</p>
-            </div>
-        )
-    );
+            Object.values(analysis).forEach((topic) => {
+                queue.push({ type: 'header', content: topic.title, delay: 1200 });
+                queue.push({ type: 'bubble', content: `**타고난 그릇**\n${topic.nature}`, delay: 1500 });
+                queue.push({ type: 'bubble', content: `**과거의 흔적**\n${topic.past_trace}`, delay: 1500 });
+                queue.push({ type: 'bubble', content: `**미래의 계시**\n${topic.prophecy}`, delay: 1500 });
+                queue.push({ type: 'bubble', content: `**성공 비결**\n${topic.secret_to_success}`, delay: 1500 });
+            });
+            
+            queue.push({ type: 'final', content: final_advice, delay: 1200 });
+            return queue;
+        };
+        
+        const messageQueue = createMessageQueue();
+        let currentIndex = 0;
+        
+        const showNextMessage = () => {
+            if (currentIndex < messageQueue.length) {
+                const nextMessage = messageQueue[currentIndex];
+                setMessages(prev => [...prev, { ...nextMessage, show: true }]);
+                currentIndex++;
+                setTimeout(showNextMessage, nextMessage.delay);
+            }
+        };
+
+        showNextMessage();
+
+    }, [introduction, analysis, final_advice]);
+    
+     useEffect(() => {
+        // Scroll to bottom when new message is added
+        if (chatContainerRef.current) {
+            chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+        }
+    }, [messages]);
+
+
+    const renderMessage = (msg, index) => {
+        switch (msg.type) {
+            case 'bubble':
+                // Use a regex to split the text into bold and regular parts for styling
+                const parts = msg.content.split(/(\*\*.*?\*\*)/g).filter(Boolean);
+                return (
+                    <SpeechBubble key={index} show={msg.show}>
+                        <p className="whitespace-pre-line font-gowun">
+                            {parts.map((part, i) =>
+                                part.startsWith('**') && part.endsWith('**') ?
+                                <strong key={i} className="font-bold font-gaegu text-indigo-700">{part.slice(2, -2)}</strong> :
+                                part
+                            )}
+                        </p>
+                    </SpeechBubble>
+                );
+            case 'header':
+                return (
+                    <div key={index} className={`text-center my-4 transition-opacity duration-500 ${msg.show ? 'opacity-100' : 'opacity-0'}`}>
+                        <h3 className="inline-block bg-white/80 backdrop-blur-sm px-4 py-1 rounded-full text-xl font-bold text-purple-700 font-gaegu shadow">{msg.content}</h3>
+                    </div>
+                );
+            case 'final':
+                return(
+                     <div key={index} className={`mt-8 p-6 bg-yellow-100 border-2 border-yellow-400 rounded-2xl shadow-xl transition-all duration-700 ${msg.show ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}>
+                        <h3 className="text-2xl font-bold text-yellow-800 mb-3 font-gaegu text-center">📜 천기누설: 최종 비기</h3>
+                        <p className="text-center text-gray-800 leading-relaxed font-gowun">{msg.content}</p>
+                    </div>
+                )
+            default:
+                return null;
+        }
+    };
 
     return (
-        <div className="font-gowun">
-            <div className="mb-8 p-6 bg-gradient-to-br from-gray-800 to-gray-900 text-white rounded-2xl shadow-2xl border-2 border-yellow-400">
-                <p className="text-center text-xl lg:text-2xl leading-relaxed font-gaegu italic">"{introduction || '운명의 서막이 열렸다...'}"</p>
-            </div>
-            <div className="flex justify-center mb-6">
-                <img src={person1ImagePreview} alt="Analyzed person" className="w-40 h-40 object-cover rounded-full shadow-2xl border-4 border-indigo-300"/>
-            </div>
-
-            <div className="bg-white/70 backdrop-blur-md rounded-xl p-4 sm:p-6 shadow-lg">
-                <div className="border-b border-gray-300 mb-4">
-                    <nav className="-mb-px flex justify-center space-x-2 sm:space-x-4 overflow-x-auto" aria-label="Tabs">
-                        {availableTabs.map(key => (
-                            <button key={key} onClick={() => setActiveTab(key)}
-                                className={`${activeTab === key ? 'border-purple-600 text-purple-700 font-extrabold' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-400'} whitespace-nowrap py-3 px-2 sm:px-4 border-b-4 font-bold text-xl font-gaegu transition-all duration-300`}>
-                                {analysis[key].title}
-                            </button>
-                        ))}
-                    </nav>
-                </div>
-                
-                <div ref={contentRef} className="p-2 transition-all duration-500 ease-in-out transform opacity-0">
-                    {activeTab && analysis[activeTab] && (
-                        <div>
-                            {renderSection("타고난 그릇", analysis[activeTab].nature)}
-                            {renderSection("과거의 흔적", analysis[activeTab].past_trace)}
-                            {renderSection("미래의 계시", analysis[activeTab].prophecy)}
-                            {renderSection("성공 비결", analysis[activeTab].secret_to_success)}
-                        </div>
-                    )}
-                </div>
-            </div>
-
-             <div className="mt-8 p-6 bg-yellow-100 border-2 border-yellow-400 rounded-2xl shadow-xl">
-                <h3 className="text-2xl font-bold text-yellow-800 mb-3 font-gaegu text-center">📜 천기누설: 최종 비기</h3>
-                <p className="text-center text-gray-800 leading-relaxed font-gowun">{final_advice || "스스로의 길을 믿고 나아가라."}</p>
-            </div>
+        <div ref={chatContainerRef} className="h-[60vh] overflow-y-auto p-4 space-y-4 bg-gradient-to-br from-indigo-50 to-purple-100 rounded-lg shadow-inner">
+           {messages.map(renderMessage)}
         </div>
     );
 });
 
-const AnalysisLoadingComponent = React.memo(({ images, strings, loadingText }) => {
+
+const AnalysisLoadingComponent = React.memo(({ strings, loadingText }) => {
   const [comment, setComment] = useState(strings.loadingComments[0]);
   useEffect(() => {
     const commentInterval = setInterval(() => {
@@ -334,7 +360,7 @@ const AnalysisLoadingComponent = React.memo(({ images, strings, loadingText }) =
     return () => clearInterval(commentInterval);
   }, [strings.loadingComments]);
 
-  return ( <div className="fixed inset-0 bg-black bg-opacity-75 flex flex-col items-center justify-center z-50 p-4 font-gaegu"> <div className="bg-white p-6 sm:p-8 rounded-2xl shadow-2xl text-center max-w-md w-full"> <h3 className="text-2xl font-bold text-purple-600 mb-4">{loadingText}</h3> <img src={`https://placehold.co/320x100/dedede/777777?text=${strings.adPlaceholderBannerText.replace(/\+/g, '%20')}`} alt="Ad Placeholder" className="mx-auto rounded-md shadow-md mb-6" /> <div className="relative w-full max-w-xs mx-auto flex items-center justify-center mb-4"> <img src={images[0]} alt="Person 1" className="w-24 h-24 object-cover rounded-full shadow-lg border-4 border-rose-400 animate-pulse" /> </div><div className="text-center text-gray-800"> <p className="text-lg h-12 flex items-center justify-center transition-opacity duration-500">"{comment}"</p> <div className="w-12 h-12 border-4 border-purple-500 border-t-transparent rounded-full mx-auto animate-spin mt-2"></div> </div></div></div> );
+  return ( <div className="fixed inset-0 bg-black bg-opacity-75 flex flex-col items-center justify-center z-50 p-4 font-gaegu"> <div className="bg-white p-6 sm:p-8 rounded-2xl shadow-2xl text-center max-w-md w-full"> <h3 className="text-2xl font-bold text-purple-600 mb-4">{loadingText}</h3> <img src={`https://placehold.co/320x100/dedede/777777?text=${strings.adPlaceholderBannerText.replace(/\+/g, '%20')}`} alt="Ad Placeholder" className="mx-auto rounded-md shadow-md mb-6" /> <div className="relative w-full max-w-xs mx-auto flex items-center justify-center mb-4"> <img src={'https://placehold.co/100x100/e2e8f0/cbd5e0?text=...'} alt="Person 1" className="w-24 h-24 object-cover rounded-full shadow-lg border-4 border-rose-400 animate-pulse" /> </div><div className="text-center text-gray-800"> <p className="text-lg h-12 flex items-center justify-center transition-opacity duration-500">"{comment}"</p> <div className="w-12 h-12 border-4 border-purple-500 border-t-transparent rounded-full mx-auto animate-spin mt-2"></div> </div></div></div> );
 });
 
 // --- Main App Component ---
@@ -429,15 +455,7 @@ function App() {
             
             let parsedJson;
             try { parsedJson = JSON.parse(result.candidates[0].content.parts[0].text); } catch (e) { console.error("JSON parsing error:", e, "Raw text:", result.candidates[0].content.parts[0].text); throw new Error(currentStrings.apiErrorResponseFormat); }
-
-            const filteredAnalysis = {};
-            selectedInterests.forEach(interest => {
-                if(parsedJson.analysis && parsedJson.analysis[interest]) {
-                    filteredAnalysis[interest] = parsedJson.analysis[interest];
-                }
-            });
-            parsedJson.analysis = filteredAnalysis;
-
+            
             setAnalysisResult(parsedJson);
 
             if (db && storage) {
@@ -460,7 +478,7 @@ function App() {
     
     return (
         <div className="relative min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-indigo-900 p-4 sm:p-6 lg:p-8 flex flex-col font-sans">
-            {isLoading && <AnalysisLoadingComponent images={[person1ImagePreview]} strings={currentStrings} loadingText={loadingText} />}
+            {isLoading && <AnalysisLoadingComponent strings={currentStrings} loadingText={loadingText} />}
             <div className={`w-full mx-auto transition-all duration-500 ${isLoading ? 'opacity-50 blur-sm pointer-events-none' : 'opacity-100'}`}>
                 <header className="w-full max-w-4xl mx-auto mt-12 sm:mt-8 mb-8 text-center font-gaegu">
                     <h1 className="text-5xl sm:text-6xl font-black text-white py-2 flex items-center justify-center drop-shadow-lg [text-shadow:_0_4px_6px_rgb(0_0_0_/_40%)]">
