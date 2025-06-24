@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect, useRef } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 // Firebase SDK import
 import { initializeApp, getApps } from "firebase/app";
 import { getFirestore, collection, doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
@@ -263,7 +263,7 @@ const useTypingEffect = (text, speed = 50) => {
             const intervalId = setInterval(() => {
                 setDisplayedText(prev => prev + text.charAt(i));
                 i++;
-                if (i > text.length) {
+                if (i >= text.length) {
                     clearInterval(intervalId);
                 }
             }, speed);
@@ -285,17 +285,21 @@ const ResultPageComponent = React.memo(({ analysisResult }) => {
     useEffect(() => {
         const createQueue = () => {
             const queue = [];
-            queue.push({ type: 'intro', text: introduction });
+            if(introduction) queue.push({ type: 'intro', text: introduction });
             
-            Object.values(analysis).forEach(topic => {
-                queue.push({ type: 'header', text: topic.title });
-                queue.push({ type: 'bubble', text: `**타고난 그릇**\n${topic.nature}` });
-                queue.push({ type: 'bubble', text: `**과거의 흔적**\n${topic.past_trace}` });
-                queue.push({ type: 'bubble', text: `**미래의 계시**\n${topic.prophecy}` });
-                queue.push({ type: 'bubble', text: `**성공 비결**\n${topic.secret_to_success}` });
-            });
+            if(analysis) {
+                Object.values(analysis).forEach(topic => {
+                    if(topic){
+                        queue.push({ type: 'header', text: topic.title });
+                        queue.push({ type: 'bubble', text: `**타고난 그릇**\n${topic.nature}` });
+                        queue.push({ type: 'bubble', text: `**과거의 흔적**\n${topic.past_trace}` });
+                        queue.push({ type: 'bubble', text: `**미래의 계시**\n${topic.prophecy}` });
+                        queue.push({ type: 'bubble', text: `**성공 비결**\n${topic.secret_to_success}` });
+                    }
+                });
+            }
             
-            queue.push({ type: 'final', text: final_advice });
+            if(final_advice) queue.push({ type: 'final', text: final_advice });
             return queue;
         };
         
@@ -303,22 +307,37 @@ const ResultPageComponent = React.memo(({ analysisResult }) => {
     }, [introduction, analysis, final_advice]);
     
     useEffect(() => {
-        if (messageQueue.length > 0) {
-            const showNextMessage = () => {
-                setIsThinking(true);
-                setTimeout(() => {
-                    setMessageQueue(prev => {
-                        const next = prev.slice(1);
-                        setCurrentMessage(prev[0]);
+        const timerRefs = [];
+        const showNextMessage = () => {
+            setIsThinking(true);
+            const thinkingTimer = setTimeout(() => {
+                setMessageQueue(prev => {
+                    if (prev.length === 0) {
                         setIsThinking(false);
-                        if (next.length > 0) {
-                            setTimeout(showNextMessage, (prev[0]?.text?.length || 0) * 30 + 1500); // Wait for text to type + 1.5s
-                        }
-                        return next;
-                    });
-                }, 1000); // 1s thinking time
-            };
+                        return prev;
+                    }
+                    const next = prev.slice(1);
+                    const current = prev[0];
+                    setCurrentMessage(current);
+                    setIsThinking(false);
+
+                    if (next.length > 0) {
+                        const typingDuration = (current?.text?.length || 0) * 30;
+                        const nextMessageTimer = setTimeout(showNextMessage, typingDuration + 1500); // Wait for text to type + 1.5s
+                        timerRefs.push(nextMessageTimer);
+                    }
+                    return next;
+                });
+            }, 1000); // 1s thinking time
+            timerRefs.push(thinkingTimer);
+        };
+        
+        if (messageQueue.length > 0) {
             showNextMessage();
+        }
+
+        return () => {
+            timerRefs.forEach(clearTimeout);
         }
     }, [messageQueue]);
 

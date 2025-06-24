@@ -11,10 +11,10 @@ ACCESS_TOKEN = 'ae437cfc-b806-4798-88e7-5954b8745fb7'
 SECRET_KEY = '0810c158-7bf7-47f0-97c1-a4c90e85a8e5'
 CURRENCY = 'VIRTUAL'
 REWARD_THRESHOLD = 0.005  # 리워드 범위: -0.5%
-ORDER_OFFSET = 0.003      # 실제 주문가: -0.3%
-KRW_AMOUNT = 46000
+ORDER_OFFSET = 0.0045      # 실제 주문가: -0.45%
+KRW_AMOUNT = 45000
 MONITOR_INTERVAL = 3
-EXECUTION_RISK_THRESHOLD = 0.001
+EXECUTION_RISK_THRESHOLD = 0.003
 CANCEL_WAIT_TIME = 2.0
 
 API_BASE = 'https://api.coinone.co.kr'
@@ -231,6 +231,8 @@ def cancel_current_order():
 
 def place_immediate_limit_sell():
     """🔥 핵심 수정: 시장가가 아닌 지정가로 즉시 매도"""
+    global current_order_id, current_order_price, current_order_base_price
+    
     balance = get_target_balance()
     coin_balance = balance['coin']
     
@@ -258,8 +260,14 @@ def place_immediate_limit_sell():
     })
     
     if result.get('result') == 'success':
-        order_id = result.get('orderId')
-        log(f"✅ 지정가 매도 주문 성공: {order_id}")
+        sell_order_id = result.get('orderId')
+        log(f"✅ 지정가 매도 주문 성공: {sell_order_id}")
+        
+        # 🔥 중요: 매수 주문 상태 초기화 (매도 시작하면 매수는 완료된 것)
+        current_order_id = None
+        current_order_price = None
+        current_order_base_price = None
+        log("🔄 매수 주문 상태 초기화 완료")
         
         # 매도 주문 체결 대기 (최대 10초)
         log("⏳ 매도 체결 대기 중...")
@@ -272,7 +280,7 @@ def place_immediate_limit_sell():
                 sell_orders = sell_check.get('limitOrders', [])
                 
                 # 매도 주문이 목록에 없으면 체결됨
-                if not any(order['orderId'] == order_id for order in sell_orders):
+                if not any(order['orderId'] == sell_order_id for order in sell_orders):
                     log("🎉 매도 체결 완료!")
                     return True
         
@@ -282,6 +290,12 @@ def place_immediate_limit_sell():
     else:
         error_msg = result.get('errorMsg', 'Unknown error')
         log(f"❌ 지정가 매도 실패: {error_msg}")
+        
+        # 🔥 매도 실패해도 매수 상태는 초기화
+        current_order_id = None
+        current_order_price = None
+        current_order_base_price = None
+        log("🔄 매수 주문 상태 초기화 (매도 실패)")
         
         # 백업: 더 낮은 가격으로 재시도
         if "minimum" not in error_msg.lower():
@@ -351,13 +365,16 @@ def run_clean_trading():
             if order_status == "FILLED":
                 # 체결됨 → 즉시 매도 (지정가)
                 log("🎯 매수 체결! 즉시 매도 실행")
-                if place_immediate_limit_sell():
+                sell_success = place_immediate_limit_sell()
+                
+                if sell_success:
                     log("💰 거래 완료 - 수익 실현!")
-                    consecutive_errors = 0
+                    consecutive_errors = 0  # 성공 시 에러 카운트 리셋
                 else:
-                    log("⚠️ 매도 실패 - 다음 사이클에서 재시도")
-                    consecutive_errors += 1
-                time.sleep(5)  # 매도 처리 대기 시간 증가
+                    log("⚠️ 매도 실패했지만 매수 상태는 초기화됨")
+                    consecutive_errors = 0  # 🔥 매도 실패해도 에러 카운트 리셋 (매수는 완료됨)
+                
+                time.sleep(3)  # 다음 사이클 전 잠시 대기
                 continue
             
             elif order_status == "PENDING":
