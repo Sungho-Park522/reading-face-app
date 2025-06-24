@@ -117,8 +117,7 @@ const translations = {
       "analysis_type": "single",
       "introduction": "...",
       "analysis": {
-        "{interest_key_1}": { "title": "...", "nature": "...", "past_trace": "...", "prophecy": "...", "secret_to_success": "..." },
-        "{interest_key_2}": { "title": "...", "nature": "...", "past_trace": "...", "prophecy": "...", "secret_to_success": "..." }
+        "wealth": { "title": "💰 재물", "nature": "...", "past_trace": "...", "prophecy": "...", "secret_to_success": "..." }
       },
       "final_advice": "..."
     }`,
@@ -254,98 +253,134 @@ const MainPageComponent = React.memo(({ currentStrings, handleAnalysis, person1I
     </div>
 ));
 
-const SpeechBubble = ({ text, isUser, show, children }) => (
-    <div className={`flex items-end max-w-lg mx-auto transition-all duration-500 ${isUser ? 'justify-end' : 'justify-start'} ${show ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
-        <div className={`relative px-4 py-3 rounded-2xl ${isUser ? 'bg-indigo-500 text-white' : 'bg-gray-200 text-gray-800'} shadow-md`}>
-            {text && <p className="whitespace-pre-line font-gowun">{text}</p>}
-            {children}
-        </div>
-    </div>
-);
+const useTypingEffect = (text, speed = 50) => {
+    const [displayedText, setDisplayedText] = useState('');
+    
+    useEffect(() => {
+        setDisplayedText(''); // Reset when text changes
+        if (text) {
+            let i = 0;
+            const intervalId = setInterval(() => {
+                setDisplayedText(prev => prev + text.charAt(i));
+                i++;
+                if (i > text.length) {
+                    clearInterval(intervalId);
+                }
+            }, speed);
+            return () => clearInterval(intervalId);
+        }
+    }, [text, speed]);
+    
+    return displayedText;
+};
 
 const ResultPageComponent = React.memo(({ analysisResult }) => {
     const { introduction, analysis, final_advice } = analysisResult;
-    const [messages, setMessages] = useState([]);
-    const chatContainerRef = useRef(null);
+    const [messageQueue, setMessageQueue] = useState([]);
+    const [currentMessage, setCurrentMessage] = useState({ text: '...' });
+    const [isThinking, setIsThinking] = useState(false);
+    
+    const typedText = useTypingEffect(currentMessage.text, 30);
 
     useEffect(() => {
-        const createMessageQueue = () => {
+        const createQueue = () => {
             const queue = [];
-            queue.push({ type: 'bubble', content: introduction, delay: 500 });
-
-            Object.values(analysis).forEach((topic) => {
-                queue.push({ type: 'header', content: topic.title, delay: 1200 });
-                queue.push({ type: 'bubble', content: `**타고난 그릇**\n${topic.nature}`, delay: 1500 });
-                queue.push({ type: 'bubble', content: `**과거의 흔적**\n${topic.past_trace}`, delay: 1500 });
-                queue.push({ type: 'bubble', content: `**미래의 계시**\n${topic.prophecy}`, delay: 1500 });
-                queue.push({ type: 'bubble', content: `**성공 비결**\n${topic.secret_to_success}`, delay: 1500 });
+            queue.push({ type: 'intro', text: introduction });
+            
+            Object.values(analysis).forEach(topic => {
+                queue.push({ type: 'header', text: topic.title });
+                queue.push({ type: 'bubble', text: `**타고난 그릇**\n${topic.nature}` });
+                queue.push({ type: 'bubble', text: `**과거의 흔적**\n${topic.past_trace}` });
+                queue.push({ type: 'bubble', text: `**미래의 계시**\n${topic.prophecy}` });
+                queue.push({ type: 'bubble', text: `**성공 비결**\n${topic.secret_to_success}` });
             });
             
-            queue.push({ type: 'final', content: final_advice, delay: 1200 });
+            queue.push({ type: 'final', text: final_advice });
             return queue;
         };
         
-        const messageQueue = createMessageQueue();
-        let currentIndex = 0;
-        
-        const showNextMessage = () => {
-            if (currentIndex < messageQueue.length) {
-                const nextMessage = messageQueue[currentIndex];
-                setMessages(prev => [...prev, { ...nextMessage, show: true }]);
-                currentIndex++;
-                setTimeout(showNextMessage, nextMessage.delay);
-            }
-        };
-
-        showNextMessage();
-
+        setMessageQueue(createQueue());
     }, [introduction, analysis, final_advice]);
     
-     useEffect(() => {
-        // Scroll to bottom when new message is added
-        if (chatContainerRef.current) {
-            chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+    useEffect(() => {
+        if (messageQueue.length > 0) {
+            const showNextMessage = () => {
+                setIsThinking(true);
+                setTimeout(() => {
+                    setMessageQueue(prev => {
+                        const next = prev.slice(1);
+                        setCurrentMessage(prev[0]);
+                        setIsThinking(false);
+                        if (next.length > 0) {
+                            setTimeout(showNextMessage, (prev[0]?.text?.length || 0) * 30 + 1500); // Wait for text to type + 1.5s
+                        }
+                        return next;
+                    });
+                }, 1000); // 1s thinking time
+            };
+            showNextMessage();
         }
-    }, [messages]);
+    }, [messageQueue]);
 
-
-    const renderMessage = (msg, index) => {
-        switch (msg.type) {
-            case 'bubble':
-                // Use a regex to split the text into bold and regular parts for styling
-                const parts = msg.content.split(/(\*\*.*?\*\*)/g).filter(Boolean);
-                return (
-                    <SpeechBubble key={index} show={msg.show}>
-                        <p className="whitespace-pre-line font-gowun">
-                            {parts.map((part, i) =>
-                                part.startsWith('**') && part.endsWith('**') ?
-                                <strong key={i} className="font-bold font-gaegu text-indigo-700">{part.slice(2, -2)}</strong> :
-                                part
-                            )}
-                        </p>
-                    </SpeechBubble>
-                );
-            case 'header':
-                return (
-                    <div key={index} className={`text-center my-4 transition-opacity duration-500 ${msg.show ? 'opacity-100' : 'opacity-0'}`}>
-                        <h3 className="inline-block bg-white/80 backdrop-blur-sm px-4 py-1 rounded-full text-xl font-bold text-purple-700 font-gaegu shadow">{msg.content}</h3>
-                    </div>
-                );
-            case 'final':
-                return(
-                     <div key={index} className={`mt-8 p-6 bg-yellow-100 border-2 border-yellow-400 rounded-2xl shadow-xl transition-all duration-700 ${msg.show ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}>
-                        <h3 className="text-2xl font-bold text-yellow-800 mb-3 font-gaegu text-center">📜 천기누설: 최종 비기</h3>
-                        <p className="text-center text-gray-800 leading-relaxed font-gowun">{msg.content}</p>
-                    </div>
-                )
-            default:
-                return null;
-        }
+    const renderTextWithBold = (text) => {
+        const parts = text.split(/(\*\*.*?\*\*)/g).filter(Boolean);
+        return parts.map((part, i) =>
+            part.startsWith('**') && part.endsWith('**') ?
+            <strong key={i} className="font-bold font-gaegu text-indigo-700">{part.slice(2, -2)}</strong> :
+            part
+        );
     };
 
     return (
-        <div ref={chatContainerRef} className="h-[60vh] overflow-y-auto p-4 space-y-4 bg-gradient-to-br from-indigo-50 to-purple-100 rounded-lg shadow-inner">
-           {messages.map(renderMessage)}
+        <div className="flex flex-col h-[70vh] bg-gradient-to-br from-gray-800 via-gray-900 to-black p-4 rounded-2xl shadow-2xl border-2 border-yellow-500">
+            <div className="flex-shrink-0 text-center relative h-32">
+                 {/* 점쟁이 캐릭터 SVG */}
+                <svg className="w-32 h-32 mx-auto" viewBox="0 0 100 100">
+                    <defs>
+                        <linearGradient id="skin" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stopColor="#f2d5b1"/>
+                            <stop offset="100%" stopColor="#e4b98d"/>
+                        </linearGradient>
+                        <linearGradient id="robe" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stopColor="#4a044e"/>
+                            <stop offset="100%" stopColor="#1e1b4b"/>
+                        </linearGradient>
+                         <radialGradient id="eye-shine" cx="0.4" cy="0.4" r="0.6">
+                            <stop offset="0%" stopColor="white" stopOpacity="0.8"/>
+                            <stop offset="100%" stopColor="white" stopOpacity="0" />
+                        </radialGradient>
+                    </defs>
+                    {/* 몸체 */}
+                    <path d="M10 90 Q 50 70, 90 90 L 95 100 L 5 100 z" fill="url(#robe)"/>
+                     {/* 얼굴 */}
+                    <circle cx="50" cy="40" r="25" fill="url(#skin)"/>
+                     {/* 손 */}
+                    <path d="M 65 50 C 60 55, 60 65, 72 68 Q 80 60, 75 52 z" fill="url(#skin)"/>
+                    {/* 머리카락 */}
+                    <path d="M 25 20 Q 50 10, 75 20 L 78 45 A 25 25 0 0 1 22 45 z" fill="#333"/>
+                     {/* 눈 */}
+                    <circle cx="40" cy="40" r="3" fill="#333"/>
+                    <circle cx="60" cy="40" r="3" fill="#333"/>
+                    <circle cx="41" cy="39" r="1" fill="url(#eye-shine)"/>
+                    <circle cx="61" cy="39" r="1" fill="url(#eye-shine)"/>
+                     {/* 눈썹 */}
+                    <path d="M35 32 Q 40 30, 45 32" stroke="#333" strokeWidth="1.5" fill="none"/>
+                    <path d="M55 32 Q 60 30, 65 32" stroke="#333" strokeWidth="1.5" fill="none"/>
+                    {/* 입 */}
+                    <path d="M45 52 Q 50 50, 55 52" stroke="#333" strokeWidth="1" fill="none"/>
+                </svg>
+            </div>
+            
+            <div className="flex-grow flex flex-col justify-center min-h-0">
+                <div className="relative bg-white/90 backdrop-blur-sm p-6 rounded-2xl shadow-inner border border-gray-300 min-h-[150px]">
+                    <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-0 h-0 border-l-[15px] border-l-transparent border-r-[15px] border-r-transparent border-b-[15px] border-white/90"></div>
+                     {isThinking && <p className="text-2xl font-bold text-gray-500 animate-pulse">...</p>}
+                    {!isThinking && <div className="text-gray-800 text-lg leading-relaxed font-gowun">{renderTextWithBold(typedText)}</div>}
+                </div>
+                 <div className="text-center mt-4 text-xs text-indigo-300 font-sans">
+                     {currentMessage.type === 'final' ? '모든 풀이가 끝났습니다.' : messageQueue.length > 0 ? `${messageQueue.length}개의 풀이가 남았습니다.` : '운명의 비밀을 푸는 중...'}
+                </div>
+            </div>
         </div>
     );
 });
@@ -480,15 +515,17 @@ function App() {
         <div className="relative min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-indigo-900 p-4 sm:p-6 lg:p-8 flex flex-col font-sans">
             {isLoading && <AnalysisLoadingComponent strings={currentStrings} loadingText={loadingText} />}
             <div className={`w-full mx-auto transition-all duration-500 ${isLoading ? 'opacity-50 blur-sm pointer-events-none' : 'opacity-100'}`}>
-                <header className="w-full max-w-4xl mx-auto mt-12 sm:mt-8 mb-8 text-center font-gaegu">
-                    <h1 className="text-5xl sm:text-6xl font-black text-white py-2 flex items-center justify-center drop-shadow-lg [text-shadow:_0_4px_6px_rgb(0_0_0_/_40%)]">
-                        <UserIcon className="inline-block w-12 h-12 mr-3 text-cyan-300" />
-                        {currentStrings.appTitle}
-                    </h1>
-                    <p className="text-xl text-indigo-200 mt-3 drop-shadow-md">{currentStrings.appSubtitle}</p>
-                </header>
+                { pageState !== 'result' && 
+                    <header className="w-full max-w-4xl mx-auto mt-12 sm:mt-8 mb-8 text-center font-gaegu">
+                        <h1 className="text-5xl sm:text-6xl font-black text-white py-2 flex items-center justify-center drop-shadow-lg [text-shadow:_0_4px_6px_rgb(0_0_0_/_40%)]">
+                            <UserIcon className="inline-block w-12 h-12 mr-3 text-cyan-300" />
+                            {currentStrings.appTitle}
+                        </h1>
+                        <p className="text-xl text-indigo-200 mt-3 drop-shadow-md">{currentStrings.appSubtitle}</p>
+                    </header>
+                }
                 
-                <main className="w-full max-w-4xl mx-auto bg-white/90 backdrop-blur-md shadow-2xl rounded-xl p-6 sm:p-8">
+                <main className={`w-full max-w-4xl mx-auto transition-colors duration-300 ${pageState === 'result' ? 'bg-transparent' : 'bg-white/90'} backdrop-blur-md shadow-2xl rounded-xl p-6 sm:p-8`}>
                     {pageState === 'main' && (
                         <MainPageComponent
                             currentStrings={currentStrings}
@@ -506,23 +543,25 @@ function App() {
                     )}
                     {pageState === 'result' && analysisResult && 
                         <div>
-                            <ResultPageComponent analysisResult={analysisResult} person1ImagePreview={person1ImagePreview} />
-                            <div className="mt-10 pt-6 border-t border-gray-300 flex flex-col sm:flex-row items-center justify-center gap-4">
-                                <button onClick={() => handleCopyToClipboard(`${window.location.origin}/result/${resultId}`)} disabled={!resultId} className="flex items-center justify-center px-4 py-3 bg-gray-600 hover:bg-gray-700 text-white font-bold rounded-lg shadow-lg transition-colors disabled:bg-gray-400 font-gaegu">
+                            <ResultPageComponent analysisResult={analysisResult} />
+                            <div className="mt-10 pt-6 border-t-2 border-dashed border-gray-600 flex flex-col sm:flex-row items-center justify-center gap-4">
+                                <button onClick={() => handleCopyToClipboard(`${window.location.origin}/result/${resultId}`)} disabled={!resultId} className="flex items-center justify-center px-4 py-3 bg-indigo-500 hover:bg-indigo-600 text-white font-bold rounded-lg shadow-lg transition-colors disabled:bg-gray-400 font-gaegu">
                                     <LinkIcon className="w-5 h-5 mr-2" /> {currentStrings.copyButton}
                                 </button>
-                                <button onClick={resetAllStates} className="flex items-center justify-center px-8 py-3 bg-gray-500 hover:bg-gray-600 text-white font-bold rounded-lg shadow-lg transition-colors text-lg font-gaegu">
+                                <button onClick={resetAllStates} className="flex items-center justify-center px-8 py-3 bg-gray-700 hover:bg-gray-600 text-white font-bold rounded-lg shadow-lg transition-colors text-lg font-gaegu">
                                     <RefreshCwIcon className="w-6 h-6 mr-3" /> {currentStrings.retryButton}
                                 </button>
                             </div>
-                            {copyStatus && <p className="text-center text-md text-green-700 mt-4 font-semibold animate-bounce">{copyStatus}</p>}
+                            {copyStatus && <p className="text-center text-md text-green-400 mt-4 font-semibold animate-bounce">{copyStatus}</p>}
                         </div>
                     }
                     {error && <p className="text-red-500 bg-red-100 border border-red-300 rounded-md p-4 text-md mt-4 max-w-md mx-auto shadow-md animate-shake text-center font-bold">{error}</p>}
                 </main>
-                <footer className="w-full max-w-4xl mx-auto mt-12 text-center">
-                    <p className="text-md text-white/90 drop-shadow-sm">© {new Date().getFullYear()} AI 운명 비기. Just for Fun!</p>
-                </footer>
+                 { pageState !== 'result' &&
+                    <footer className="w-full max-w-4xl mx-auto mt-12 text-center">
+                        <p className="text-md text-white/90 drop-shadow-sm">© {new Date().getFullYear()} AI 운명 비기. Just for Fun!</p>
+                    </footer>
+                }
             </div>
         </div>
     );
