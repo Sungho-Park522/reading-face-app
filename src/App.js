@@ -9,22 +9,26 @@ import {
 
 
 // ★★★ API 키 설정 영역 ★★★
-// 미리보기 환경의 'process is not defined' 에러 방지를 위해 빈 문자열로 설정합니다.
-// 실제 배포 시에는 환경 변수를 사용해야 합니다.
+// Netlify 환경 변수에서 직접 값을 가져옵니다. 로컬 테스트 시에는 이 부분에 직접 키를 넣거나,
+// 기능이 동작하지 않는 것을 감안하고 빈 문자열로 둡니다.
 const firebaseConfig = {
-  apiKey: "", // process.env.REACT_APP_FIREBASE_API_KEY,
-  authDomain: "", // process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
-  projectId: "", // process.env.REACT_APP_FIREBASE_PROJECT_ID,
-  storageBucket: "", // process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: "", // process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
-  appId: "", // process.env.REACT_APP_FIREBASE_APP_ID,
+  apiKey: "%REACT_APP_FIREBASE_API_KEY%",
+  authDomain: "%REACT_APP_FIREBASE_AUTH_DOMAIN%",
+  projectId: "%REACT_APP_FIREBASE_PROJECT_ID%",
+  storageBucket: "%REACT_APP_FIREBASE_STORAGE_BUCKET%",
+  messagingSenderId: "%REACT_APP_FIREBASE_MESSAGING_SENDER_ID%",
+  appId: "%REACT_APP_FIREBASE_APP_ID%",
 };
-const GEMINI_API_KEY = ""; // process.env.REACT_APP_GEMINI_API_KEY;
+const GEMINI_API_KEY = "%REACT_APP_GEMINI_API_KEY%";
 
 
 // Firebase 앱 초기화 및 서비스 가져오기
 let app, db, auth, storage;
-if (Object.values(firebaseConfig).every(v => v)) {
+// Netlify 빌드 과정에서 %REACT_APP_*% 형태의 플레이스홀더가 실제 값으로 치환됩니다.
+// 만약 치환되지 않았다면 (로컬 환경 등), 키가 없다고 판단합니다.
+const isFirebaseConfigured = Object.values(firebaseConfig).every(v => v && !v.startsWith('%REACT_APP_'));
+
+if (isFirebaseConfigured) {
   try {
     if (!getApps().length) {
       app = initializeApp(firebaseConfig);
@@ -42,7 +46,7 @@ if (Object.values(firebaseConfig).every(v => v)) {
     console.error("Firebase initialization failed:", error);
   }
 } else {
-  console.warn("Firebase configuration is missing. Database features will be disabled in the Preview environment.");
+  console.warn("Firebase configuration is missing or invalid. Database features will be disabled.");
 }
 
 
@@ -82,6 +86,7 @@ const translations = {
     errorMessageDefault: "사진, 생년월일, 그리고 관심사를 모두 선택해야 하느니라.",
     apiErrorGeneric: "하늘의 뜻을 읽는 데 실패했다. 잠시 후 다시 시도하게.",
     apiErrorResponseFormat: "천기누설이 너무 심했나. 응답의 형식이 올바르지 않으니, 잠시 후 다시 시도하게.",
+    apiErrorDbConnection: "데이터베이스에 연결할 수 없습니다. API 키 설정을 확인하세요.",
     retryButton: "다시 묻기",
     copyButton: "결과 공유",
     copySuccessMessage: "결과 주소가 복사되었느니라!",
@@ -349,7 +354,7 @@ const ResultPageComponent = React.memo(({ analysisResult, userImageUrl }) => {
                 ))}
             </div>
 
-            {/* [NEW] 상단/하단 그라데이션 마스크 */}
+            {/* 상단/하단 그라데이션 마스크 */}
             <div className="fixed inset-x-0 top-0 h-48 bg-gradient-to-b from-gray-900 to-transparent pointer-events-none z-20"></div>
             <div className="fixed inset-x-0 bottom-0 h-48 bg-gradient-to-t from-gray-900 to-transparent pointer-events-none z-20"></div>
         </div>
@@ -383,8 +388,21 @@ function App() {
             const id = path[2];
             setIsLoading(true);
             setLoadingText(translations[lang].resultLoading);
-            const fetchResult = async () => {
-                if (!db) { setTimeout(fetchResult, 300); return; }
+            
+            const fetchResult = async (retries = 10) => {
+                if (!isFirebaseConfigured) {
+                    if (retries > 0) {
+                        setTimeout(() => fetchResult(retries - 1), 500);
+                    } else {
+                        console.error("Firebase DB not available after multiple retries.");
+                        setError(translations[lang].apiErrorDbConnection);
+                        setIsLoading(false);
+                        window.history.pushState({}, '', '/');
+                        setPageState('main');
+                    }
+                    return;
+                }
+                
                 try {
                     const docRef = doc(db, "results", id);
                     const docSnap = await getDoc(docRef);
@@ -394,15 +412,23 @@ function App() {
                         setPerson1ImagePreview(data.images.person1);
                         setResultId(id);
                         setPageState('result');
-                    } else { setError(translations[lang].resultNotFound); setPageState('main'); }
+                    } else { 
+                        setError(translations[lang].resultNotFound); 
+                        window.history.pushState({}, '', '/');
+                        setPageState('main'); 
+                    }
                 } catch (e) {
                     console.error("Error fetching result:", e);
-                    setError(translations[lang].resultNotFound); setPageState('main');
-                } finally { setIsLoading(false); }
+                    setError(translations[lang].resultNotFound); 
+                    window.history.pushState({}, '', '/');
+                    setPageState('main');
+                } finally { 
+                    setIsLoading(false); 
+                }
             };
             fetchResult();
         }
-    }, []);
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
     const handleImageChange = useCallback((file) => { if (file) { const previewUrl = URL.createObjectURL(file); setPerson1ImageFile(file); setPerson1ImagePreview(previewUrl); setError(''); } }, []);
     const handleDobChange = useCallback((date) => { setPerson1Dob(date); setError(''); }, []);
@@ -425,10 +451,17 @@ function App() {
 
     const handleAnalysis = useCallback(async () => {
         if (!person1ImageFile || !person1Dob || selectedInterests.length === 0) { setError(currentStrings.errorMessageDefault); return; }
-        if (!GEMINI_API_KEY) {
-            setError("Gemini API 키가 설정되지 않았습니다. 관리자에게 문의하세요.");
+        
+        const isGeminiConfigured = GEMINI_API_KEY && !GEMINI_API_KEY.startsWith('%REACT_APP_');
+        if (!isGeminiConfigured) {
+            setError("Gemini API 키가 설정되지 않았습니다. Netlify 환경 변수를 확인하세요.");
             return;
         }
+        if (!isFirebaseConfigured) {
+            setError(currentStrings.apiErrorDbConnection);
+            return;
+        }
+
         setLoadingText(currentStrings.loadingMessage); setIsLoading(true); setError('');
         
         try {
