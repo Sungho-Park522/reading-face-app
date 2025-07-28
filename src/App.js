@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect, useRef } from 'react';
+import React, { useState, useCallback, useEffect, useRef, useMemo } from 'react';
 // Firebase SDK import
 import { initializeApp, getApps } from "firebase/app";
 import { getFirestore, collection, doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
@@ -9,17 +9,17 @@ import {
 
 
 // ★★★ API 키 설정 영역 ★★★
-// [FIXED] process.env를 사용하지 않고, 직접 키를 입력하거나 빈 문자열로 설정합니다.
-// 미리보기 환경에서는 빈 문자열로 두어 에러를 방지합니다.
+// 미리보기 환경의 'process is not defined' 에러 방지를 위해 빈 문자열로 설정합니다.
+// 실제 배포 시에는 환경 변수를 사용해야 합니다.
 const firebaseConfig = {
-    apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
-    authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
-    projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
-    storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
-    messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
-    appId: process.env.REACT_APP_FIREBASE_APP_ID,
-  };
-const GEMINI_API_KEY = process.env.REACT_APP_GEMINI_API_KEY;
+  apiKey: "", // process.env.REACT_APP_FIREBASE_API_KEY,
+  authDomain: "", // process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
+  projectId: "", // process.env.REACT_APP_FIREBASE_PROJECT_ID,
+  storageBucket: "", // process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: "", // process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
+  appId: "", // process.env.REACT_APP_FIREBASE_APP_ID,
+};
+const GEMINI_API_KEY = ""; // process.env.REACT_APP_GEMINI_API_KEY;
 
 
 // Firebase 앱 초기화 및 서비스 가져오기
@@ -267,10 +267,10 @@ const AnalysisLoadingComponent = React.memo(({ strings, loadingText }) => {
   return ( <div className="fixed inset-0 bg-black bg-opacity-75 flex flex-col items-center justify-center z-50 p-4 font-gaegu"> <div className="bg-white p-6 sm:p-8 rounded-2xl shadow-2xl text-center max-w-md w-full"> <h3 className="text-2xl font-bold text-purple-600 mb-4">{loadingText}</h3> <img src={`https://placehold.co/320x100/dedede/777777?text=${strings.adPlaceholderBannerText.replace(/\+/g, '%20')}`} alt="Ad Placeholder" className="mx-auto rounded-md shadow-md mb-6" /> <div className="relative w-full max-w-xs mx-auto flex items-center justify-center mb-4"> <img src={'https://placehold.co/100x100/e2e8f0/cbd5e0?text=...'} alt="Person 1" className="w-24 h-24 object-cover rounded-full shadow-lg border-4 border-rose-400 animate-pulse" /> </div><div className="text-center text-gray-800"> <p className="text-lg h-12 flex items-center justify-center transition-opacity duration-500">"{comment}"</p> <div className="w-12 h-12 border-4 border-purple-500 border-t-transparent rounded-full mx-auto animate-spin mt-2"></div> </div></div></div> );
 });
 
-// --- [NEW] 결과 페이지 컴포넌트 ---
+// --- [REVISED] 결과 페이지 컴포넌트 ---
 
-// '포커스 스크롤링'을 위한 개별 섹션 컴포넌트
-const AnalysisSection = React.memo(({ title, content, isFocused }) => {
+// 개별 섹션 컴포넌트 (스타일링 단순화)
+const AnalysisSection = React.memo(({ title, content }) => {
     const renderTextWithBold = (text) => {
         if (!text) return null;
         return text.split(/(\*\*.*?\*\*)/g).filter(Boolean).map((part, i) =>
@@ -281,8 +281,8 @@ const AnalysisSection = React.memo(({ title, content, isFocused }) => {
     };
 
     return (
-        <section className={`min-h-[80vh] flex items-center justify-center transition-all duration-500 ease-in-out transform ${isFocused ? 'opacity-100 scale-100 blur-none' : 'opacity-40 scale-95 blur-md'}`}>
-            <div className="w-full max-w-2xl mx-auto p-8 rounded-2xl bg-black/30 backdrop-blur-sm border border-white/20 shadow-2xl">
+        <section className="min-h-[80vh] flex items-center justify-center">
+            <div className="w-full max-w-2xl mx-auto p-8">
                 <h2 className="text-4xl font-black text-center mb-8 font-gaegu text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-cyan-300 drop-shadow-lg">{title}</h2>
                 <div className="space-y-6 text-lg text-gray-200 leading-relaxed font-gowun">
                     {typeof content === 'string' ? (
@@ -303,12 +303,9 @@ const AnalysisSection = React.memo(({ title, content, isFocused }) => {
     );
 });
 
-// 새로운 결과 페이지 메인 컴포넌트
+// 새로운 결과 페이지 메인 컴포넌트 (그라데이션 마스크 방식)
 const ResultPageComponent = React.memo(({ analysisResult, userImageUrl }) => {
-    const [focusedIndex, setFocusedIndex] = useState(0);
-    const sectionRefs = useRef([]);
-
-    const sections = React.useMemo(() => {
+    const sections = useMemo(() => {
         if (!analysisResult) return [];
         const { introduction, analysis, final_advice } = analysisResult;
         const resultSections = [];
@@ -330,37 +327,8 @@ const ResultPageComponent = React.memo(({ analysisResult, userImageUrl }) => {
         return resultSections;
     }, [analysisResult]);
     
-    useEffect(() => {
-        const observer = new IntersectionObserver(
-            (entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        const index = parseInt(entry.target.dataset.index, 10);
-                        setFocusedIndex(index);
-                    }
-                });
-            },
-            {
-                root: null,
-                rootMargin: "-50% 0px -50% 0px", // 화면 정중앙을 감지 영역으로 설정
-                threshold: 0
-            }
-        );
-
-        const currentRefs = sectionRefs.current;
-        currentRefs.forEach(ref => {
-            if (ref) observer.observe(ref);
-        });
-
-        return () => {
-            currentRefs.forEach(ref => {
-                if (ref) observer.unobserve(ref);
-            });
-        };
-    }, [sections]);
-
     return (
-        <div className="relative w-full h-full">
+        <div className="relative w-full h-screen overflow-y-auto">
             {/* 배경: 사용자 이미지와 별 효과 */}
             <div className="fixed inset-0 -z-10">
                 <div className="absolute inset-0 bg-gray-900" />
@@ -371,21 +339,19 @@ const ResultPageComponent = React.memo(({ analysisResult, userImageUrl }) => {
             </div>
 
             {/* 스크롤 가능한 콘텐츠 영역 */}
-            <div className="relative z-10 pt-16 pb-16">
+            <div className="relative z-10 pt-32 pb-32">
                 {sections.map((section, index) => (
-                    <div 
-                        key={index} 
-                        ref={el => sectionRefs.current[index] = el} 
-                        data-index={index}
-                    >
-                        <AnalysisSection 
-                            title={section.title}
-                            content={section.content}
-                            isFocused={index === focusedIndex}
-                        />
-                    </div>
+                    <AnalysisSection 
+                        key={index}
+                        title={section.title}
+                        content={section.content}
+                    />
                 ))}
             </div>
+
+            {/* [NEW] 상단/하단 그라데이션 마스크 */}
+            <div className="fixed inset-x-0 top-0 h-48 bg-gradient-to-b from-gray-900 to-transparent pointer-events-none z-20"></div>
+            <div className="fixed inset-x-0 bottom-0 h-48 bg-gradient-to-t from-gray-900 to-transparent pointer-events-none z-20"></div>
         </div>
     );
 });
@@ -554,8 +520,8 @@ function App() {
                 {pageState === 'result' && analysisResult && 
                     <div>
                         <ResultPageComponent analysisResult={analysisResult} userImageUrl={person1ImagePreview} />
-                        {/* 결과 페이지의 버튼들은 페이지 하단에 고정 */}
-                        <div className="fixed bottom-0 left-0 right-0 z-20 p-4 bg-black/30 backdrop-blur-sm">
+                        {/* 결과 페이지의 버튼들은 페이지 하단에 고정 (z-index 수정) */}
+                        <div className="fixed bottom-0 left-0 right-0 z-30 p-4 bg-black/30 backdrop-blur-sm">
                             <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-center gap-4">
                                 <button onClick={() => handleCopyToClipboard(`${window.location.origin}/result/${resultId}`)} disabled={!resultId} className="flex items-center justify-center px-4 py-3 bg-indigo-500 hover:bg-indigo-600 text-white font-bold rounded-lg shadow-lg transition-colors disabled:bg-gray-400 font-gaegu">
                                     <LinkIcon className="w-5 h-5 mr-2" /> {currentStrings.copyButton}
