@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 // Firebase SDK import
 import { initializeApp, getApps } from "firebase/app";
 import { getFirestore, collection, doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
@@ -9,15 +9,17 @@ import {
 
 
 // ★★★ API 키 설정 영역 ★★★
+// [FIXED] process.env를 사용하지 않고, 직접 키를 입력하거나 빈 문자열로 설정합니다.
+// 미리보기 환경에서는 빈 문자열로 두어 에러를 방지합니다.
 const firebaseConfig = {
-  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
-  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.REACT_APP_FIREBASE_APP_ID,
+  apiKey: "", // process.env.REACT_APP_FIREBASE_API_KEY,
+  authDomain: "", // process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
+  projectId: "", // process.env.REACT_APP_FIREBASE_PROJECT_ID,
+  storageBucket: "", // process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: "", // process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
+  appId: "", // process.env.REACT_APP_FIREBASE_APP_ID,
 };
-const GEMINI_API_KEY = process.env.REACT_APP_GEMINI_API_KEY;
+const GEMINI_API_KEY = ""; // process.env.REACT_APP_GEMINI_API_KEY;
 
 
 // Firebase 앱 초기화 및 서비스 가져오기
@@ -253,158 +255,6 @@ const MainPageComponent = React.memo(({ currentStrings, handleAnalysis, person1I
     </div>
 ));
 
-const useTypingEffect = (text, speed = 50) => {
-    const [displayedText, setDisplayedText] = useState('');
-    
-    useEffect(() => {
-        setDisplayedText(''); // Reset when text changes
-        if (text) {
-            let i = 0;
-            const intervalId = setInterval(() => {
-                setDisplayedText(prev => prev + text.charAt(i));
-                i++;
-                if (i >= text.length) {
-                    clearInterval(intervalId);
-                }
-            }, speed);
-            return () => clearInterval(intervalId);
-        }
-    }, [text, speed]);
-    
-    return displayedText;
-};
-
-const ResultPageComponent = React.memo(({ analysisResult }) => {
-    const { introduction, analysis, final_advice } = analysisResult;
-    const [messageQueue, setMessageQueue] = useState([]);
-    const [currentMessage, setCurrentMessage] = useState({ text: '...' });
-    const [isThinking, setIsThinking] = useState(false);
-    
-    const typedText = useTypingEffect(currentMessage.text, 30);
-
-    useEffect(() => {
-        const createQueue = () => {
-            const queue = [];
-            if(introduction) queue.push({ type: 'intro', text: introduction });
-            
-            if(analysis) {
-                Object.values(analysis).forEach(topic => {
-                    if(topic){
-                        queue.push({ type: 'header', text: topic.title });
-                        queue.push({ type: 'bubble', text: `**타고난 그릇**\n${topic.nature}` });
-                        queue.push({ type: 'bubble', text: `**과거의 흔적**\n${topic.past_trace}` });
-                        queue.push({ type: 'bubble', text: `**미래의 계시**\n${topic.prophecy}` });
-                        queue.push({ type: 'bubble', text: `**성공 비결**\n${topic.secret_to_success}` });
-                    }
-                });
-            }
-            
-            if(final_advice) queue.push({ type: 'final', text: final_advice });
-            return queue;
-        };
-        
-        setMessageQueue(createQueue());
-    }, [introduction, analysis, final_advice]);
-    
-    useEffect(() => {
-        const timerRefs = [];
-        const showNextMessage = () => {
-            setIsThinking(true);
-            const thinkingTimer = setTimeout(() => {
-                setMessageQueue(prev => {
-                    if (prev.length === 0) {
-                        setIsThinking(false);
-                        return prev;
-                    }
-                    const next = prev.slice(1);
-                    const current = prev[0];
-                    setCurrentMessage(current);
-                    setIsThinking(false);
-
-                    if (next.length > 0) {
-                        const typingDuration = (current?.text?.length || 0) * 30;
-                        const nextMessageTimer = setTimeout(showNextMessage, typingDuration + 1500); // Wait for text to type + 1.5s
-                        timerRefs.push(nextMessageTimer);
-                    }
-                    return next;
-                });
-            }, 1000); // 1s thinking time
-            timerRefs.push(thinkingTimer);
-        };
-        
-        if (messageQueue.length > 0) {
-            showNextMessage();
-        }
-
-        return () => {
-            timerRefs.forEach(clearTimeout);
-        }
-    }, [messageQueue]);
-
-    const renderTextWithBold = (text) => {
-        const parts = text.split(/(\*\*.*?\*\*)/g).filter(Boolean);
-        return parts.map((part, i) =>
-            part.startsWith('**') && part.endsWith('**') ?
-            <strong key={i} className="font-bold font-gaegu text-indigo-700">{part.slice(2, -2)}</strong> :
-            part
-        );
-    };
-
-    return (
-        <div className="flex flex-col h-[70vh] bg-gradient-to-br from-gray-800 via-gray-900 to-black p-4 rounded-2xl shadow-2xl border-2 border-yellow-500">
-            <div className="flex-shrink-0 text-center relative h-32">
-                 {/* 점쟁이 캐릭터 SVG */}
-                <svg className="w-32 h-32 mx-auto" viewBox="0 0 100 100">
-                    <defs>
-                        <linearGradient id="skin" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="0%" stopColor="#f2d5b1"/>
-                            <stop offset="100%" stopColor="#e4b98d"/>
-                        </linearGradient>
-                        <linearGradient id="robe" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="0%" stopColor="#4a044e"/>
-                            <stop offset="100%" stopColor="#1e1b4b"/>
-                        </linearGradient>
-                         <radialGradient id="eye-shine" cx="0.4" cy="0.4" r="0.6">
-                            <stop offset="0%" stopColor="white" stopOpacity="0.8"/>
-                            <stop offset="100%" stopColor="white" stopOpacity="0" />
-                        </radialGradient>
-                    </defs>
-                    {/* 몸체 */}
-                    <path d="M10 90 Q 50 70, 90 90 L 95 100 L 5 100 z" fill="url(#robe)"/>
-                     {/* 얼굴 */}
-                    <circle cx="50" cy="40" r="25" fill="url(#skin)"/>
-                     {/* 손 */}
-                    <path d="M 65 50 C 60 55, 60 65, 72 68 Q 80 60, 75 52 z" fill="url(#skin)"/>
-                    {/* 머리카락 */}
-                    <path d="M 25 20 Q 50 10, 75 20 L 78 45 A 25 25 0 0 1 22 45 z" fill="#333"/>
-                     {/* 눈 */}
-                    <circle cx="40" cy="40" r="3" fill="#333"/>
-                    <circle cx="60" cy="40" r="3" fill="#333"/>
-                    <circle cx="41" cy="39" r="1" fill="url(#eye-shine)"/>
-                    <circle cx="61" cy="39" r="1" fill="url(#eye-shine)"/>
-                     {/* 눈썹 */}
-                    <path d="M35 32 Q 40 30, 45 32" stroke="#333" strokeWidth="1.5" fill="none"/>
-                    <path d="M55 32 Q 60 30, 65 32" stroke="#333" strokeWidth="1.5" fill="none"/>
-                    {/* 입 */}
-                    <path d="M45 52 Q 50 50, 55 52" stroke="#333" strokeWidth="1" fill="none"/>
-                </svg>
-            </div>
-            
-            <div className="flex-grow flex flex-col justify-center min-h-0">
-                <div className="relative bg-white/90 backdrop-blur-sm p-6 rounded-2xl shadow-inner border border-gray-300 min-h-[150px]">
-                    <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-0 h-0 border-l-[15px] border-l-transparent border-r-[15px] border-r-transparent border-b-[15px] border-white/90"></div>
-                     {isThinking && <p className="text-2xl font-bold text-gray-500 animate-pulse">...</p>}
-                    {!isThinking && <div className="text-gray-800 text-lg leading-relaxed font-gowun">{renderTextWithBold(typedText)}</div>}
-                </div>
-                 <div className="text-center mt-4 text-xs text-indigo-300 font-sans">
-                     {currentMessage.type === 'final' ? '모든 풀이가 끝났습니다.' : messageQueue.length > 0 ? `${messageQueue.length}개의 풀이가 남았습니다.` : '운명의 비밀을 푸는 중...'}
-                </div>
-            </div>
-        </div>
-    );
-});
-
-
 const AnalysisLoadingComponent = React.memo(({ strings, loadingText }) => {
   const [comment, setComment] = useState(strings.loadingComments[0]);
   useEffect(() => {
@@ -416,6 +266,130 @@ const AnalysisLoadingComponent = React.memo(({ strings, loadingText }) => {
 
   return ( <div className="fixed inset-0 bg-black bg-opacity-75 flex flex-col items-center justify-center z-50 p-4 font-gaegu"> <div className="bg-white p-6 sm:p-8 rounded-2xl shadow-2xl text-center max-w-md w-full"> <h3 className="text-2xl font-bold text-purple-600 mb-4">{loadingText}</h3> <img src={`https://placehold.co/320x100/dedede/777777?text=${strings.adPlaceholderBannerText.replace(/\+/g, '%20')}`} alt="Ad Placeholder" className="mx-auto rounded-md shadow-md mb-6" /> <div className="relative w-full max-w-xs mx-auto flex items-center justify-center mb-4"> <img src={'https://placehold.co/100x100/e2e8f0/cbd5e0?text=...'} alt="Person 1" className="w-24 h-24 object-cover rounded-full shadow-lg border-4 border-rose-400 animate-pulse" /> </div><div className="text-center text-gray-800"> <p className="text-lg h-12 flex items-center justify-center transition-opacity duration-500">"{comment}"</p> <div className="w-12 h-12 border-4 border-purple-500 border-t-transparent rounded-full mx-auto animate-spin mt-2"></div> </div></div></div> );
 });
+
+// --- [NEW] 결과 페이지 컴포넌트 ---
+
+// '포커스 스크롤링'을 위한 개별 섹션 컴포넌트
+const AnalysisSection = React.memo(({ title, content, isFocused }) => {
+    const renderTextWithBold = (text) => {
+        if (!text) return null;
+        return text.split(/(\*\*.*?\*\*)/g).filter(Boolean).map((part, i) =>
+            part.startsWith('**') && part.endsWith('**') ?
+            <strong key={i} className="font-bold text-indigo-300">{part.slice(2, -2)}</strong> :
+            part
+        );
+    };
+
+    return (
+        <section className={`min-h-[80vh] flex items-center justify-center transition-all duration-500 ease-in-out transform ${isFocused ? 'opacity-100 scale-100 blur-none' : 'opacity-40 scale-95 blur-md'}`}>
+            <div className="w-full max-w-2xl mx-auto p-8 rounded-2xl bg-black/30 backdrop-blur-sm border border-white/20 shadow-2xl">
+                <h2 className="text-4xl font-black text-center mb-8 font-gaegu text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-cyan-300 drop-shadow-lg">{title}</h2>
+                <div className="space-y-6 text-lg text-gray-200 leading-relaxed font-gowun">
+                    {typeof content === 'string' ? (
+                        <p>{renderTextWithBold(content)}</p>
+                    ) : (
+                        Object.entries(content).map(([key, value]) => (
+                            <div key={key}>
+                                <h3 className="font-bold text-xl mb-2 text-indigo-300 font-gaegu">
+                                    { {nature: "🌿 타고난 그릇", past_trace: "⏳ 과거의 흔적", prophecy: "✨ 미래의 계시", secret_to_success: "🔑 성공 비결"}[key] || key }
+                                </h3>
+                                <p>{renderTextWithBold(value)}</p>
+                            </div>
+                        ))
+                    )}
+                </div>
+            </div>
+        </section>
+    );
+});
+
+// 새로운 결과 페이지 메인 컴포넌트
+const ResultPageComponent = React.memo(({ analysisResult, userImageUrl }) => {
+    const [focusedIndex, setFocusedIndex] = useState(0);
+    const sectionRefs = useRef([]);
+
+    const sections = React.useMemo(() => {
+        if (!analysisResult) return [];
+        const { introduction, analysis, final_advice } = analysisResult;
+        const resultSections = [];
+
+        if (introduction) {
+            resultSections.push({ title: "🔮 운명의 서막", content: introduction });
+        }
+        if (analysis) {
+            Object.values(analysis).forEach(topic => {
+                if (topic && topic.title) {
+                    const { title, ...content } = topic;
+                    resultSections.push({ title, content });
+                }
+            });
+        }
+        if (final_advice) {
+            resultSections.push({ title: "📜 마지막 조언", content: final_advice });
+        }
+        return resultSections;
+    }, [analysisResult]);
+    
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const index = parseInt(entry.target.dataset.index, 10);
+                        setFocusedIndex(index);
+                    }
+                });
+            },
+            {
+                root: null,
+                rootMargin: "-50% 0px -50% 0px", // 화면 정중앙을 감지 영역으로 설정
+                threshold: 0
+            }
+        );
+
+        const currentRefs = sectionRefs.current;
+        currentRefs.forEach(ref => {
+            if (ref) observer.observe(ref);
+        });
+
+        return () => {
+            currentRefs.forEach(ref => {
+                if (ref) observer.unobserve(ref);
+            });
+        };
+    }, [sections]);
+
+    return (
+        <div className="relative w-full h-full">
+            {/* 배경: 사용자 이미지와 별 효과 */}
+            <div className="fixed inset-0 -z-10">
+                <div className="absolute inset-0 bg-gray-900" />
+                {userImageUrl && (
+                    <img src={userImageUrl} alt="User" className="absolute inset-0 w-full h-full object-cover opacity-20 blur-xl scale-110" />
+                )}
+                <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-30" />
+            </div>
+
+            {/* 스크롤 가능한 콘텐츠 영역 */}
+            <div className="relative z-10 pt-16 pb-16">
+                {sections.map((section, index) => (
+                    <div 
+                        key={index} 
+                        ref={el => sectionRefs.current[index] = el} 
+                        data-index={index}
+                    >
+                        <AnalysisSection 
+                            title={section.title}
+                            content={section.content}
+                            isFocused={index === focusedIndex}
+                        />
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+});
+
 
 // --- Main App Component ---
 function App() {
@@ -485,6 +459,10 @@ function App() {
 
     const handleAnalysis = useCallback(async () => {
         if (!person1ImageFile || !person1Dob || selectedInterests.length === 0) { setError(currentStrings.errorMessageDefault); return; }
+        if (!GEMINI_API_KEY) {
+            setError("Gemini API 키가 설정되지 않았습니다. 관리자에게 문의하세요.");
+            return;
+        }
         setLoadingText(currentStrings.loadingMessage); setIsLoading(true); setError('');
         
         try {
@@ -508,7 +486,13 @@ function App() {
             if (!result.candidates?.[0]?.content?.parts?.[0]?.text) { console.error("Invalid API Response:", result); throw new Error(currentStrings.apiErrorResponseFormat); }
             
             let parsedJson;
-            try { parsedJson = JSON.parse(result.candidates[0].content.parts[0].text); } catch (e) { console.error("JSON parsing error:", e, "Raw text:", result.candidates[0].content.parts[0].text); throw new Error(currentStrings.apiErrorResponseFormat); }
+            try { 
+                const rawText = result.candidates[0].content.parts[0].text;
+                parsedJson = JSON.parse(rawText); 
+            } catch (e) { 
+                console.error("JSON parsing error:", e, "Raw text:", result.candidates[0].content.parts[0].text); 
+                throw new Error(currentStrings.apiErrorResponseFormat); 
+            }
             
             setAnalysisResult(parsedJson);
 
@@ -531,39 +515,48 @@ function App() {
     const handleCopyToClipboard = useCallback((textToCopy) => { if (!textToCopy) return; navigator.clipboard.writeText(textToCopy).then(() => { setCopyStatus(currentStrings.copySuccessMessage); setTimeout(() => setCopyStatus(''), 2000); }); }, [currentStrings.copySuccessMessage]);
     
     return (
-        <div className="relative min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-indigo-900 p-4 sm:p-6 lg:p-8 flex flex-col font-sans">
+        <div className="relative min-h-screen bg-gray-900 font-sans">
             {isLoading && <AnalysisLoadingComponent strings={currentStrings} loadingText={loadingText} />}
-            <div className={`w-full mx-auto transition-all duration-500 ${isLoading ? 'opacity-50 blur-sm pointer-events-none' : 'opacity-100'}`}>
-                { pageState !== 'result' && 
-                    <header className="w-full max-w-4xl mx-auto mt-12 sm:mt-8 mb-8 text-center font-gaegu">
-                        <h1 className="text-5xl sm:text-6xl font-black text-white py-2 flex items-center justify-center drop-shadow-lg [text-shadow:_0_4px_6px_rgb(0_0_0_/_40%)]">
-                            <UserIcon className="inline-block w-12 h-12 mr-3 text-cyan-300" />
-                            {currentStrings.appTitle}
-                        </h1>
-                        <p className="text-xl text-indigo-200 mt-3 drop-shadow-md">{currentStrings.appSubtitle}</p>
-                    </header>
-                }
-                
-                <main className={`w-full max-w-4xl mx-auto transition-colors duration-300 ${pageState === 'result' ? 'bg-transparent' : 'bg-white/90'} backdrop-blur-md shadow-2xl rounded-xl p-6 sm:p-8`}>
-                    {pageState === 'main' && (
-                        <MainPageComponent
-                            currentStrings={currentStrings}
-                            handleAnalysis={handleAnalysis}
-                            handleImageChange={handleImageChange}
-                            handleDobChange={handleDobChange}
-                            person1ImagePreview={person1ImagePreview}
-                            person1Dob={person1Dob}
-                            person1ImageFile={person1ImageFile}
-                            selectedInterests={selectedInterests}
-                            onInterestToggle={handleInterestToggle}
-                            job={job}
-                            setJob={setJob}
-                        />
-                    )}
-                    {pageState === 'result' && analysisResult && 
-                        <div>
-                            <ResultPageComponent analysisResult={analysisResult} />
-                            <div className="mt-10 pt-6 border-t-2 border-dashed border-gray-600 flex flex-col sm:flex-row items-center justify-center gap-4">
+            
+            <div className={`transition-opacity duration-500 ${isLoading ? 'opacity-0' : 'opacity-100'}`}>
+                {pageState === 'main' && (
+                    <div className="bg-gradient-to-br from-gray-900 via-purple-900 to-indigo-900 p-4 sm:p-6 lg:p-8">
+                        <header className="w-full max-w-4xl mx-auto mt-12 sm:mt-8 mb-8 text-center font-gaegu">
+                            <h1 className="text-5xl sm:text-6xl font-black text-white py-2 flex items-center justify-center drop-shadow-lg [text-shadow:_0_4px_6px_rgb(0_0_0_/_40%)]">
+                                <UserIcon className="inline-block w-12 h-12 mr-3 text-cyan-300" />
+                                {currentStrings.appTitle}
+                            </h1>
+                            <p className="text-xl text-indigo-200 mt-3 drop-shadow-md">{currentStrings.appSubtitle}</p>
+                        </header>
+                        
+                        <main className="w-full max-w-4xl mx-auto bg-white/90 backdrop-blur-md shadow-2xl rounded-xl p-6 sm:p-8">
+                            <MainPageComponent
+                                currentStrings={currentStrings}
+                                handleAnalysis={handleAnalysis}
+                                handleImageChange={handleImageChange}
+                                handleDobChange={handleDobChange}
+                                person1ImagePreview={person1ImagePreview}
+                                person1Dob={person1Dob}
+                                person1ImageFile={person1ImageFile}
+                                selectedInterests={selectedInterests}
+                                onInterestToggle={handleInterestToggle}
+                                job={job}
+                                setJob={setJob}
+                            />
+                        </main>
+                        {error && <p className="text-red-500 bg-red-100 border border-red-300 rounded-md p-4 text-md mt-4 max-w-md mx-auto shadow-md animate-shake text-center font-bold">{error}</p>}
+                        <footer className="w-full max-w-4xl mx-auto mt-12 text-center pb-8">
+                            <p className="text-md text-white/90 drop-shadow-sm">© {new Date().getFullYear()} AI 운명 비기. Just for Fun!</p>
+                        </footer>
+                    </div>
+                )}
+
+                {pageState === 'result' && analysisResult && 
+                    <div>
+                        <ResultPageComponent analysisResult={analysisResult} userImageUrl={person1ImagePreview} />
+                        {/* 결과 페이지의 버튼들은 페이지 하단에 고정 */}
+                        <div className="fixed bottom-0 left-0 right-0 z-20 p-4 bg-black/30 backdrop-blur-sm">
+                            <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-center gap-4">
                                 <button onClick={() => handleCopyToClipboard(`${window.location.origin}/result/${resultId}`)} disabled={!resultId} className="flex items-center justify-center px-4 py-3 bg-indigo-500 hover:bg-indigo-600 text-white font-bold rounded-lg shadow-lg transition-colors disabled:bg-gray-400 font-gaegu">
                                     <LinkIcon className="w-5 h-5 mr-2" /> {currentStrings.copyButton}
                                 </button>
@@ -571,15 +564,9 @@ function App() {
                                     <RefreshCwIcon className="w-6 h-6 mr-3" /> {currentStrings.retryButton}
                                 </button>
                             </div>
-                            {copyStatus && <p className="text-center text-md text-green-400 mt-4 font-semibold animate-bounce">{copyStatus}</p>}
+                            {copyStatus && <p className="text-center text-md text-green-400 mt-2 font-semibold animate-bounce">{copyStatus}</p>}
                         </div>
-                    }
-                    {error && <p className="text-red-500 bg-red-100 border border-red-300 rounded-md p-4 text-md mt-4 max-w-md mx-auto shadow-md animate-shake text-center font-bold">{error}</p>}
-                </main>
-                 { pageState !== 'result' &&
-                    <footer className="w-full max-w-4xl mx-auto mt-12 text-center">
-                        <p className="text-md text-white/90 drop-shadow-sm">© {new Date().getFullYear()} AI 운명 비기. Just for Fun!</p>
-                    </footer>
+                    </div>
                 }
             </div>
         </div>
