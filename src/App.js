@@ -12,14 +12,14 @@ import {
 // [FIXED] process.env를 사용하지 않고, 직접 키를 입력하거나 빈 문자열로 설정합니다.
 // 미리보기 환경에서는 빈 문자열로 두어 에러를 방지합니다.
 const firebaseConfig = {
-  apiKey: "", // process.env.REACT_APP_FIREBASE_API_KEY,
-  authDomain: "", // process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
-  projectId: "", // process.env.REACT_APP_FIREBASE_PROJECT_ID,
-  storageBucket: "", // process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: "", // process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
-  appId: "", // process.env.REACT_APP_FIREBASE_APP_ID,
-};
-const GEMINI_API_KEY = ""; // process.env.REACT_APP_GEMINI_API_KEY;
+    apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+    authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
+    projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
+    storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
+    appId: process.env.REACT_APP_FIREBASE_APP_ID,
+  };
+const GEMINI_API_KEY = process.env.REACT_APP_GEMINI_API_KEY;
 
 
 // Firebase 앱 초기화 및 서비스 가져오기
