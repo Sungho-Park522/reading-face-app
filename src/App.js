@@ -100,33 +100,35 @@ const translations = {
         "하늘의 뜻을 그대의 얼굴에 비추어 보고 있으니, 곧 알게 되리라."
     ],
     adPlaceholderBannerText: "광고 배너",
-    aiPromptSingle: `당신은 인간의 욕망과 운명을 꿰뚫어 보는, 압도적인 카리스마를 가진 예언가입니다. 사용자의 사진(관상), 생년월일(사주), 그리고 다음 정보를 바탕으로 분석을 진행합니다.
+    // [REVISED] 새로운 AI 프롬프트: '운명의 결정적 순간' 시나리오 컨셉
+    aiPromptSingle: `당신은 한 인간의 삶을 꿰뚫어 보는 고대의 이야기꾼이자 예언가입니다. 당신의 말은 단순한 예측이 아니라, 듣는 이의 심장에 파고드는 한 편의 서사시입니다. 사용자의 사진(관상), 생년월일(사주), 그리고 다음 정보를 바탕으로 운명의 지도를 펼쳐 보이세요.
     - 가장 절실한 관심사: {interests}
     - 추가 정보: {userInfo}
 
     **[분석 목표]**
-    - 사용자가 자신의 미래에 대한 명확한 지침과 강한 인상을 받도록 해야 합니다.
-    - "아마도" 같은 모호한 표현은 절대 금물. "그렇게 될 것이다", "반드시 기억하게" 와 같이 단정적이고 힘 있는 말투를 사용하세요.
-    - **오직 사용자가 선택한 관심사({interests})에 대한 내용만 분석하고, 그 외의 관심사에 대한 내용은 JSON 객체에 아예 포함하지 마세요.**
+    - 사용자가 자신의 미래에 대한 단편적인 정보가 아닌, 깊고 강렬한 '이야기'를 경험하게 해야 합니다.
+    - 분석은 한 편의 짧은 소설처럼 극적이고, 생생한 묘사를 담고 있어야 합니다.
+    - "당신은 ~한 사람입니다" 같은 직접적인 분석을 피하고, 상황과 비유를 통해 사용자가 스스로 의미를 깨닫게 만드세요.
 
     **[분석 지침]**
-    1.  **도입 (introduction)**: "흠... 그대의 눈을 보니 보통내기가 아니군." 과 같이, 사용자를 압도하는 카리스마 넘치는 한마디로 시작하세요.
-    2.  **관심사별 심층 분석**: 사용자가 선택한 {interests} 항목 각각에 대해, 아래 내용을 포함하여 구체적이고 현실적인 분석을 제공하세요.
-        -   **타고난 그릇 (nature)**: 해당 관심사에 대한 사용자의 타고난 재능, 기질, 약점 등을 날카롭게 분석합니다.
-        -   **과거의 흔적 (past_trace)**: 해당 관심사와 관련하여 과거(특히 20대)에 겪었을 법한 중요한 사건이나 경험을 짚어주어 신뢰를 구축합니다.
-        -   **미래의 계시 (prophecy)**: 앞으로 2~3년 안에 일어날 중요한 사건, 만나게 될 사람, 잡아야 할 기회 등을 구체적인 시기(예: 2025년 여름, 2026년)와 함께 단정적으로 예언합니다.
-        -   **성공 비결 (secret_to_success)**: 해당 분야에서 성공하기 위해 반드시 지켜야 할 행동 강령이나 조언을 제공합니다.
-    3.  **최종 조언 (final_advice)**: 모든 분석을 마무리하며, 사용자가 운명을 개척하기 위해 마음에 새겨야 할 가장 중요한 핵심 메시지를 전달합니다.
+    1.  **서막 (prologue)**: 사용자의 눈이나 얼굴에서 느껴지는 기운을 바탕으로, 앞으로 펼쳐질 이야기의 시작을 알리는 강렬하고 시적인 한 문장으로 시작하세요. (예: "그대의 눈동자 속엔, 폭풍우가 몰아치기 전의 고요한 바다가 담겨 있군.")
+
+    2.  **운명의 장(章) (key_moment_scenario)**: 사용자가 선택한 {interests} 각각에 대해, 앞으로 겪게 될 '결정적 순간'을 하나의 이야기(장)로 묘사하세요. 각 이야기는 다음 요소를 포함해야 합니다.
+        -   **배경 (setting)**: 언제, 어디서 일어나는 일인지 구체적으로 묘사하세요. (예: "별들이 유난히 차갑게 빛나는 2026년의 겨울밤, 당신은 낡은 서재에 홀로 앉아있을 것이다.")
+        -   **갈등 (conflict)**: 어떤 선택의 기로에 서게 되는지, 혹은 어떤 내적/외적 갈등에 직면하는지 극적으로 그리세요. (예: "손에는 두 개의 계약서가 들려있다. 하나는 부와 안정을 약속하는 황금빛 계약서, 다른 하나는 모든 것을 걸어야 하는 잿빛 계약서다.")
+        -   **계시 (revelation)**: 그 순간에 사용자가 깨닫게 될 진실이나, 운명이 그에게 보여주는 작은 힌트를 암시적으로 제시하세요. (예: "그때, 창밖에서 들려오는 낯선 새의 울음소리가 그대의 심장을 두드릴 것이니, 그것이 바로 운명의 신호다.")
+
+    3.  **에필로그 (epilogue)**: 모든 이야기를 마무리하며, 사용자가 앞으로의 여정에서 가슴에 품어야 할 단 하나의 핵심적인 화두나 질문을 던지며 깊은 여운을 남기세요. (예: "기억하게, 가장 눈부신 보석은 가장 어두운 동굴에서 발견되는 법. 그대는 동굴로 들어갈 용기가 있는가?")
 
     **[JSON 응답 형식]**
-    반드시 아래의 JSON 구조를 완벽하게 준수하여 응답해야 합니다. \`analysis\` 객체 안에는 **오직 사용자가 선택한 관심사의 키만 포함**되어야 합니다. (예: 사용자가 '재물', '사랑'을 선택했다면 'wealth', 'love' 키만 포함)
+    반드시 아래의 JSON 구조를 완벽하게 준수하여 응답해야 합니다. \`analysis\` 객체 안에는 **오직 사용자가 선택한 관심사의 키만 포함**되어야 합니다.
     {
-      "analysis_type": "single",
-      "introduction": "...",
+      "prologue": "...",
       "analysis": {
-        "wealth": { "title": "💰 재물", "nature": "...", "past_trace": "...", "prophecy": "...", "secret_to_success": "..." }
+        "wealth": { "title": "💰 재물의 장(章)", "key_moment_scenario": "..." },
+        "love": { "title": "💕 사랑의 장(章)", "key_moment_scenario": "..." }
       },
-      "final_advice": "..."
+      "epilogue": "..."
     }`,
   }
 };
@@ -274,35 +276,14 @@ const AnalysisLoadingComponent = React.memo(({ strings, loadingText }) => {
 
 // --- [REVISED] 결과 페이지 컴포넌트 ---
 
-// 개별 섹션 컴포넌트 (스타일링 단순화)
+// 개별 섹션 컴포넌트 (새로운 콘텐츠 구조에 맞춤)
 const AnalysisSection = React.memo(({ title, content }) => {
-    const renderTextWithBold = (text) => {
-        if (!text) return null;
-        return text.split(/(\*\*.*?\*\*)/g).filter(Boolean).map((part, i) =>
-            part.startsWith('**') && part.endsWith('**') ?
-            <strong key={i} className="font-bold text-indigo-300">{part.slice(2, -2)}</strong> :
-            part
-        );
-    };
-
     return (
         <section className="min-h-[80vh] flex items-center justify-center">
             <div className="w-full max-w-2xl mx-auto p-8">
                 <h2 className="text-4xl font-black text-center mb-8 font-gaegu text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-cyan-300 drop-shadow-lg">{title}</h2>
-                <div className="space-y-6 text-lg text-gray-200 leading-relaxed font-gowun">
-                    {typeof content === 'string' ? (
-                        <p>{renderTextWithBold(content)}</p>
-                    ) : (
-                        Object.entries(content).map(([key, value]) => (
-                            <div key={key}>
-                                <h3 className="font-bold text-xl mb-2 text-indigo-300 font-gaegu">
-                                    { {nature: "🌿 타고난 그릇", past_trace: "⏳ 과거의 흔적", prophecy: "✨ 미래의 계시", secret_to_success: "🔑 성공 비결"}[key] || key }
-                                </h3>
-                                <p>{renderTextWithBold(value)}</p>
-                            </div>
-                        ))
-                    )}
-                </div>
+                {/* 콘텐츠를 한 문단으로 표시 */}
+                <p className="text-lg text-gray-200 leading-relaxed font-gowun whitespace-pre-wrap">{content}</p>
             </div>
         </section>
     );
@@ -312,22 +293,23 @@ const AnalysisSection = React.memo(({ title, content }) => {
 const ResultPageComponent = React.memo(({ analysisResult, userImageUrl }) => {
     const sections = useMemo(() => {
         if (!analysisResult) return [];
-        const { introduction, analysis, final_advice } = analysisResult;
+        // [REVISED] 새로운 JSON 구조에 맞춰 파싱
+        const { prologue, analysis, epilogue } = analysisResult;
         const resultSections = [];
 
-        if (introduction) {
-            resultSections.push({ title: "🔮 운명의 서막", content: introduction });
+        if (prologue) {
+            resultSections.push({ title: "🔮 서막", content: prologue });
         }
         if (analysis) {
             Object.values(analysis).forEach(topic => {
-                if (topic && topic.title) {
-                    const { title, ...content } = topic;
-                    resultSections.push({ title, content });
+                // 'key_moment_scenario'를 content로 사용
+                if (topic && topic.title && topic.key_moment_scenario) {
+                    resultSections.push({ title: topic.title, content: topic.key_moment_scenario });
                 }
             });
         }
-        if (final_advice) {
-            resultSections.push({ title: "📜 마지막 조언", content: final_advice });
+        if (epilogue) {
+            resultSections.push({ title: "📜 에필로그", content: epilogue });
         }
         return resultSections;
     }, [analysisResult]);
@@ -452,8 +434,8 @@ function App() {
     const handleAnalysis = useCallback(async () => {
         if (!person1ImageFile || !person1Dob || selectedInterests.length === 0) { setError(currentStrings.errorMessageDefault); return; }
         
-        const isGeminiConfigured = GEMINI_API_KEY && !GEMINI_API_KEY.startsWith('%REACT_APP_');
-        if (!isGeminiConfigured) {
+        const isGeminiKeyConfigured = GEMINI_API_KEY && !GEMINI_API_KEY.startsWith('%REACT_APP_');
+        if (!isGeminiKeyConfigured) {
             setError("Gemini API 키가 설정되지 않았습니다. Netlify 환경 변수를 확인하세요.");
             return;
         }
