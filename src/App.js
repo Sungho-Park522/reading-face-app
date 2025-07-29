@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 // Firebase SDK import
 import { initializeApp, getApps } from "firebase/app";
-import { getFirestore, collection, doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
+// [FIXED] 사용하지 않는 Firestore import 제거
 import { getAuth, signInAnonymously } from "firebase/auth";
 import {
   getStorage, ref, uploadBytes, getDownloadURL
@@ -11,18 +11,19 @@ import {
 // ★★★ API 키 설정 영역 ★★★
 // [FIXED] 'process' 객체의 존재 여부를 확인하여 어떤 환경에서든 에러가 발생하지 않도록 수정
 const firebaseConfig = {
-    apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
-    authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
-    projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
-    storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
-    messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
-    appId: process.env.REACT_APP_FIREBASE_APP_ID,
-  };
-const GEMINI_API_KEY = process.env.REACT_APP_GEMINI_API_KEY;
+  apiKey: typeof process !== 'undefined' ? process.env.REACT_APP_FIREBASE_API_KEY : "",
+  authDomain: typeof process !== 'undefined' ? process.env.REACT_APP_FIREBASE_AUTH_DOMAIN : "",
+  projectId: typeof process !== 'undefined' ? process.env.REACT_APP_FIREBASE_PROJECT_ID : "",
+  storageBucket: typeof process !== 'undefined' ? process.env.REACT_APP_FIREBASE_STORAGE_BUCKET : "",
+  messagingSenderId: typeof process !== 'undefined' ? process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID : "",
+  appId: typeof process !== 'undefined' ? process.env.REACT_APP_FIREBASE_APP_ID : "",
+};
+const GEMINI_API_KEY = typeof process !== 'undefined' ? process.env.REACT_APP_GEMINI_API_KEY : "";
 
 
 // Firebase 앱 초기화 및 서비스 가져오기
-let app, db, auth, storage;
+// [FIXED] 사용하지 않는 db 변수 제거
+let app, auth, storage;
 const isFirebaseConfigured = Object.values(firebaseConfig).every(v => v);
 
 if (isFirebaseConfigured) {
@@ -37,7 +38,7 @@ if (isFirebaseConfigured) {
       app = getApps()[0];
       auth = getAuth(app);
     }
-    db = getFirestore(app);
+    // db = getFirestore(app); // [FIXED] 사용하지 않으므로 제거
     storage = getStorage(app);
   } catch (error) {
     console.error("Firebase initialization failed:", error);
@@ -50,7 +51,7 @@ if (isFirebaseConfigured) {
 // 아이콘 정의
 const UploadCloudIcon = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"></path><path d="M12 12v9"></path><path d="m16 16-4-4-4 4"></path></svg>);
 const UserIcon = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>);
-const LinkIcon = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.72"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.72-1.72"></path></svg>);
+// [FIXED] 사용하지 않는 LinkIcon 제거
 const RefreshCwIcon = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"></path><path d="M21 3v5h-5"></path><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"></path><path d="M3 21v-5h5"></path></svg>);
 const CalendarIcon = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>);
 const SparklesIcon = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="m12 3-1.9 5.8-5.8 1.9 5.8 1.9 1.9 5.8 1.9-5.8 5.8-1.9-5.8-1.9z"/><path d="M22 12a10 10 0 1 1-10-10"/><path d="M22 12a10 10 0 0 0-10-10"/></svg>);
@@ -141,13 +142,7 @@ const getBase64 = (file) => new Promise((resolve, reject) => {
   reader.onerror = (error) => reject(error);
 });
 
-const uploadImageToStorage = async (file) => {
-  if (!storage || !file) return null;
-  const fileName = `face-images/${Date.now()}-${file.name}`;
-  const storageRef = ref(storage, fileName);
-  const snapshot = await uploadBytes(storageRef, file);
-  return await getDownloadURL(snapshot.ref);
-};
+// [FIXED] 사용하지 않는 uploadImageToStorage 함수 제거
 
 const DobInput = React.memo(({ value, onChange, placeholder }) => {
     const handleChange = (e) => {
@@ -374,7 +369,7 @@ function App() {
     
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
-    const [resultId, setResultId] = useState(null);
+    // [FIXED] 사용하지 않는 resultId 상태 제거
     const [loadingText, setLoadingText] = useState('');
 
     useEffect(() => {
@@ -418,7 +413,6 @@ function App() {
         setMessages([]);
         setError(''); 
         setIsLoading(false); 
-        setResultId(null); 
     };
 
     const startConversation = () => {
