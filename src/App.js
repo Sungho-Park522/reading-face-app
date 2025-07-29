@@ -11,14 +11,14 @@ import {
 // ★★★ API 키 설정 영역 ★★★
 // [FIXED] 'process' 객체의 존재 여부를 확인하여 어떤 환경에서든 에러가 발생하지 않도록 수정
 const firebaseConfig = {
-  apiKey: typeof process !== 'undefined' ? process.env.REACT_APP_FIREBASE_API_KEY : "",
-  authDomain: typeof process !== 'undefined' ? process.env.REACT_APP_FIREBASE_AUTH_DOMAIN : "",
-  projectId: typeof process !== 'undefined' ? process.env.REACT_APP_FIREBASE_PROJECT_ID : "",
-  storageBucket: typeof process !== 'undefined' ? process.env.REACT_APP_FIREBASE_STORAGE_BUCKET : "",
-  messagingSenderId: typeof process !== 'undefined' ? process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID : "",
-  appId: typeof process !== 'undefined' ? process.env.REACT_APP_FIREBASE_APP_ID : "",
-};
-const GEMINI_API_KEY = typeof process !== 'undefined' ? process.env.REACT_APP_GEMINI_API_KEY : "";
+    apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+    authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
+    projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
+    storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
+    appId: process.env.REACT_APP_FIREBASE_APP_ID,
+  };
+const GEMINI_API_KEY = process.env.REACT_APP_GEMINI_API_KEY;
 
 
 // Firebase 앱 초기화 및 서비스 가져오기
