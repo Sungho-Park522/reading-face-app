@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 // Firebase SDK import
 import { initializeApp, getApps } from "firebase/app";
-// [FIXED] 사용하지 않는 Firestore import 제거
+import { getFirestore, collection, doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
 import { getAuth, signInAnonymously } from "firebase/auth";
 import {
   getStorage, ref, uploadBytes, getDownloadURL
@@ -9,21 +9,19 @@ import {
 
 
 // ★★★ API 키 설정 영역 ★★★
-// [FIXED] 'process' 객체의 존재 여부를 확인하여 어떤 환경에서든 에러가 발생하지 않도록 수정
 const firebaseConfig = {
-    apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
-    authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
-    projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
-    storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
-    messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
-    appId: process.env.REACT_APP_FIREBASE_APP_ID,
-  };
-const GEMINI_API_KEY = process.env.REACT_APP_GEMINI_API_KEY;
+  apiKey: typeof process !== 'undefined' ? process.env.REACT_APP_FIREBASE_API_KEY : "",
+  authDomain: typeof process !== 'undefined' ? process.env.REACT_APP_FIREBASE_AUTH_DOMAIN : "",
+  projectId: typeof process !== 'undefined' ? process.env.REACT_APP_FIREBASE_PROJECT_ID : "",
+  storageBucket: typeof process !== 'undefined' ? process.env.REACT_APP_FIREBASE_STORAGE_BUCKET : "",
+  messagingSenderId: typeof process !== 'undefined' ? process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID : "",
+  appId: typeof process !== 'undefined' ? process.env.REACT_APP_FIREBASE_APP_ID : "",
+};
+const GEMINI_API_KEY = typeof process !== 'undefined' ? process.env.REACT_APP_GEMINI_API_KEY : "";
 
 
 // Firebase 앱 초기화 및 서비스 가져오기
-// [FIXED] 사용하지 않는 db 변수 제거
-let app, auth, storage;
+let app, db, auth, storage;
 const isFirebaseConfigured = Object.values(firebaseConfig).every(v => v);
 
 if (isFirebaseConfigured) {
@@ -38,7 +36,7 @@ if (isFirebaseConfigured) {
       app = getApps()[0];
       auth = getAuth(app);
     }
-    // db = getFirestore(app); // [FIXED] 사용하지 않으므로 제거
+    db = getFirestore(app);
     storage = getStorage(app);
   } catch (error) {
     console.error("Firebase initialization failed:", error);
@@ -51,7 +49,7 @@ if (isFirebaseConfigured) {
 // 아이콘 정의
 const UploadCloudIcon = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"></path><path d="M12 12v9"></path><path d="m16 16-4-4-4 4"></path></svg>);
 const UserIcon = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>);
-// [FIXED] 사용하지 않는 LinkIcon 제거
+const LinkIcon = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.72"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.72-1.72"></path></svg>);
 const RefreshCwIcon = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"></path><path d="M21 3v5h-5"></path><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"></path><path d="M3 21v-5h5"></path></svg>);
 const CalendarIcon = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>);
 const SparklesIcon = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="m12 3-1.9 5.8-5.8 1.9 5.8 1.9 1.9 5.8 1.9-5.8 5.8-1.9-5.8-1.9z"/><path d="M22 12a10 10 0 1 1-10-10"/><path d="M22 12a10 10 0 0 0-10-10"/></svg>);
@@ -142,7 +140,13 @@ const getBase64 = (file) => new Promise((resolve, reject) => {
   reader.onerror = (error) => reject(error);
 });
 
-// [FIXED] 사용하지 않는 uploadImageToStorage 함수 제거
+const uploadImageToStorage = async (file) => {
+  if (!storage || !file) return null;
+  const fileName = `face-images/${Date.now()}-${file.name}`;
+  const storageRef = ref(storage, fileName);
+  const snapshot = await uploadBytes(storageRef, file);
+  return await getDownloadURL(snapshot.ref);
+};
 
 const DobInput = React.memo(({ value, onChange, placeholder }) => {
     const handleChange = (e) => {
@@ -270,7 +274,7 @@ const AnalysisLoadingComponent = React.memo(({ strings, loadingText }) => {
 });
 
 // --- [REVISED] 대화형 결과 페이지 컴포넌트 ---
-const ResultPageComponent = React.memo(({ messages, onSendMessage, isTyping, onReset }) => {
+const ResultPageComponent = React.memo(({ messages, onSendMessage, isTyping, onReset, isFinished, onCopy, copyStatus, strings }) => {
     const [userInput, setUserInput] = useState('');
     const chatEndRef = useRef(null);
 
@@ -332,21 +336,30 @@ const ResultPageComponent = React.memo(({ messages, onSendMessage, isTyping, onR
                 <div ref={chatEndRef} />
             </div>
 
-            {/* 입력창 */}
+            {/* 입력창 또는 공유 버튼 */}
             <div className="flex-shrink-0 p-4 bg-black/30 backdrop-blur-sm z-10">
-                <div className="max-w-3xl mx-auto flex items-center gap-3">
-                    <textarea
-                        value={userInput}
-                        onChange={(e) => setUserInput(e.target.value)}
-                        onKeyDown={handleKeyDown}
-                        placeholder="그래서, 네 인생에서 지금 뭐가 제일 궁금한가?"
-                        className="flex-grow p-3 bg-gray-700 text-white rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-indigo-500 scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-800"
-                        rows="1"
-                    />
-                    <button onClick={handleSend} disabled={!userInput.trim() || isTyping} className="p-3 bg-indigo-600 text-white rounded-full hover:bg-indigo-500 disabled:bg-gray-500 disabled:cursor-not-allowed transition-colors">
-                        <SendIcon className="w-6 h-6" />
-                    </button>
-                </div>
+                {!isFinished ? (
+                    <div className="max-w-3xl mx-auto flex items-center gap-3">
+                        <textarea
+                            value={userInput}
+                            onChange={(e) => setUserInput(e.target.value)}
+                            onKeyDown={handleKeyDown}
+                            placeholder="그래서, 네 인생에서 지금 뭐가 제일 궁금한가?"
+                            className="flex-grow p-3 bg-gray-700 text-white rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-indigo-500 scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-800"
+                            rows="1"
+                        />
+                        <button onClick={handleSend} disabled={!userInput.trim() || isTyping} className="p-3 bg-indigo-600 text-white rounded-full hover:bg-indigo-500 disabled:bg-gray-500 disabled:cursor-not-allowed transition-colors">
+                            <SendIcon className="w-6 h-6" />
+                        </button>
+                    </div>
+                ) : (
+                    <div className="max-w-3xl mx-auto text-center">
+                        <button onClick={onCopy} className="flex items-center justify-center w-full max-w-xs mx-auto px-4 py-3 bg-indigo-500 hover:bg-indigo-600 text-white font-bold rounded-lg shadow-lg transition-colors font-gaegu">
+                            <LinkIcon className="w-5 h-5 mr-2" /> {strings.copyButton}
+                        </button>
+                        {copyStatus && <p className="text-center text-md text-green-400 mt-2 font-semibold animate-bounce">{copyStatus}</p>}
+                    </div>
+                )}
             </div>
         </div>
     );
@@ -363,13 +376,14 @@ function App() {
     const [selectedInterests, setSelectedInterests] = useState([]);
     const [job, setJob] = useState('');
     
-    // [NEW] 대화형 상태 관리
     const [messages, setMessages] = useState([]);
     const [isTyping, setIsTyping] = useState(false);
+    const [isFinished, setIsFinished] = useState(false);
     
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
-    // [FIXED] 사용하지 않는 resultId 상태 제거
+    const [resultId, setResultId] = useState(null);
+    const [copyStatus, setCopyStatus] = useState('');
     const [loadingText, setLoadingText] = useState('');
 
     useEffect(() => {
@@ -379,11 +393,50 @@ function App() {
 
         const path = window.location.pathname.split('/');
         if (path[1] === 'result' && path[2]) {
-            // 대화형 UX에서는 결과 페이지 직접 로드를 지원하지 않으므로 메인으로 리디렉션
-            window.history.pushState({}, '', '/');
-            setPageState('main');
+            const id = path[2];
+            setIsLoading(true);
+            setLoadingText(currentStrings.resultLoading);
+            
+            const fetchResult = async (retries = 10) => {
+                if (!isFirebaseConfigured) {
+                    if (retries > 0) {
+                        setTimeout(() => fetchResult(retries - 1), 500);
+                    } else {
+                        setError(currentStrings.apiErrorDbConnection);
+                        setIsLoading(false);
+                        window.history.pushState({}, '', '/');
+                        setPageState('main');
+                    }
+                    return;
+                }
+                
+                try {
+                    const docRef = doc(db, "results", id);
+                    const docSnap = await getDoc(docRef);
+                    if (docSnap.exists()) {
+                        const data = docSnap.data();
+                        setMessages(data.messages);
+                        setPerson1ImagePreview(data.imageUrl);
+                        setResultId(id);
+                        setIsFinished(true); // 대화가 끝난 상태로 로드
+                        setPageState('result');
+                    } else { 
+                        setError(currentStrings.resultNotFound); 
+                        window.history.pushState({}, '', '/');
+                        setPageState('main'); 
+                    }
+                } catch (e) {
+                    console.error("Error fetching result:", e);
+                    setError(currentStrings.resultNotFound); 
+                    window.history.pushState({}, '', '/');
+                    setPageState('main');
+                } finally { 
+                    setIsLoading(false); 
+                }
+            };
+            fetchResult();
         }
-    }, []);
+    }, [currentStrings]);
 
     const handleImageChange = useCallback((file) => { if (file) { const previewUrl = URL.createObjectURL(file); setPerson1ImageFile(file); setPerson1ImagePreview(previewUrl); setError(''); } }, []);
     const handleDobChange = useCallback((date) => { setPerson1Dob(date); setError(''); }, []);
@@ -411,8 +464,10 @@ function App() {
         setSelectedInterests([]); 
         setJob(''); 
         setMessages([]);
+        setIsFinished(false);
         setError(''); 
         setIsLoading(false); 
+        setResultId(null);
     };
 
     const startConversation = () => {
@@ -428,7 +483,8 @@ function App() {
     };
 
     const handleSendMessage = useCallback(async (userQuery) => {
-        setMessages(prev => [...prev, { sender: 'user', text: userQuery }]);
+        const currentMessages = [...messages, { sender: 'user', text: userQuery }];
+        setMessages(currentMessages);
         setIsTyping(true);
         setError('');
 
@@ -469,7 +525,7 @@ function App() {
                 throw new Error(currentStrings.apiErrorResponseFormat); 
             }
 
-            // 단계별 메시지 출력
+            const finalMessages = [...currentMessages];
             const analysisSteps = [
                 parsedJson.initial_hook,
                 parsedJson.past_emotion,
@@ -482,8 +538,23 @@ function App() {
             for (const step of analysisSteps) {
                 if (step) {
                     await new Promise(resolve => setTimeout(resolve, 1500 + Math.random() * 1000));
-                    setMessages(prev => [...prev, { sender: 'ai', text: step }]);
+                    const newAiMessage = { sender: 'ai', text: step };
+                    finalMessages.push(newAiMessage);
+                    setMessages([...finalMessages]);
                 }
+            }
+
+            // 대화 종료 후 저장
+            if (isFirebaseConfigured && storage && db) {
+                const imageUrl = await uploadImageToStorage(person1ImageFile);
+                const docRef = doc(collection(db, "results"));
+                await setDoc(docRef, { 
+                    messages: finalMessages, 
+                    imageUrl: imageUrl, 
+                    createdAt: serverTimestamp() 
+                });
+                setResultId(docRef.id);
+                window.history.pushState({}, '', `/result/${docRef.id}`);
             }
 
         } catch (err) {
@@ -491,9 +562,18 @@ function App() {
             setMessages(prev => [...prev, { sender: 'ai', text: err.message || currentStrings.apiErrorGeneric }]);
         } finally {
             setIsTyping(false);
+            setIsFinished(true); // 대화 종료 상태로 변경
         }
-    }, [person1ImageFile, person1Dob, selectedInterests, job, currentStrings]);
+    }, [person1ImageFile, person1Dob, selectedInterests, job, currentStrings, messages]);
     
+    const handleCopyToClipboard = useCallback((textToCopy) => { 
+        if (!textToCopy) return; 
+        navigator.clipboard.writeText(textToCopy).then(() => { 
+            setCopyStatus(currentStrings.copySuccessMessage); 
+            setTimeout(() => setCopyStatus(''), 2000); 
+        }); 
+    }, [currentStrings.copySuccessMessage]);
+
     return (
         <div className="relative min-h-screen bg-gray-900 font-sans">
             {isLoading && <AnalysisLoadingComponent strings={currentStrings} loadingText={loadingText} />}
@@ -512,7 +592,7 @@ function App() {
                         <main className="w-full max-w-4xl mx-auto bg-white/90 backdrop-blur-md shadow-2xl rounded-xl p-6 sm:p-8">
                             <MainPageComponent
                                 currentStrings={currentStrings}
-                                handleAnalysis={startConversation} // [REVISED]
+                                handleAnalysis={startConversation}
                                 handleImageChange={handleImageChange}
                                 handleDobChange={handleDobChange}
                                 person1ImagePreview={person1ImagePreview}
@@ -537,6 +617,10 @@ function App() {
                         onSendMessage={handleSendMessage}
                         isTyping={isTyping}
                         onReset={resetAllStates}
+                        isFinished={isFinished}
+                        onCopy={() => handleCopyToClipboard(`${window.location.origin}/result/${resultId}`)}
+                        copyStatus={copyStatus}
+                        strings={currentStrings}
                     />
                 )}
             </div>
