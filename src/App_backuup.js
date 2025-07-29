@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect, useRef } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 // Firebase SDK import
 import { initializeApp, getApps } from "firebase/app";
 import { getFirestore, collection, doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
@@ -9,7 +9,8 @@ import {
 
 
 // ★★★ API 키 설정 영역 ★★★
-// [FIXED] 'process' 객체의 존재 여부를 확인하여 어떤 환경에서든 에러가 발생하지 않도록 수정
+// Netlify 환경 변수에서 직접 값을 가져옵니다. 로컬 테스트 시에는 이 부분에 직접 키를 넣거나,
+// 기능이 동작하지 않는 것을 감안하고 빈 문자열로 둡니다.
 const firebaseConfig = {
     apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
     authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
@@ -23,7 +24,9 @@ const GEMINI_API_KEY = process.env.REACT_APP_GEMINI_API_KEY;
 
 // Firebase 앱 초기화 및 서비스 가져오기
 let app, db, auth, storage;
-const isFirebaseConfigured = Object.values(firebaseConfig).every(v => v);
+// Netlify 빌드 과정에서 %REACT_APP_*% 형태의 플레이스홀더가 실제 값으로 치환됩니다.
+// 만약 치환되지 않았다면 (로컬 환경 등), 키가 없다고 판단합니다.
+const isFirebaseConfigured = Object.values(firebaseConfig).every(v => v && !v.startsWith('%REACT_APP_'));
 
 if (isFirebaseConfigured) {
   try {
@@ -54,7 +57,6 @@ const LinkIcon = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" wid
 const RefreshCwIcon = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"></path><path d="M21 3v5h-5"></path><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"></path><path d="M3 21v-5h5"></path></svg>);
 const CalendarIcon = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>);
 const SparklesIcon = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="m12 3-1.9 5.8-5.8 1.9 5.8 1.9 1.9 5.8 1.9-5.8 5.8-1.9-5.8-1.9z"/><path d="M22 12a10 10 0 1 1-10-10"/><path d="M22 12a10 10 0 0 0-10-10"/></svg>);
-const SendIcon = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>);
 
 // 다국어 텍스트 객체
 const translations = {
@@ -98,37 +100,31 @@ const translations = {
         "하늘의 뜻을 그대의 얼굴에 비추어 보고 있으니, 곧 알게 되리라."
     ],
     adPlaceholderBannerText: "광고 배너",
-    // [REVISED] 대화형 UX를 위한 AI 프롬프트 v2.0
-    aiPromptSingle: `당신은 '운이'라는 이름을 가진, 인간의 운명을 꿰뚫어 보는 AI 예언가입니다. 당신의 말은 날카롭고 직설적이며, 때로는 장난기 있는 반말을 사용합니다. 사용자와 1:1로 대화하며 운명을 진단하세요.
+    // [REVISED] 새로운 AI 프롬프트: 사용자가 제공한 예시 스타일을 완벽히 반영한 서사적 프롬프트
+    aiPromptSingle: `당신은 사람의 얼굴과 운명을 꿰뚫어 보는, 날카롭고 직설적인 통찰가입니다. 당신의 말은 위로가 아니라, 듣는 이의 정곡을 찌르는 진단서와 같습니다. 존댓말을 쓰지 말고, 마치 가까운 형이나 누나가 비밀스럽게 핵심만 짚어주는 것처럼 반말로 대화하세요. 사용자의 사진(관상), 생년월일(사주), 그리고 다음 정보를 바탕으로 운명을 진단하세요.
 
-**[기본 정보]**
-- 사용자의 관심사: {interests}
-- 사용자의 생년월일: {dob}
-- 사용자의 추가 정보: {userInfo}
-- 사용자의 핵심 질문: {userQuery}
+- 사용자가 선택한 관심사: {interests}
+- 사용자가 입력한 추가 정보: {userInfo}
 
 **[진단 목표]**
 - 사용자가 "내 얘기를 어떻게 알았지?"라고 소름 돋게 만들어야 합니다.
-- 모든 답변은 단계별로 분절하여, 실제 대화처럼 느껴지도록 해야 합니다.
-- 사용자의 핵심 질문({userQuery})을 중심으로 모든 서사를 풀어가야 합니다.
+- 분석은 하나의 긴 호흡으로 이어지는 이야기여야 하며, 각 파트가 유기적으로 연결되어야 합니다.
+- 뻔하고 일반적인 조언 대신, 사용자의 심리를 정확히 파고드는 구체적이고 실행 가능한 지침을 내려야 합니다.
 
-**[진단서 구조 및 지침]**
-1.  **초기 반응 (initial_hook)**: 사용자의 얼굴 사진에서 느껴지는 기운과 핵심 질문을 엮어, 정곡을 찌르는 첫마디를 던지세요. (예: "결혼? 니 얼굴에 '나 외로워요' 써 있는데, 결혼이 쉽겠냐?")
-2.  **과거 감정선 (past_emotion)**: 질문과 관련하여 사용자가 과거에 겪었을 법한 가장 강렬한 감정적 경험을 짚어주세요. (예: "2021년 즈음, 인간관계에서 크게 무너졌을 텐데… 아마 믿었던 사람한테 뒤통수 맞았거나.")
-3.  **본질 분석 (core_analysis)**: 생년월일(사주)과 관상을 결합하여, 질문과 관련된 사용자의 근본적인 성향과 약점을 분석해주세요. (예: "니 사주를 보니 겉은 차가운데 속은 불덩이구나. 그러니 정작 중요할 때 감정적으로 다 망치지.")
-4.  **미래 시나리오 (future_scenario)**: 앞으로 2~3년 내에 질문과 관련하여 겪게 될 구체적인 사건을 생생하게 묘사하세요. (예: "2025년 가을, 전혀 예상치 못한 자리에서 옛 인연과 다시 마주치게 될 거야. 근데 그게 독이 든 성배다.")
-5.  **생존 지침 (survival_guide)**: 미래 시나리오에 대처하기 위한, 아주 구체적이고 직설적인 행동 지침을 내려주세요. (예: "그 사람 다시 만나도 절대 돈 거래는 하지 마. 니 자존심까지 팔게 될 테니.")
-6.  **마지막 한마디 (final_quote)**: 사용자의 인생 전체를 관통하는, 가슴에 박히는 조언으로 대화를 마무리하세요. (예: "넌 결국, 혼자가 되는 걸 두려워하지 않는 날 진짜 강해질 거야.")
+**[진단서 작성 지침]**
+- **제목이나 챕터 구분 없이, 하나의 완성된 글로 작성하세요.** 모든 내용은 앞선 내용과 자연스럽게 연결되어야 합니다.
+- **도입부:** 사용자의 얼굴 사진에서 느껴지는 가장 핵심적인 내면의 모순이나 특징을 단번에 꿰뚫는 문장으로 시작하세요. (예시: "니 얼굴 참 묘하네. 밖에서는 웃고 다니는데, 속은 늘 계산하고 있지.")
+- **과거:** 그 사용자가 과거에 겪었을 법한, 감정적으로 가장 크게 흔들렸던 경험이나 관계 패턴을 구체적으로 언급하여 신뢰를 구축하세요. (예시: "근데 웃긴 건, 니가 그렇게 철저한 놈인데도 두 번이나, 완전히 뚫린 적이 있어.")
+- **본질:** 사용자의 생년월일을 바탕으로 사주(일주 등)를 간략히 언급하고, 이를 현대적인 심리 분석으로 알기 쉽게 풀어주세요. 겉모습과 속마음의 차이를 강조하면 좋습니다. (예시: "니 생년 보면... 癸酉일주. 이건 뭐냐면, '겉은 차갑지만 속에는 불씨 하나만 던져도 온몸에 불붙을 사람'이란 뜻이야.")
+- **미래:** 사용자가 선택한 {interests}와 관련하여, 앞으로 2~3년 내에 겪게 될 가장 중요한 사건 하나를 구체적인 시기(예: 2025년 가을)와 함께 생생하게 묘사하세요. 이 사건이 과거의 패턴과 어떻게 연결되는지 반드시 설명해야 합니다. (예시: "근데 문제는, 니가 그런 사람을 올해부터 다시 마주친다는 거야. 2025년 9~11월 사이...")
+- **지침:** 미래 시나리오를 바탕으로, 사용자가 무엇을 해야 하고, 무엇을 절대 하지 말아야 할지 명확하고 직설적으로 알려주세요. (예시: "사람한테 미련 두지 마. 차라리 새로운 사람 만나라. 운의 핵심은 '니가 움직일 때 생긴다'.")
+- **마무리:** 사용자가 평생 안고 가야 할 근본적인 삶의 태도나 내면의 과제를, 가슴에 박히는 문장으로 던지며 마무리하세요. (예시: "너는 '이성적으로 살아왔지만, 결정은 결국 감정이 한다'는 걸 아직 인정 못하고 있어. 이번에는 반대로 해봐.")
 
 **[JSON 응답 형식]**
-반드시 아래의 JSON 구조를 완벽하게 준수하여 응답해야 합니다.
+반드시 아래의 JSON 구조를 완벽하게 준수하여 응답해야 합니다. **'정곡 찌르기' 같은 제목 없이, 모든 내용을 하나의 텍스트로 합쳐서 \`full_text\`에 담아주세요.**
 {
-  "initial_hook": "...",
-  "past_emotion": "...",
-  "core_analysis": "...",
-  "future_scenario": "...",
-  "survival_guide": "...",
-  "final_quote": "..."
+  "title": "📜 운명은 이미 너의 얼굴에 새겨져 있다",
+  "full_text": "흠…\\n\\n니 얼굴 참 묘하네.\\n\\n밖에서는 웃고 다니는 얼굴인데, 속은 늘 계산하고 있지. 손해는 절대 안 보려고 하고, 사람한테 정 주는 것도 계산 끝나고 나서야 겨우 한 조각 던지는 스타일. 그게 너지?\\n\\n(중략...)\\n\\n이번엔 무시하지 마라."
 }`,
   }
 };
@@ -274,85 +270,37 @@ const AnalysisLoadingComponent = React.memo(({ strings, loadingText }) => {
   return ( <div className="fixed inset-0 bg-black bg-opacity-75 flex flex-col items-center justify-center z-50 p-4 font-gaegu"> <div className="bg-white p-6 sm:p-8 rounded-2xl shadow-2xl text-center max-w-md w-full"> <h3 className="text-2xl font-bold text-purple-600 mb-4">{loadingText}</h3> <img src={`https://placehold.co/320x100/dedede/777777?text=${strings.adPlaceholderBannerText.replace(/\+/g, '%20')}`} alt="Ad Placeholder" className="mx-auto rounded-md shadow-md mb-6" /> <div className="relative w-full max-w-xs mx-auto flex items-center justify-center mb-4"> <img src={'https://placehold.co/100x100/e2e8f0/cbd5e0?text=...'} alt="Person 1" className="w-24 h-24 object-cover rounded-full shadow-lg border-4 border-rose-400 animate-pulse" /> </div><div className="text-center text-gray-800"> <p className="text-lg h-12 flex items-center justify-center transition-opacity duration-500">"{comment}"</p> <div className="w-12 h-12 border-4 border-purple-500 border-t-transparent rounded-full mx-auto animate-spin mt-2"></div> </div></div></div> );
 });
 
-// --- [REVISED] 대화형 결과 페이지 컴포넌트 ---
-const ResultPageComponent = React.memo(({ messages, onSendMessage, isTyping, onReset }) => {
-    const [userInput, setUserInput] = useState('');
-    const chatEndRef = useRef(null);
-
-    useEffect(() => {
-        chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-    }, [messages, isTyping]);
-
-    const handleSend = () => {
-        if (userInput.trim()) {
-            onSendMessage(userInput);
-            setUserInput('');
-        }
-    };
-
-    const handleKeyDown = (e) => {
-        if (e.key === 'Enter' && !e.shiftKey) {
-            e.preventDefault();
-            handleSend();
-        }
-    };
+// --- [REVISED] 결과 페이지 컴포넌트 ---
+const ResultPageComponent = React.memo(({ analysisResult, userImageUrl }) => {
+    const { title, full_text } = analysisResult;
 
     return (
-        <div className="relative w-full h-screen flex flex-col bg-gray-900">
-            {/* 배경 효과 */}
-            <div className="absolute inset-0 -z-10 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-20" />
-            
-            {/* 헤더 */}
-            <header className="flex-shrink-0 p-4 bg-black/30 backdrop-blur-sm flex justify-between items-center z-10">
-                <h1 className="text-xl font-bold text-white font-gaegu">운이(雲異)와의 대화</h1>
-                <button onClick={onReset} className="text-sm text-gray-300 hover:text-white">
-                    <RefreshCwIcon className="w-5 h-5" />
-                </button>
-            </header>
-
-            {/* 메시지 목록 */}
-            <div className="flex-grow p-4 overflow-y-auto">
-                <div className="max-w-3xl mx-auto space-y-6">
-                    {messages.map((msg, index) => (
-                        <div key={index} className={`flex items-end gap-3 ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
-                            {msg.sender === 'ai' && <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-600 to-indigo-600 flex-shrink-0 shadow-lg" />}
-                            <div className={`px-4 py-3 rounded-2xl max-w-sm md:max-w-md lg:max-w-lg shadow-md font-gowun ${msg.sender === 'user' ? 'bg-indigo-500 text-white rounded-br-none' : 'bg-gray-700 text-gray-200 rounded-bl-none'}`}>
-                                <p className="whitespace-pre-wrap">{msg.text}</p>
-                            </div>
-                        </div>
-                    ))}
-                    {isTyping && (
-                        <div className="flex items-end gap-3 justify-start">
-                            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-600 to-indigo-600 flex-shrink-0 shadow-lg" />
-                            <div className="px-4 py-3 rounded-2xl bg-gray-700 shadow-md">
-                                <div className="flex items-center justify-center space-x-1">
-                                    <span className="w-2 h-2 bg-gray-400 rounded-full animate-pulse" style={{ animationDelay: '0s' }}></span>
-                                    <span className="w-2 h-2 bg-gray-400 rounded-full animate-pulse" style={{ animationDelay: '0.2s' }}></span>
-                                    <span className="w-2 h-2 bg-gray-400 rounded-full animate-pulse" style={{ animationDelay: '0.4s' }}></span>
-                                </div>
-                            </div>
-                        </div>
-                    )}
-                </div>
-                <div ref={chatEndRef} />
+        <div className="relative w-full h-screen overflow-y-auto">
+            {/* 배경: 사용자 이미지와 별 효과 */}
+            <div className="fixed inset-0 -z-10">
+                <div className="absolute inset-0 bg-gray-900" />
+                {userImageUrl && (
+                    <img src={userImageUrl} alt="User" className="absolute inset-0 w-full h-full object-cover opacity-20 blur-xl scale-110" />
+                )}
+                <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-30" />
             </div>
 
-            {/* 입력창 */}
-            <div className="flex-shrink-0 p-4 bg-black/30 backdrop-blur-sm z-10">
-                <div className="max-w-3xl mx-auto flex items-center gap-3">
-                    <textarea
-                        value={userInput}
-                        onChange={(e) => setUserInput(e.target.value)}
-                        onKeyDown={handleKeyDown}
-                        placeholder="그래서, 네 인생에서 지금 뭐가 제일 궁금한가?"
-                        className="flex-grow p-3 bg-gray-700 text-white rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-indigo-500 scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-800"
-                        rows="1"
-                    />
-                    <button onClick={handleSend} disabled={!userInput.trim() || isTyping} className="p-3 bg-indigo-600 text-white rounded-full hover:bg-indigo-500 disabled:bg-gray-500 disabled:cursor-not-allowed transition-colors">
-                        <SendIcon className="w-6 h-6" />
-                    </button>
+            {/* 스크롤 가능한 콘텐츠 영역 */}
+            <div className="relative z-10 pt-32 pb-32">
+                <div className="w-full max-w-2xl mx-auto p-8">
+                    <h1 className="text-5xl font-black text-center mb-16 font-gaegu text-white drop-shadow-lg">
+                        {title || "운명 진단서"}
+                    </h1>
+                    {/* AI가 생성한 텍스트 전체를 하나의 문단으로 렌더링 */}
+                    <p className="text-lg text-gray-200 leading-relaxed font-gowun whitespace-pre-wrap">
+                        {full_text}
+                    </p>
                 </div>
             </div>
+
+            {/* 상단/하단 그라데이션 마스크 */}
+            <div className="fixed inset-x-0 top-0 h-48 bg-gradient-to-b from-gray-900 to-transparent pointer-events-none z-20"></div>
+            <div className="fixed inset-x-0 bottom-0 h-48 bg-gradient-to-t from-gray-900 to-transparent pointer-events-none z-20"></div>
         </div>
     );
 });
@@ -367,14 +315,11 @@ function App() {
     const [person1Dob, setPerson1Dob] = useState('');
     const [selectedInterests, setSelectedInterests] = useState([]);
     const [job, setJob] = useState('');
-    
-    // [NEW] 대화형 상태 관리
-    const [messages, setMessages] = useState([]);
-    const [isTyping, setIsTyping] = useState(false);
-    
+    const [analysisResult, setAnalysisResult] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
     const [resultId, setResultId] = useState(null);
+    const [copyStatus, setCopyStatus] = useState('');
     const [loadingText, setLoadingText] = useState('');
 
     useEffect(() => {
@@ -384,11 +329,50 @@ function App() {
 
         const path = window.location.pathname.split('/');
         if (path[1] === 'result' && path[2]) {
-            // 대화형 UX에서는 결과 페이지 직접 로드를 지원하지 않으므로 메인으로 리디렉션
-            window.history.pushState({}, '', '/');
-            setPageState('main');
+            const id = path[2];
+            setIsLoading(true);
+            setLoadingText(translations[lang].resultLoading);
+            
+            const fetchResult = async (retries = 10) => {
+                if (!isFirebaseConfigured) {
+                    if (retries > 0) {
+                        setTimeout(() => fetchResult(retries - 1), 500);
+                    } else {
+                        console.error("Firebase DB not available after multiple retries.");
+                        setError(translations[lang].apiErrorDbConnection);
+                        setIsLoading(false);
+                        window.history.pushState({}, '', '/');
+                        setPageState('main');
+                    }
+                    return;
+                }
+                
+                try {
+                    const docRef = doc(db, "results", id);
+                    const docSnap = await getDoc(docRef);
+                    if (docSnap.exists()) {
+                        const data = docSnap.data();
+                        setAnalysisResult(data.analysis);
+                        setPerson1ImagePreview(data.images.person1);
+                        setResultId(id);
+                        setPageState('result');
+                    } else { 
+                        setError(translations[lang].resultNotFound); 
+                        window.history.pushState({}, '', '/');
+                        setPageState('main'); 
+                    }
+                } catch (e) {
+                    console.error("Error fetching result:", e);
+                    setError(translations[lang].resultNotFound); 
+                    window.history.pushState({}, '', '/');
+                    setPageState('main');
+                } finally { 
+                    setIsLoading(false); 
+                }
+            };
+            fetchResult();
         }
-    }, []);
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
     const handleImageChange = useCallback((file) => { if (file) { const previewUrl = URL.createObjectURL(file); setPerson1ImageFile(file); setPerson1ImagePreview(previewUrl); setError(''); } }, []);
     const handleDobChange = useCallback((date) => { setPerson1Dob(date); setError(''); }, []);
@@ -407,51 +391,29 @@ function App() {
         });
     }, []);
 
-    const resetAllStates = () => { 
-        window.history.pushState({}, '', '/'); 
-        setPageState('main'); 
-        setPerson1ImageFile(null); 
-        setPerson1ImagePreview(`https://placehold.co/400x400/e2e8f0/cbd5e0?text=Person+1`); 
-        setPerson1Dob(''); 
-        setSelectedInterests([]); 
-        setJob(''); 
-        setMessages([]);
-        setError(''); 
-        setIsLoading(false); 
-        setResultId(null); 
-    };
+    const resetAllStates = () => { window.history.pushState({}, '', '/'); setPageState('main'); setPerson1ImageFile(null); setPerson1ImagePreview(`https://placehold.co/400x400/e2e8f0/cbd5e0?text=Person+1`); setPerson1Dob(''); setSelectedInterests([]); setJob(''); setAnalysisResult(null); setError(''); setIsLoading(false); setResultId(null); };
 
-    const startConversation = () => {
-        if (!person1ImageFile || !person1Dob || selectedInterests.length === 0) { 
-            setError(currentStrings.errorMessageDefault); 
-            return; 
-        }
-        setMessages([
-            { sender: 'ai', text: '흠… 널 보니, 뭔가 묘한 기운이 흐르는데?' },
-            { sender: 'ai', text: '잠깐… 내가 보기엔 네 눈빛이 심상치 않다.' },
-        ]);
-        setPageState('result');
-    };
-
-    const handleSendMessage = useCallback(async (userQuery) => {
-        setMessages(prev => [...prev, { sender: 'user', text: userQuery }]);
-        setIsTyping(true);
-        setError('');
-
-        if (!GEMINI_API_KEY) {
+    const handleAnalysis = useCallback(async () => {
+        if (!person1ImageFile || !person1Dob || selectedInterests.length === 0) { setError(currentStrings.errorMessageDefault); return; }
+        
+        const isGeminiKeyConfigured = GEMINI_API_KEY && !GEMINI_API_KEY.startsWith('%REACT_APP_');
+        if (!isGeminiKeyConfigured) {
             setError("Gemini API 키가 설정되지 않았습니다. Netlify 환경 변수를 확인하세요.");
-            setIsTyping(false);
+            return;
+        }
+        if (!isFirebaseConfigured) {
+            setError(currentStrings.apiErrorDbConnection);
             return;
         }
 
+        setLoadingText(currentStrings.loadingMessage); setIsLoading(true); setError('');
+        
         try {
             const interestsText = selectedInterests.map(key => currentStrings.interests[key]).join(', ');
             const userInfoText = job ? `직업: ${job}` : '없음';
             let prompt = currentStrings.aiPromptSingle
                 .replace("{interests}", interestsText)
-                .replace("{dob}", person1Dob)
-                .replace("{userInfo}", userInfoText)
-                .replace("{userQuery}", userQuery);
+                .replace("{userInfo}", userInfoText);
             
             const image1Base64 = await getBase64(person1ImageFile);
             const parts = [{ text: prompt }, { inlineData: { mimeType: person1ImageFile.type, data: image1Base64 } }];
@@ -474,31 +436,26 @@ function App() {
                 console.error("JSON parsing error:", e, "Raw text:", result.candidates[0].content.parts[0].text); 
                 throw new Error(currentStrings.apiErrorResponseFormat); 
             }
+            
+            setAnalysisResult(parsedJson);
 
-            // 단계별 메시지 출력
-            const analysisSteps = [
-                parsedJson.initial_hook,
-                parsedJson.past_emotion,
-                parsedJson.core_analysis,
-                parsedJson.future_scenario,
-                parsedJson.survival_guide,
-                parsedJson.final_quote
-            ];
-
-            for (const step of analysisSteps) {
-                if (step) {
-                    await new Promise(resolve => setTimeout(resolve, 1500 + Math.random() * 1000));
-                    setMessages(prev => [...prev, { sender: 'ai', text: step }]);
-                }
+            if (db && storage) {
+                const person1URL = await uploadImageToStorage(person1ImageFile);
+                const docRef = doc(collection(db, "results"));
+                await setDoc(docRef, { analysis: parsedJson, images: { person1: person1URL, person2: null }, createdAt: serverTimestamp() });
+                setResultId(docRef.id);
+                window.history.pushState({}, '', `/result/${docRef.id}`);
             }
-
+            setPageState('result');
         } catch (err) {
             console.error(err);
-            setMessages(prev => [...prev, { sender: 'ai', text: err.message || currentStrings.apiErrorGeneric }]);
+            setError(err.message);
         } finally {
-            setIsTyping(false);
+            setIsLoading(false);
         }
     }, [person1ImageFile, person1Dob, selectedInterests, job, currentStrings]);
+    
+    const handleCopyToClipboard = useCallback((textToCopy) => { if (!textToCopy) return; navigator.clipboard.writeText(textToCopy).then(() => { setCopyStatus(currentStrings.copySuccessMessage); setTimeout(() => setCopyStatus(''), 2000); }); }, [currentStrings.copySuccessMessage]);
     
     return (
         <div className="relative min-h-screen bg-gray-900 font-sans">
@@ -518,7 +475,7 @@ function App() {
                         <main className="w-full max-w-4xl mx-auto bg-white/90 backdrop-blur-md shadow-2xl rounded-xl p-6 sm:p-8">
                             <MainPageComponent
                                 currentStrings={currentStrings}
-                                handleAnalysis={startConversation} // [REVISED]
+                                handleAnalysis={handleAnalysis}
                                 handleImageChange={handleImageChange}
                                 handleDobChange={handleDobChange}
                                 person1ImagePreview={person1ImagePreview}
@@ -537,14 +494,23 @@ function App() {
                     </div>
                 )}
 
-                {pageState === 'result' && (
-                    <ResultPageComponent 
-                        messages={messages}
-                        onSendMessage={handleSendMessage}
-                        isTyping={isTyping}
-                        onReset={resetAllStates}
-                    />
-                )}
+                {pageState === 'result' && analysisResult && 
+                    <div>
+                        <ResultPageComponent analysisResult={analysisResult} userImageUrl={person1ImagePreview} />
+                        {/* 결과 페이지의 버튼들은 페이지 하단에 고정 (z-index 수정) */}
+                        <div className="fixed bottom-0 left-0 right-0 z-30 p-4 bg-black/30 backdrop-blur-sm">
+                            <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-center gap-4">
+                                <button onClick={() => handleCopyToClipboard(`${window.location.origin}/result/${resultId}`)} disabled={!resultId} className="flex items-center justify-center px-4 py-3 bg-indigo-500 hover:bg-indigo-600 text-white font-bold rounded-lg shadow-lg transition-colors disabled:bg-gray-400 font-gaegu">
+                                    <LinkIcon className="w-5 h-5 mr-2" /> {currentStrings.copyButton}
+                                </button>
+                                <button onClick={resetAllStates} className="flex items-center justify-center px-8 py-3 bg-gray-700 hover:bg-gray-600 text-white font-bold rounded-lg shadow-lg transition-colors text-lg font-gaegu">
+                                    <RefreshCwIcon className="w-6 h-6 mr-3" /> {currentStrings.retryButton}
+                                </button>
+                            </div>
+                            {copyStatus && <p className="text-center text-md text-green-400 mt-2 font-semibold animate-bounce">{copyStatus}</p>}
+                        </div>
+                    </div>
+                }
             </div>
         </div>
     );
