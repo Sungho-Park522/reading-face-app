@@ -52,82 +52,44 @@ const UserIcon = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" wid
 const LinkIcon = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.72"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.72-1.72"></path></svg>);
 const RefreshCwIcon = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"></path><path d="M21 3v5h-5"></path><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"></path><path d="M3 21v-5h5"></path></svg>);
 const CalendarIcon = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>);
-const SparklesIcon = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="m12 3-1.9 5.8-5.8 1.9 5.8 1.9 1.9 5.8 1.9-5.8 5.8-1.9-5.8-1.9z"/><path d="M22 12a10 10 0 1 1-10-10"/><path d="M22 12a10 10 0 0 0-10-10"/></svg>);
 const SendIcon = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>);
 
-// 다국어 텍스트 객체
+// 다국어 텍스트 및 프롬프트
 const translations = {
   ko: {
-    languageName: "한국어",
-    appTitle: "AI 운명 비기(祕記)",
-    appSubtitle: "사진과 생년월일, 그리고 당신의 욕망으로 운명의 길을 밝힙니다.",
-    interestSelectionTitle: "🎯 가장 절실한 관심사를 1~3개 고르시오.",
-    interests: {
-        wealth: "💰 재물",
-        honor: "🏆 명예",
-        love: "💕 사랑",
-        health: "🩺 건강",
-        career: "🚀 직업운",
-        relationships: "👥 인간관계",
-        overall: "🔮 총운",
-        academics: "📚 학업/시험"
-    },
-    person1Title: "그대의 정보를",
-    uploadInstruction: "가장 최근의 얼굴 사진을 올리시오.",
-    dobLabel: "태어난 날",
-    dobPlaceholder: "YYYY-MM-DD",
-    jobLabel: "직업 (선택)",
-    jobPlaceholder: "예: 학생, 개발자, 디자이너",
-    analyzeButtonPersonalized: "운명의 길 열어보기",
-    loadingMessage: "운명의 수레바퀴를 돌리는 중...",
-    errorMessageDefault: "사진, 생년월일, 그리고 관심사를 모두 선택해야 하느니라.",
-    apiErrorGeneric: "하늘의 뜻을 읽는 데 실패했다. 잠시 후 다시 시도하게.",
-    apiErrorResponseFormat: "천기누설이 너무 심했나. 응답의 형식이 올바르지 않으니, 잠시 후 다시 시도하게.",
-    apiErrorDbConnection: "데이터베이스에 연결할 수 없습니다. API 키 설정을 확인하세요.",
-    retryButton: "다시 묻기",
-    copyButton: "결과 공유",
-    copySuccessMessage: "결과 주소가 복사되었느니라!",
-    resultNotFound: "해당하는 운명의 기록을 찾을 수 없네.",
-    resultLoading: "운명의 기록을 불러오는 중...",
-    loadingComments: [
-        "흠... 천지의 기운을 읽고 있느니라... 잠시 숨을 고르거라.",
-        "그대의 얼굴에서 운명의 강이 흐르는 것을 보고 있노라.",
-        "별들의 속삭임과 그대의 사주를 맞추어 보는 중... ✨",
-        "마음의 창인 눈빛에서 과거와 미래를 엿보고 있느니라.",
-        "하늘의 뜻을 그대의 얼굴에 비추어 보고 있으니, 곧 알게 되리라."
-    ],
-    adPlaceholderBannerText: "광고 배너",
-    // [REVISED] 대화형 UX를 위한 AI 프롬프트 v2.0
-    aiPromptSingle: `당신은 '운이'라는 이름을 가진, 인간의 운명을 꿰뚫어 보는 AI 예언가입니다. 당신의 말은 날카롭고 직설적이며, 때로는 장난기 있는 반말을 사용합니다. 사용자와 1:1로 대화하며 운명을 진단하세요.
+    // ... (기존 텍스트 생략)
+    analyzePrompt: `당신은 '운이'라는 이름을 가진, 인간의 운명을 꿰뚫어 보는 AI 예언가입니다. 사용자의 사진(관상)과 생년월일(사주)을 바탕으로, 앞으로 펼쳐질 대화의 기반이 될 '운명 진단서'를 생성해야 합니다.
 
 **[기본 정보]**
-- 사용자의 관심사: {interests}
-- 사용자의 생년월일: {dob}
-- 사용자의 추가 정보: {userInfo}
-- 사용자의 핵심 질문: {userQuery}
+- 사용자의 생년월일: {birthdate}
 
-**[진단 목표]**
-- 사용자가 "내 얘기를 어떻게 알았지?"라고 소름 돋게 만들어야 합니다.
-- 모든 답변은 단계별로 분절하여, 실제 대화처럼 느껴지도록 해야 합니다.
-- 사용자의 핵심 질문({userQuery})을 중심으로 모든 서사를 풀어가야 합니다.
-
-**[진단서 구조 및 지침]**
-1.  **초기 반응 (initial_hook)**: 사용자의 얼굴 사진에서 느껴지는 기운과 핵심 질문을 엮어, 정곡을 찌르는 첫마디를 던지세요. (예: "결혼? 니 얼굴에 '나 외로워요' 써 있는데, 결혼이 쉽겠냐?")
-2.  **과거 감정선 (past_emotion)**: 질문과 관련하여 사용자가 과거에 겪었을 법한 가장 강렬한 감정적 경험을 짚어주세요. (예: "2021년 즈음, 인간관계에서 크게 무너졌을 텐데… 아마 믿었던 사람한테 뒤통수 맞았거나.")
-3.  **본질 분석 (core_analysis)**: 생년월일(사주)과 관상을 결합하여, 질문과 관련된 사용자의 근본적인 성향과 약점을 분석해주세요. (예: "니 사주를 보니 겉은 차가운데 속은 불덩이구나. 그러니 정작 중요할 때 감정적으로 다 망치지.")
-4.  **미래 시나리오 (future_scenario)**: 앞으로 2~3년 내에 질문과 관련하여 겪게 될 구체적인 사건을 생생하게 묘사하세요. (예: "2025년 가을, 전혀 예상치 못한 자리에서 옛 인연과 다시 마주치게 될 거야. 근데 그게 독이 든 성배다.")
-5.  **생존 지침 (survival_guide)**: 미래 시나리오에 대처하기 위한, 아주 구체적이고 직설적인 행동 지침을 내려주세요. (예: "그 사람 다시 만나도 절대 돈 거래는 하지 마. 니 자존심까지 팔게 될 테니.")
-6.  **마지막 한마디 (final_quote)**: 사용자의 인생 전체를 관통하는, 가슴에 박히는 조언으로 대화를 마무리하세요. (예: "넌 결국, 혼자가 되는 걸 두려워하지 않는 날 진짜 강해질 거야.")
+**[생성 목표]**
+1.  **fullNarrative**: 사용자가 겪게 될 운명의 서사를 한 편의 긴 이야기로 생성합니다. 이 이야기는 여러 문단으로 구성되어야 하며, 각 문단은 \`\\n\\n\`으로 구분됩니다. 내용은 정곡을 찌르는 도입, 과거 회상, 본질 분석, 미래 시나리오, 생존 지침, 마지막 조언의 흐름을 따라야 합니다.
+2.  **shortSummary**: 위 fullNarrative의 핵심 내용을 3~4문장으로 요약합니다. 이 요약본은 이후 사용자와의 Q&A에서 AI가 사용자의 맥락을 기억하는 데 사용됩니다.
 
 **[JSON 응답 형식]**
 반드시 아래의 JSON 구조를 완벽하게 준수하여 응답해야 합니다.
 {
-  "initial_hook": "...",
-  "past_emotion": "...",
-  "core_analysis": "...",
-  "future_scenario": "...",
-  "survival_guide": "...",
-  "final_quote": "..."
+  "fullNarrative": "흠… 니 얼굴 참 묘하네.\\n\\n밖에서는 웃고 다니는 얼굴인데, 속은 늘 계산하고 있지. 손해는 절대 안 보려고 하고...\\n\\n(중략...)\\n\\n이번엔 무시하지 마라.",
+  "shortSummary": "겉으론 웃지만 속으론 계산적인 성격. 과거에 사람에게 크게 마음을 열었다가 상처받은 경험이 있으며, 이로 인해 인간관계에 신중하다. 2025년 가을, 과거와 유사한 중요한 기회가 찾아오지만, 감정적인 결정보다는 이성적인 판단이 필요하다."
+}`,
+    askPrompt: `당신은 '운이'라는 AI 예언가입니다. 당신은 이미 사용자에 대한 1차 진단을 마친 상태이며, 이제부터는 사용자의 추가 질문에 답변해야 합니다.
+
+**[사용자 정보 요약]**
+{shortSummary}
+
+**[사용자의 추가 질문]**
+{question}
+
+**[답변 지침]**
+- 위 '사용자 정보 요약'을 바탕으로, 사용자의 성향과 상황에 맞는 답변을 생성하세요.
+- 당신의 페르소나(날카롭고 직설적인 반말)를 유지하며, 한두 문단의 짧고 핵심적인 답변을 제공하세요.
+- 질문에 대한 직접적인 답변과 함께, 사용자가 스스로를 돌아볼 수 있는 통찰을 담아주세요.
+
+**[JSON 응답 형식]**
+반드시 아래의 JSON 구조를 완벽하게 준수하여 응답해야 합니다.
+{
+  "answer": "그 사람? 다시 만나봐야 너만 힘들어져. 니가 약해져 있을 때만 찾아오는 인연은, 독이라는 걸 아직도 모르겠냐? 정신 차려."
 }`,
   }
 };
@@ -140,496 +102,287 @@ const getBase64 = (file) => new Promise((resolve, reject) => {
   reader.onerror = (error) => reject(error);
 });
 
-const uploadImageToStorage = async (file) => {
-  if (!storage || !file) return null;
-  const fileName = `face-images/${Date.now()}-${file.name}`;
-  const storageRef = ref(storage, fileName);
-  const snapshot = await uploadBytes(storageRef, file);
-  return await getDownloadURL(snapshot.ref);
-};
+// --- 각 Scene 컴포넌트 ---
 
-const DobInput = React.memo(({ value, onChange, placeholder }) => {
-    const handleChange = (e) => {
-        const rawValue = e.target.value;
-        const cleaned = rawValue.replace(/\D/g, '');
-        let formatted = cleaned;
-        if (cleaned.length > 4) {
-            formatted = `${cleaned.slice(0, 4)}-${cleaned.slice(4)}`;
+const IntroPage = ({ onNext }) => (
+    <div className="w-full h-screen flex flex-col items-center justify-center text-center text-white p-8 bg-gray-900">
+        <h1 className="text-5xl font-bold font-gaegu mb-4">AI 운명 비기</h1>
+        <p className="text-xl text-gray-300 mb-8 font-gowun">안녕하세요, 사주와 관상을 보려면 사진과 생년월일이 필요합니다.</p>
+        <button onClick={onNext} className="px-8 py-3 bg-indigo-600 hover:bg-indigo-500 rounded-lg font-bold transition-colors">
+            다음으로
+        </button>
+    </div>
+);
+
+const InfoInputPage = ({ onNext, setUserPhoto, setBirthdate }) => {
+    // ... (기존 InputSection, UserInfoSection 로직을 여기에 통합하거나 import)
+    // 이 예제에서는 단순화된 형태로 구현합니다.
+    const [photoFile, setPhotoFile] = useState(null);
+    const [photoPreview, setPhotoPreview] = useState(`https://placehold.co/400x400/e2e8f0/cbd5e0?text=사진+업로드`);
+    const [dob, setDob] = useState('');
+
+    const handlePhotoChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setPhotoFile(file);
+            setPhotoPreview(URL.createObjectURL(file));
         }
-        if (cleaned.length > 6) {
-            formatted = `${cleaned.slice(0, 4)}-${cleaned.slice(4, 6)}-${cleaned.slice(6, 8)}`;
-        }
-        onChange(formatted);
     };
-    return ( <input type="text" value={value} onChange={handleChange} className="w-full p-2 border border-gray-300 rounded-md text-center shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder={placeholder} maxLength="10" /> );
-});
 
-// Components
-const InputSection = React.memo(({ onImageSelect, onDobChange, previewImage, dob, strings }) => {
-    const [isDragging, setIsDragging] = useState(false);
-    const handleDragEnter = useCallback((e) => { e.preventDefault(); e.stopPropagation(); setIsDragging(true); }, []);
-    const handleDragLeave = useCallback((e) => { e.preventDefault(); e.stopPropagation(); setIsDragging(false); }, []);
-    const handleDragOver = useCallback((e) => { e.preventDefault(); e.stopPropagation(); }, []);
-    const handleDrop = useCallback((e) => { e.preventDefault(); e.stopPropagation(); setIsDragging(false); const files = e.dataTransfer.files; if (files && files.length > 0) { onImageSelect(files[0]); } }, [onImageSelect]);
-    const handleFileChange = useCallback((e) => { const files = e.target.files; if (files && files.length > 0) { onImageSelect(files[0]); } }, [onImageSelect]);
-    const handleDobChangeCallback = useCallback((val) => { onDobChange(val); }, [onDobChange]);
-    
+    const handleNextClick = () => {
+        if (photoFile && dob) {
+            setUserPhoto(photoFile);
+            setBirthdate(dob);
+            onNext();
+        } else {
+            alert("사진과 생년월일을 모두 입력해주세요.");
+        }
+    };
+
     return (
-        <div onDragEnter={handleDragEnter} onDragLeave={handleDragLeave} onDragOver={handleDragOver} onDrop={handleDrop} className={`w-full h-full border-2 border-dashed rounded-lg p-6 text-center transition-all duration-300 flex flex-col items-center justify-between border-rose-300 hover:border-rose-500 bg-rose-50/50 ${isDragging ? 'scale-105 shadow-2xl' : 'shadow-lg'}`}>
-            <h2 className="text-2xl font-bold mb-3 font-gaegu">{strings.person1Title}</h2>
-            <div className="relative mb-4">
-                <img src={previewImage} alt="user" className="w-40 h-40 md:w-48 md:h-48 object-cover mx-auto rounded-full shadow-xl border-4 border-white" onError={(e) => { e.target.onerror = null; e.target.src = `https://placehold.co/400x400/e2e8f0/cbd5e0?text=Error`; }} />
-                <label htmlFor="userImageUpload" className={`absolute bottom-0 right-0 cursor-pointer p-2 rounded-full shadow-lg transition-transform transform hover:scale-110 bg-rose-500 hover:bg-rose-600`}>
-                    <UploadCloudIcon className="w-6 h-6 text-white" />
+        <div className="w-full h-screen flex flex-col items-center justify-center p-8 bg-gray-900 text-white">
+            <h2 className="text-3xl font-bold font-gaegu mb-8">그대의 정보를 알려주게.</h2>
+            <div className="flex flex-col items-center gap-8">
+                <label htmlFor="photo-upload" className="cursor-pointer">
+                    <img src={photoPreview} alt="Upload preview" className="w-48 h-48 rounded-full object-cover border-4 border-gray-600 hover:border-indigo-500 transition-colors" />
                 </label>
-                <input type="file" id="userImageUpload" accept="image/*" onChange={handleFileChange} className="hidden" />
-            </div>
-            <p className="text-sm font-bold text-indigo-600 mb-4" dangerouslySetInnerHTML={{ __html: strings.uploadInstruction }}></p>
-            <div className="w-full max-w-xs">
-                <label className="font-bold text-gray-700 mb-1 flex items-center justify-center font-gaegu"><CalendarIcon className="w-5 h-5 mr-2" />{strings.dobLabel}</label>
-                <DobInput value={dob} onChange={handleDobChangeCallback} placeholder={strings.dobPlaceholder}/>
+                <input id="photo-upload" type="file" accept="image/*" className="hidden" onChange={handlePhotoChange} />
+                <input
+                    type="text"
+                    value={dob}
+                    onChange={(e) => setDob(e.target.value)}
+                    placeholder="생년월일 (YYYY-MM-DD)"
+                    className="w-64 p-3 bg-gray-800 border-2 border-gray-600 rounded-lg text-center focus:outline-none focus:border-indigo-500"
+                />
+                <button onClick={handleNextClick} className="px-8 py-3 bg-indigo-600 hover:bg-indigo-500 rounded-lg font-bold transition-colors">
+                    다음
+                </button>
             </div>
         </div>
     );
-});
+};
 
-const UserInfoSection = React.memo(({ strings, selectedInterests, onInterestToggle, job, onJobChange }) => (
-    <div className="w-full h-full p-6 bg-gray-50/50 rounded-lg flex flex-col justify-center items-center shadow-lg border-2 border-dashed border-gray-300 space-y-6">
-        <div className="p-4 bg-indigo-50 rounded-lg shadow-inner w-full">
-            <h3 className="text-xl font-bold text-indigo-700 mb-3 text-center font-gaegu">{strings.interestSelectionTitle}</h3>
-            <div className="flex flex-wrap justify-center gap-2">
-                {Object.entries(strings.interests).map(([key, label]) => {
-                    const isSelected = selectedInterests.includes(key);
-                    return (
-                        <button key={key} onClick={() => onInterestToggle(key)}
-                            className={`px-4 py-1.5 text-base font-bold rounded-full shadow-md transition-all duration-200 transform ${
-                                isSelected 
-                                ? 'bg-gradient-to-r from-purple-600 to-indigo-700 text-white scale-110 shadow-xl' 
-                                : 'bg-white text-gray-700 hover:bg-gray-200'
-                            } font-gaegu`}
-                        >
-                            {label}
-                        </button>
-                    );
-                })}
+const ChamberEntranceScene = ({ onNext }) => {
+    useEffect(() => {
+        // 3초 후 다음 장면으로 자동 전환
+        const timer = setTimeout(onNext, 3000);
+        return () => clearTimeout(timer);
+    }, [onNext]);
+
+    return (
+        <div className="w-full h-screen flex flex-col items-center justify-center bg-black text-white overflow-hidden">
+            <div className="animate-fadeIn space-y-4 text-center">
+                <p className="text-2xl font-gowun">점집으로 들어서는 중...</p>
+                <p className="text-3xl font-gaegu animate-pulse">“앉게나… 오늘 너를 보기 위해 별을 많이 들여다봤지.”</p>
             </div>
         </div>
-        <div className="w-full max-w-xs">
-            <label className="font-bold text-gray-700 mb-1 flex items-center justify-center font-gaegu">
-                💼 {strings.jobLabel}
-            </label>
-            <input 
-                type="text" 
-                value={job}
-                onChange={(e) => onJobChange(e.target.value)}
-                className="w-full p-2 border border-gray-300 rounded-md text-center shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                placeholder={strings.jobPlaceholder}
-            />
-        </div>
-    </div>
-));
+    );
+};
 
+const FortuneAnalysisScene = ({ fullNarrative, onNext }) => {
+    const [currentIndex, setCurrentIndex] = useState(0);
+    const paragraphs = fullNarrative.split('\n\n');
 
-const MainPageComponent = React.memo(({ currentStrings, handleAnalysis, person1ImageFile, person1Dob, selectedInterests, ...props }) => (
-    <div className="font-gowun">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6 items-stretch">
-            <InputSection 
-                onImageSelect={props.handleImageChange} 
-                onDobChange={props.handleDobChange} 
-                previewImage={props.person1ImagePreview} 
-                dob={person1Dob} 
-                strings={currentStrings} 
-            />
-            <UserInfoSection 
-                strings={currentStrings} 
-                selectedInterests={selectedInterests} 
-                onInterestToggle={props.onInterestToggle} 
-                job={props.job}
-                onJobChange={props.setJob}
-            />
-        </div>
-        <div className="my-6 p-3 bg-gray-100 rounded-lg text-center border border-gray-300"><p className="text-gray-600 text-xs">{currentStrings.adPlaceholderBannerText}</p><img src={`https://placehold.co/300x100/e0e0e0/757575?text=${currentStrings.adPlaceholderBannerText.replace(/\s/g, '+')}`} alt="Ad Banner" className="mx-auto mt-1 rounded" /></div>
-        <section className="text-center mt-6">
-            <button 
-                onClick={handleAnalysis} 
-                disabled={!person1ImageFile || !person1Dob || selectedInterests.length === 0}
-                className="px-12 py-5 bg-gradient-to-r from-purple-600 to-indigo-700 hover:from-purple-700 hover:to-indigo-800 text-white font-bold text-2xl rounded-lg shadow-xl transition-all duration-300 ease-in-out transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:scale-100 font-gaegu">
-                <SparklesIcon className="inline-block w-8 h-8 mr-2" />
-                {currentStrings.analyzeButtonPersonalized}
-            </button>
-        </section>
-    </div>
-));
-
-const AnalysisLoadingComponent = React.memo(({ strings, loadingText }) => {
-  const [comment, setComment] = useState(strings.loadingComments[0]);
-  useEffect(() => {
-    const commentInterval = setInterval(() => {
-      setComment(strings.loadingComments[Math.floor(Math.random() * strings.loadingComments.length)]);
-    }, 2500);
-    return () => clearInterval(commentInterval);
-  }, [strings.loadingComments]);
-
-  return ( <div className="fixed inset-0 bg-black bg-opacity-75 flex flex-col items-center justify-center z-50 p-4 font-gaegu"> <div className="bg-white p-6 sm:p-8 rounded-2xl shadow-2xl text-center max-w-md w-full"> <h3 className="text-2xl font-bold text-purple-600 mb-4">{loadingText}</h3> <img src={`https://placehold.co/320x100/dedede/777777?text=${strings.adPlaceholderBannerText.replace(/\+/g, '%20')}`} alt="Ad Placeholder" className="mx-auto rounded-md shadow-md mb-6" /> <div className="relative w-full max-w-xs mx-auto flex items-center justify-center mb-4"> <img src={'https://placehold.co/100x100/e2e8f0/cbd5e0?text=...'} alt="Person 1" className="w-24 h-24 object-cover rounded-full shadow-lg border-4 border-rose-400 animate-pulse" /> </div><div className="text-center text-gray-800"> <p className="text-lg h-12 flex items-center justify-center transition-opacity duration-500">"{comment}"</p> <div className="w-12 h-12 border-4 border-purple-500 border-t-transparent rounded-full mx-auto animate-spin mt-2"></div> </div></div></div> );
-});
-
-// --- [REVISED] 대화형 결과 페이지 컴포넌트 ---
-const ResultPageComponent = React.memo(({ messages, onSendMessage, isTyping, onReset, isFinished, onCopy, copyStatus, strings }) => {
-    const [userInput, setUserInput] = useState('');
-    const chatEndRef = useRef(null);
-
-    useEffect(() => {
-        chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-    }, [messages, isTyping]);
-
-    const handleSend = () => {
-        if (userInput.trim()) {
-            onSendMessage(userInput);
-            setUserInput('');
-        }
-    };
-
-    const handleKeyDown = (e) => {
-        if (e.key === 'Enter' && !e.shiftKey) {
-            e.preventDefault();
-            handleSend();
+    const handleNextParagraph = () => {
+        if (currentIndex < paragraphs.length - 1) {
+            setCurrentIndex(prev => prev + 1);
+        } else {
+            onNext();
         }
     };
 
     return (
-        <div className="relative w-full h-screen flex flex-col bg-gray-900">
-            {/* 배경 효과 */}
-            <div className="absolute inset-0 -z-10 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-20" />
-            
-            {/* 헤더 */}
-            <header className="flex-shrink-0 p-4 bg-black/30 backdrop-blur-sm flex justify-between items-center z-10">
-                <h1 className="text-xl font-bold text-white font-gaegu">운이(雲異)와의 대화</h1>
-                <button onClick={onReset} className="text-sm text-gray-300 hover:text-white">
-                    <RefreshCwIcon className="w-5 h-5" />
-                </button>
-            </header>
-
-            {/* 메시지 목록 */}
-            <div className="flex-grow p-4 overflow-y-auto">
-                <div className="max-w-3xl mx-auto space-y-6">
-                    {messages.map((msg, index) => (
-                        <div key={index} className={`flex items-end gap-3 ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
-                            {msg.sender === 'ai' && <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-600 to-indigo-600 flex-shrink-0 shadow-lg" />}
-                            <div className={`px-4 py-3 rounded-2xl max-w-sm md:max-w-md lg:max-w-lg shadow-md font-gowun ${msg.sender === 'user' ? 'bg-indigo-500 text-white rounded-br-none' : 'bg-gray-700 text-gray-200 rounded-bl-none'}`}>
-                                <p className="whitespace-pre-wrap">{msg.text}</p>
-                            </div>
-                        </div>
-                    ))}
-                    {isTyping && (
-                        <div className="flex items-end gap-3 justify-start">
-                            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-600 to-indigo-600 flex-shrink-0 shadow-lg" />
-                            <div className="px-4 py-3 rounded-2xl bg-gray-700 shadow-md">
-                                <div className="flex items-center justify-center space-x-1">
-                                    <span className="w-2 h-2 bg-gray-400 rounded-full animate-pulse" style={{ animationDelay: '0s' }}></span>
-                                    <span className="w-2 h-2 bg-gray-400 rounded-full animate-pulse" style={{ animationDelay: '0.2s' }}></span>
-                                    <span className="w-2 h-2 bg-gray-400 rounded-full animate-pulse" style={{ animationDelay: '0.4s' }}></span>
-                                </div>
-                            </div>
-                        </div>
-                    )}
-                </div>
-                <div ref={chatEndRef} />
-            </div>
-
-            {/* 입력창 또는 공유 버튼 */}
-            <div className="flex-shrink-0 p-4 bg-black/30 backdrop-blur-sm z-10">
-                {!isFinished ? (
-                    <div className="max-w-3xl mx-auto flex items-center gap-3">
-                        <textarea
-                            value={userInput}
-                            onChange={(e) => setUserInput(e.target.value)}
-                            onKeyDown={handleKeyDown}
-                            placeholder="그래서, 네 인생에서 지금 뭐가 제일 궁금한가?"
-                            className="flex-grow p-3 bg-gray-700 text-white rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-indigo-500 scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-800"
-                            rows="1"
-                        />
-                        <button onClick={handleSend} disabled={!userInput.trim() || isTyping} className="p-3 bg-indigo-600 text-white rounded-full hover:bg-indigo-500 disabled:bg-gray-500 disabled:cursor-not-allowed transition-colors">
-                            <SendIcon className="w-6 h-6" />
-                        </button>
-                    </div>
+        <div className="w-full h-screen flex flex-col items-center justify-center bg-gray-900 text-white p-8" onClick={handleNextParagraph}>
+            <div className="w-full max-w-3xl text-center space-y-8">
+                <p className="text-2xl font-gowun leading-relaxed whitespace-pre-wrap">
+                    {paragraphs[currentIndex]}
+                </p>
+                {currentIndex === paragraphs.length - 1 ? (
+                    <button onClick={onNext} className="mt-8 px-8 py-3 bg-indigo-600 hover:bg-indigo-500 rounded-lg font-bold transition-colors animate-pulse">
+                        그래… 또 궁금한 게 있느냐?
+                    </button>
                 ) : (
-                    <div className="max-w-3xl mx-auto text-center">
-                        <button onClick={onCopy} className="flex items-center justify-center w-full max-w-xs mx-auto px-4 py-3 bg-indigo-500 hover:bg-indigo-600 text-white font-bold rounded-lg shadow-lg transition-colors font-gaegu">
-                            <LinkIcon className="w-5 h-5 mr-2" /> {strings.copyButton}
-                        </button>
-                        {copyStatus && <p className="text-center text-md text-green-400 mt-2 font-semibold animate-bounce">{copyStatus}</p>}
-                    </div>
+                     <p className="text-sm text-gray-500 mt-8 animate-pulse">화면을 터치하여 다음 내용 보기</p>
                 )}
             </div>
         </div>
     );
-});
+};
+
+const QnAInteractionScene = ({ shortSummary, onNext }) => {
+    const [qnaLog, setQnaLog] = useState([]);
+    const [userInput, setUserInput] = useState('');
+    const [isTyping, setIsTyping] = useState(false);
+    const [showAd, setShowAd] = useState(false);
+    const [pendingQuestion, setPendingQuestion] = useState('');
+
+    const handleSendQuestion = async (question) => {
+        setQnaLog(prev => [...prev, { sender: 'user', text: question }]);
+        setPendingQuestion(question);
+        setShowAd(true); // 광고 먼저 표시
+    };
+    
+    const handleAdClose = async () => {
+        setShowAd(false);
+        setIsTyping(true);
+
+        try {
+            // 여기에 /api/ask 호출 로직 구현
+            const prompt = translations.ko.askPrompt
+                .replace("{shortSummary}", shortSummary)
+                .replace("{question}", pendingQuestion);
+            
+            const payload = { contents: [{ role: "user", parts: [{ text: prompt }] }], generationConfig: { responseMimeType: "application/json" } };
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
+            const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+            if (!response.ok) throw new Error("API 호출 실패");
+            const result = await response.json();
+            const parsedJson = JSON.parse(result.candidates[0].content.parts[0].text);
+
+            setQnaLog(prev => [...prev, { sender: 'ai', text: parsedJson.answer }]);
+        } catch (err) {
+            setQnaLog(prev => [...prev, { sender: 'ai', text: "미안하구나, 지금은 답을 찾기가 어렵다." }]);
+        } finally {
+            setIsTyping(false);
+            setPendingQuestion('');
+        }
+    };
+
+    return (
+        <div className="relative w-full h-screen flex flex-col bg-gray-900 text-white">
+            {/* ... (채팅 UI 구성, ResultPageComponent와 유사) ... */}
+            <div className="flex-grow p-4 overflow-y-auto">
+                {qnaLog.map((item, index) => (
+                    <div key={index} className={`chat ${item.sender === 'user' ? 'chat-end' : 'chat-start'}`}>
+                        <div className="chat-bubble">{item.text}</div>
+                    </div>
+                ))}
+                {isTyping && <div className="chat chat-start"><div className="chat-bubble">...</div></div>}
+            </div>
+            <div className="p-4 flex gap-2">
+                <input 
+                    type="text" 
+                    value={userInput} 
+                    onChange={e => setUserInput(e.target.value)}
+                    placeholder="더 궁금한 것을 물어보게..."
+                    className="flex-grow p-3 bg-gray-800 rounded-lg focus:outline-none"
+                />
+                <button onClick={() => handleSendQuestion(userInput)} className="px-4 py-2 bg-indigo-600 rounded-lg">전송</button>
+                <button onClick={onNext} className="px-4 py-2 bg-gray-600 rounded-lg">그만 묻기</button>
+            </div>
+
+            {/* 광고 모달 */}
+            {showAd && (
+                <div className="absolute inset-0 bg-black/80 flex flex-col items-center justify-center z-50">
+                    <p className="text-xl mb-4">복비를 내고 운명을 들여다보게나...</p>
+                    <div className="w-72 h-48 bg-gray-500 flex items-center justify-center mb-4">(광고 영역)</div>
+                    <button onClick={handleAdClose} className="px-6 py-2 bg-indigo-600 rounded-lg">광고 닫기</button>
+                </div>
+            )}
+        </div>
+    );
+};
+
+const SummaryPage = ({ finalSummary, onReset }) => (
+    <div className="w-full h-screen flex flex-col items-center justify-center text-center text-white p-8 bg-gray-900">
+        <h2 className="text-3xl font-bold font-gaegu mb-8">좋다… 내가 지금까지 본 것을 정리해보마.</h2>
+        <div className="w-full max-w-2xl p-6 bg-gray-800 rounded-lg mb-8">
+            <p className="whitespace-pre-wrap font-gowun">{finalSummary || "운명의 실타래는 복잡하지만, 그대의 길은 명확해질 것이다."}</p>
+        </div>
+        <div className="flex gap-4">
+            <button className="px-6 py-3 bg-indigo-600 hover:bg-indigo-500 rounded-lg font-bold transition-colors">점집 공유하기</button>
+            <button className="px-6 py-3 bg-green-600 hover:bg-green-500 rounded-lg font-bold transition-colors">점집 후원하기</button>
+            <button onClick={onReset} className="px-6 py-3 bg-gray-600 hover:bg-gray-500 rounded-lg font-bold transition-colors">다시 보기</button>
+        </div>
+    </div>
+);
 
 
 // --- Main App Component ---
 function App() {
-    const [currentStrings, setCurrentStrings] = useState(translations.ko);
-    const [pageState, setPageState] = useState('main');
-    const [person1ImageFile, setPerson1ImageFile] = useState(null);
-    const [person1ImagePreview, setPerson1ImagePreview] = useState(`https://placehold.co/400x400/e2e8f0/cbd5e0?text=Person+1`);
-    const [person1Dob, setPerson1Dob] = useState('');
-    const [selectedInterests, setSelectedInterests] = useState([]);
-    const [job, setJob] = useState('');
+    const [scene, setScene] = useState('intro'); // intro, input, entrance, analysis, qna, summary
     
-    const [messages, setMessages] = useState([]);
-    const [isTyping, setIsTyping] = useState(false);
-    const [isFinished, setIsFinished] = useState(false);
+    // 상태 변수
+    const [userPhoto, setUserPhoto] = useState(null);
+    const [birthdate, setBirthdate] = useState('');
+    const [shortSummary, setShortSummary] = useState('');
+    const [fullNarrative, setFullNarrative] = useState('');
     
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
-    const [resultId, setResultId] = useState(null);
-    const [copyStatus, setCopyStatus] = useState('');
-    const [loadingText, setLoadingText] = useState('');
 
-    useEffect(() => {
-        const lang = 'ko';
-        setCurrentStrings(translations[lang]);
-        setLoadingText(translations[lang].loadingMessage);
-
-        const path = window.location.pathname.split('/');
-        if (path[1] === 'result' && path[2]) {
-            const id = path[2];
-            setIsLoading(true);
-            setLoadingText(currentStrings.resultLoading);
-            
-            const fetchResult = async (retries = 10) => {
-                if (!isFirebaseConfigured) {
-                    if (retries > 0) {
-                        setTimeout(() => fetchResult(retries - 1), 500);
-                    } else {
-                        setError(currentStrings.apiErrorDbConnection);
-                        setIsLoading(false);
-                        window.history.pushState({}, '', '/');
-                        setPageState('main');
-                    }
-                    return;
-                }
-                
-                try {
-                    const docRef = doc(db, "results", id);
-                    const docSnap = await getDoc(docRef);
-                    if (docSnap.exists()) {
-                        const data = docSnap.data();
-                        setMessages(data.messages);
-                        setPerson1ImagePreview(data.imageUrl);
-                        setResultId(id);
-                        setIsFinished(true); // 대화가 끝난 상태로 로드
-                        setPageState('result');
-                    } else { 
-                        setError(currentStrings.resultNotFound); 
-                        window.history.pushState({}, '', '/');
-                        setPageState('main'); 
-                    }
-                } catch (e) {
-                    console.error("Error fetching result:", e);
-                    setError(currentStrings.resultNotFound); 
-                    window.history.pushState({}, '', '/');
-                    setPageState('main');
-                } finally { 
-                    setIsLoading(false); 
-                }
-            };
-            fetchResult();
-        }
-    }, [currentStrings]);
-
-    const handleImageChange = useCallback((file) => { if (file) { const previewUrl = URL.createObjectURL(file); setPerson1ImageFile(file); setPerson1ImagePreview(previewUrl); setError(''); } }, []);
-    const handleDobChange = useCallback((date) => { setPerson1Dob(date); setError(''); }, []);
-    
-    const handleInterestToggle = useCallback((interestKey) => {
-        setSelectedInterests(prev => {
-            const newInterests = new Set(prev);
-            if (newInterests.has(interestKey)) {
-                newInterests.delete(interestKey);
-            } else {
-                if (newInterests.size < 3) {
-                    newInterests.add(interestKey);
-                }
-            }
-            return Array.from(newInterests);
-        });
-    }, []);
-
-    const resetAllStates = () => { 
-        window.history.pushState({}, '', '/'); 
-        setPageState('main'); 
-        setPerson1ImageFile(null); 
-        setPerson1ImagePreview(`https://placehold.co/400x400/e2e8f0/cbd5e0?text=Person+1`); 
-        setPerson1Dob(''); 
-        setSelectedInterests([]); 
-        setJob(''); 
-        setMessages([]);
-        setIsFinished(false);
-        setError(''); 
-        setIsLoading(false); 
-        setResultId(null);
-    };
-
-    const startConversation = () => {
-        if (!person1ImageFile || !person1Dob || selectedInterests.length === 0) { 
-            setError(currentStrings.errorMessageDefault); 
-            return; 
-        }
-        // [FIXED] 채팅 시작 전 API 키 유효성 검사
-        if (!GEMINI_API_KEY) {
-            setError("Gemini API 키가 설정되지 않았습니다. Netlify 환경 변수를 확인하세요.");
-            return;
-        }
-        setMessages([
-            { sender: 'ai', text: '흠… 널 보니, 뭔가 묘한 기운이 흐르는데?' },
-            { sender: 'ai', text: '잠깐… 내가 보기엔 네 눈빛이 심상치 않다.' },
-        ]);
-        setPageState('result');
-    };
-
-    const handleSendMessage = useCallback(async (userQuery) => {
-        const currentMessages = [...messages, { sender: 'user', text: userQuery }];
-        setMessages(currentMessages);
-        setIsTyping(true);
+    const handleAnalyze = async () => {
+        setIsLoading(true);
         setError('');
-
-        // [FIXED] 함수 시작 시점에 API 키 재확인 및 오류 메시지 채팅창에 표시
-        if (!GEMINI_API_KEY) {
-            setMessages(prev => [...prev, { sender: 'ai', text: "이런, 지금은 하늘의 뜻을 읽을 수가 없네. API 키 설정을 확인해줘." }]);
-            setIsTyping(false);
-            return;
-        }
-
         try {
-            const interestsText = selectedInterests.map(key => currentStrings.interests[key]).join(', ');
-            const userInfoText = job ? `직업: ${job}` : '없음';
-            let prompt = currentStrings.aiPromptSingle
-                .replace("{interests}", interestsText)
-                .replace("{dob}", person1Dob)
-                .replace("{userInfo}", userInfoText)
-                .replace("{userQuery}", userQuery);
-            
-            const image1Base64 = await getBase64(person1ImageFile);
-            const parts = [{ text: prompt }, { inlineData: { mimeType: person1ImageFile.type, data: image1Base64 } }];
+            const prompt = translations.ko.analyzePrompt.replace("{birthdate}", birthdate);
+            const imageBase64 = await getBase64(userPhoto);
+            const parts = [{ text: prompt }, { inlineData: { mimeType: userPhoto.type, data: imageBase64 } }];
 
             const payload = { contents: [{ role: "user", parts }], generationConfig: { responseMimeType: "application/json" } };
             const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
             const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-
-            if (!response.ok) throw new Error(`${currentStrings.apiErrorGeneric} (${response.status})`);
-            
+            if (!response.ok) throw new Error("API 호출 실패");
             const result = await response.json();
-            
-            if (!result.candidates?.[0]?.content?.parts?.[0]?.text) { console.error("Invalid API Response:", result); throw new Error(currentStrings.apiErrorResponseFormat); }
-            
-            let parsedJson;
-            try { 
-                const rawText = result.candidates[0].content.parts[0].text;
-                parsedJson = JSON.parse(rawText); 
-            } catch (e) { 
-                console.error("JSON parsing error:", e, "Raw text:", result.candidates[0].content.parts[0].text); 
-                throw new Error(currentStrings.apiErrorResponseFormat); 
-            }
+            const parsedJson = JSON.parse(result.candidates[0].content.parts[0].text);
 
-            const finalMessages = [...currentMessages];
-            const analysisSteps = [
-                parsedJson.initial_hook,
-                parsedJson.past_emotion,
-                parsedJson.core_analysis,
-                parsedJson.future_scenario,
-                parsedJson.survival_guide,
-                parsedJson.final_quote
-            ];
-
-            for (const step of analysisSteps) {
-                if (step) {
-                    await new Promise(resolve => setTimeout(resolve, 1500 + Math.random() * 1000));
-                    const newAiMessage = { sender: 'ai', text: step };
-                    finalMessages.push(newAiMessage);
-                    setMessages([...finalMessages]);
-                }
-            }
-
-            // 대화 종료 후 저장
-            if (isFirebaseConfigured && storage && db) {
-                const imageUrl = await uploadImageToStorage(person1ImageFile);
-                const docRef = doc(collection(db, "results"));
-                await setDoc(docRef, { 
-                    messages: finalMessages, 
-                    imageUrl: imageUrl, 
-                    createdAt: serverTimestamp() 
-                });
-                setResultId(docRef.id);
-                window.history.pushState({}, '', `/result/${docRef.id}`);
-            }
-
+            setFullNarrative(parsedJson.fullNarrative);
+            setShortSummary(parsedJson.shortSummary);
+            setScene('entrance');
         } catch (err) {
-            console.error(err);
-            setMessages(prev => [...prev, { sender: 'ai', text: err.message || currentStrings.apiErrorGeneric }]);
+            setError("분석 중 오류가 발생했습니다.");
+            setScene('input'); // 오류 발생 시 입력 화면으로 복귀
         } finally {
-            setIsTyping(false);
-            setIsFinished(true); // 대화 종료 상태로 변경
+            setIsLoading(false);
         }
-    }, [person1ImageFile, person1Dob, selectedInterests, job, currentStrings, messages]);
-    
-    const handleCopyToClipboard = useCallback((textToCopy) => { 
-        if (!textToCopy) return; 
-        navigator.clipboard.writeText(textToCopy).then(() => { 
-            setCopyStatus(currentStrings.copySuccessMessage); 
-            setTimeout(() => setCopyStatus(''), 2000); 
-        }); 
-    }, [currentStrings.copySuccessMessage]);
+    };
+
+    const handleReset = () => {
+        setUserPhoto(null);
+        setBirthdate('');
+        setShortSummary('');
+        setFullNarrative('');
+        setError('');
+        setScene('intro');
+    };
+
+    const renderScene = () => {
+        switch (scene) {
+            case 'intro':
+                return <IntroPage onNext={() => setScene('input')} />;
+            case 'input':
+                return <InfoInputPage 
+                            setUserPhoto={setUserPhoto} 
+                            setBirthdate={setBirthdate} 
+                            onNext={handleAnalyze} 
+                        />;
+            case 'entrance':
+                return <ChamberEntranceScene onNext={() => setScene('analysis')} />;
+            case 'analysis':
+                return <FortuneAnalysisScene fullNarrative={fullNarrative} onNext={() => setScene('qna')} />;
+            case 'qna':
+                return <QnAInteractionScene shortSummary={shortSummary} onNext={() => setScene('summary')} />;
+            case 'summary':
+                // For simplicity, using shortSummary as finalSummary. A dedicated API call could be made here.
+                return <SummaryPage finalSummary={shortSummary} onReset={handleReset} />;
+            default:
+                return <IntroPage onNext={() => setScene('input')} />;
+        }
+    };
 
     return (
-        <div className="relative min-h-screen bg-gray-900 font-sans">
-            {isLoading && <AnalysisLoadingComponent strings={currentStrings} loadingText={loadingText} />}
-            
-            <div className={`transition-opacity duration-500 ${isLoading ? 'opacity-0' : 'opacity-100'}`}>
-                {pageState === 'main' && (
-                    <div className="bg-gradient-to-br from-gray-900 via-purple-900 to-indigo-900 p-4 sm:p-6 lg:p-8">
-                        <header className="w-full max-w-4xl mx-auto mt-12 sm:mt-8 mb-8 text-center font-gaegu">
-                            <h1 className="text-5xl sm:text-6xl font-black text-white py-2 flex items-center justify-center drop-shadow-lg [text-shadow:_0_4px_6px_rgb(0_0_0_/_40%)]">
-                                <UserIcon className="inline-block w-12 h-12 mr-3 text-cyan-300" />
-                                {currentStrings.appTitle}
-                            </h1>
-                            <p className="text-xl text-indigo-200 mt-3 drop-shadow-md">{currentStrings.appSubtitle}</p>
-                        </header>
-                        
-                        <main className="w-full max-w-4xl mx-auto bg-white/90 backdrop-blur-md shadow-2xl rounded-xl p-6 sm:p-8">
-                            <MainPageComponent
-                                currentStrings={currentStrings}
-                                handleAnalysis={startConversation}
-                                handleImageChange={handleImageChange}
-                                handleDobChange={handleDobChange}
-                                person1ImagePreview={person1ImagePreview}
-                                person1Dob={person1Dob}
-                                person1ImageFile={person1ImageFile}
-                                selectedInterests={selectedInterests}
-                                onInterestToggle={handleInterestToggle}
-                                job={job}
-                                setJob={setJob}
-                            />
-                        </main>
-                        {error && <p className="text-red-500 bg-red-100 border border-red-300 rounded-md p-4 text-md mt-4 max-w-md mx-auto shadow-md animate-shake text-center font-bold">{error}</p>}
-                        <footer className="w-full max-w-4xl mx-auto mt-12 text-center pb-8">
-                            <p className="text-md text-white/90 drop-shadow-sm">© {new Date().getFullYear()} AI 운명 비기. Just for Fun!</p>
-                        </footer>
-                    </div>
-                )}
-
-                {pageState === 'result' && (
-                    <ResultPageComponent 
-                        messages={messages}
-                        onSendMessage={handleSendMessage}
-                        isTyping={isTyping}
-                        onReset={resetAllStates}
-                        isFinished={isFinished}
-                        onCopy={() => handleCopyToClipboard(`${window.location.origin}/result/${resultId}`)}
-                        copyStatus={copyStatus}
-                        strings={currentStrings}
-                    />
-                )}
-            </div>
+        <div className="bg-black">
+            {isLoading && (
+                <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
+                    <p className="text-white text-xl">운명을 읽는 중...</p>
+                </div>
+            )}
+            {error && (
+                 <div className="fixed top-4 right-4 bg-red-600 text-white p-4 rounded-lg z-50">
+                    <p>{error}</p>
+                 </div>
+            )}
+            {renderScene()}
         </div>
     );
 }
