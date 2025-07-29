@@ -475,6 +475,11 @@ function App() {
             setError(currentStrings.errorMessageDefault); 
             return; 
         }
+        // [FIXED] 채팅 시작 전 API 키 유효성 검사
+        if (!GEMINI_API_KEY) {
+            setError("Gemini API 키가 설정되지 않았습니다. Netlify 환경 변수를 확인하세요.");
+            return;
+        }
         setMessages([
             { sender: 'ai', text: '흠… 널 보니, 뭔가 묘한 기운이 흐르는데?' },
             { sender: 'ai', text: '잠깐… 내가 보기엔 네 눈빛이 심상치 않다.' },
@@ -488,8 +493,9 @@ function App() {
         setIsTyping(true);
         setError('');
 
+        // [FIXED] 함수 시작 시점에 API 키 재확인 및 오류 메시지 채팅창에 표시
         if (!GEMINI_API_KEY) {
-            setError("Gemini API 키가 설정되지 않았습니다. Netlify 환경 변수를 확인하세요.");
+            setMessages(prev => [...prev, { sender: 'ai', text: "이런, 지금은 하늘의 뜻을 읽을 수가 없네. API 키 설정을 확인해줘." }]);
             setIsTyping(false);
             return;
         }
