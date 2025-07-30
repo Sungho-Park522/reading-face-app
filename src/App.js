@@ -124,19 +124,18 @@ function App() {
             });
             try {
                 await Promise.all(promises);
-                setImagesLoaded(true);
+                setTimeout(() => setImagesLoaded(true), 1000); // 로딩 메시지를 잠시 보여주기 위한 딜레이
             } catch (error) {
                 console.error("Failed to load apprentice images", error);
-                setImagesLoaded(true); // 에러가 나도 일단 진행
+                setTimeout(() => setImagesLoaded(true), 1000); // 에러가 나도 일단 진행
             }
         };
         
-        // 애니메이션 타이밍 제어
         const titleTimer = setTimeout(() => setAnimationState(s => ({ ...s, showTitle: true })), 500);
         const loadingMessageTimer = setTimeout(() => {
             setShowLoadingMessage(true);
             preloadImages();
-        }, 2500); // 제목 나오고 2초 후 로딩 메시지 표시
+        }, 2500);
 
         return () => {
             clearTimeout(titleTimer);
@@ -147,14 +146,13 @@ function App() {
     useEffect(() => {
         if (!imagesLoaded) return;
 
-        // 이미지가 로드되면 로딩 메시지 숨기고 제자 등장 애니메이션 시작
         setShowLoadingMessage(false);
 
         const timers = [
             setTimeout(() => setAnimationState(s => ({ ...s, showApprentice: true })), 500),
         ];
         
-        let sequenceTimer = 2000; // 제자 등장 후 1.5초 뒤
+        let sequenceTimer = 2000;
         apprenticeSequence.forEach((step, index) => {
             timers.push(
                 setTimeout(() => {
@@ -219,7 +217,6 @@ function App() {
                 <p className="text-xl md:text-2xl text-indigo-200 text-shadow">운명의 실타래를 풀어, 그대의 길을 밝혀드립니다.</p>
             </div>
 
-            {/* [REVISED] 로딩 메시지 위치 및 조건부 렌더링 */}
             {showLoadingMessage && !imagesLoaded && (
                 <div className="absolute bottom-10 right-10 z-20">
                     <div className="dialogue-bubble relative p-4 bg-white text-gray-800 rounded-xl shadow-2xl">
@@ -229,7 +226,6 @@ function App() {
                 </div>
             )}
 
-            {/* 이미지가 로드된 후에만 제자 및 쪽지 렌더링 */}
             {imagesLoaded && (
                 <>
                     <div className={`absolute bottom-0 right-0 transition-all duration-1000 ease-out ${animationState.showApprentice ? 'translate-x-0 opacity-100' : 'translate-x-full opacity-0'}`}>
