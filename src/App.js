@@ -175,6 +175,7 @@ function App() {
                     src="/apprentice.png" 
                     alt="점쟁이 제자" 
                     className="w-[250px] h-[400px] object-contain drop-shadow-2xl"
+                    onLoad={() => console.log('이미지 로딩 완료')}
                     onError={(e) => { e.target.onerror = null; e.target.src = 'https://placehold.co/250x400/000000/FFFFFF?text=제자+캐릭터'; }}
                 />
 
