@@ -81,7 +81,6 @@ const BGMPlayer = () => {
 };
 
 // 제자 캐릭터 이미지 경로 (URL 방식으로 빌드 에러 방지)
-// 실제 이미지 파일이 준비되면, 'public' 폴더에 넣고 이 URL들을 '/apprentice-standing.png'와 같이 변경하세요.
 const apprenticeImages = {
     standing: 'https://placehold.co/250x400/000000/FFFFFF?text=Standing',
     greeting: 'https://placehold.co/250x400/000000/FFFFFF?text=Greeting',
@@ -100,6 +99,7 @@ function App() {
     const [birthdate, setBirthdate] = useState('');
 
     const [imagesLoaded, setImagesLoaded] = useState(false);
+    const [showLoadingMessage, setShowLoadingMessage] = useState(false);
 
     const [animationState, setAnimationState] = useState({
         showTitle: false,
@@ -124,26 +124,37 @@ function App() {
             });
             try {
                 await Promise.all(promises);
-                setTimeout(() => setImagesLoaded(true), 1000); // 로딩 메시지를 잠시 보여주기 위한 딜레이
+                setImagesLoaded(true);
             } catch (error) {
                 console.error("Failed to load apprentice images", error);
-                setTimeout(() => setImagesLoaded(true), 1000); // 에러가 나도 진행
+                setImagesLoaded(true); // 에러가 나도 일단 진행
             }
         };
-        preloadImages();
+        
+        // 애니메이션 타이밍 제어
+        const titleTimer = setTimeout(() => setAnimationState(s => ({ ...s, showTitle: true })), 500);
+        const loadingMessageTimer = setTimeout(() => {
+            setShowLoadingMessage(true);
+            preloadImages();
+        }, 2500); // 제목 나오고 2초 후 로딩 메시지 표시
+
+        return () => {
+            clearTimeout(titleTimer);
+            clearTimeout(loadingMessageTimer);
+        };
     }, []);
 
     useEffect(() => {
-        // 타이틀은 이미지 로딩과 관계없이 바로 시작
-        const titleTimer = setTimeout(() => setAnimationState(s => ({ ...s, showTitle: true })), 500);
+        if (!imagesLoaded) return;
 
-        if (!imagesLoaded) return; // 이미지가 모두 로드된 후에만 아래 애니메이션 시작
+        // 이미지가 로드되면 로딩 메시지 숨기고 제자 등장 애니메이션 시작
+        setShowLoadingMessage(false);
 
         const timers = [
             setTimeout(() => setAnimationState(s => ({ ...s, showApprentice: true })), 500),
         ];
         
-        let sequenceTimer = 2000;
+        let sequenceTimer = 2000; // 제자 등장 후 1.5초 뒤
         apprenticeSequence.forEach((step, index) => {
             timers.push(
                 setTimeout(() => {
@@ -161,10 +172,7 @@ function App() {
             }, sequenceTimer)
         );
 
-        return () => {
-            clearTimeout(titleTimer);
-            timers.forEach(clearTimeout);
-        };
+        return () => timers.forEach(clearTimeout);
     }, [imagesLoaded]);
 
     const handleNoteClick = () => {
@@ -211,15 +219,18 @@ function App() {
                 <p className="text-xl md:text-2xl text-indigo-200 text-shadow">운명의 실타래를 풀어, 그대의 길을 밝혀드립니다.</p>
             </div>
 
-            {/* [REVISED] 로딩 중일 때와 로딩 완료 후의 컴포넌트를 분리 */}
-            {!imagesLoaded ? (
+            {/* [REVISED] 로딩 메시지 위치 및 조건부 렌더링 */}
+            {showLoadingMessage && !imagesLoaded && (
                 <div className="absolute bottom-10 right-10 z-20">
                     <div className="dialogue-bubble relative p-4 bg-white text-gray-800 rounded-xl shadow-2xl">
                         <p className="font-bold text-lg">앗, 잠시만요!</p>
                         <div className="absolute bottom-0 right-[-10px] w-0 h-0 border-t-[15px] border-t-transparent border-l-[15px] border-l-white"></div>
                     </div>
                 </div>
-            ) : (
+            )}
+
+            {/* 이미지가 로드된 후에만 제자 및 쪽지 렌더링 */}
+            {imagesLoaded && (
                 <>
                     <div className={`absolute bottom-0 right-0 transition-all duration-1000 ease-out ${animationState.showApprentice ? 'translate-x-0 opacity-100' : 'translate-x-full opacity-0'}`}>
                         {Object.entries(apprenticeImages).map(([pose, src]) => (
