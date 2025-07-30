@@ -93,6 +93,13 @@ const apprenticeDialogues = [
     { type: 'normal', text: '스승님께 보여드릴 사진 한 장과 생년월일을 적어주시겠습니까?' },
 ];
 
+// [FIX] 누락되었던 제자 동작 순서 변수를 추가합니다.
+const apprenticeSequence = [
+    { pose: 'greeting', dialogue: apprenticeDialogues[0] }, // "어서 오십시오." 대사와 함께 인사하는 포즈
+    { pose: 'guiding', dialogue: apprenticeDialogues[1] },  // 안내하는 포즈와 함께 다음 대사 출력
+];
+
+
 // --- 메인 앱 컴포넌트 ---
 function App() {
     const [userPhoto, setUserPhoto] = useState(null);
@@ -124,7 +131,6 @@ function App() {
             });
             try {
                 await Promise.all(promises);
-                // [FIXED] 요청하신 console.log를 여기에 추가했습니다.
                 console.log("완료!"); 
                 setTimeout(() => setImagesLoaded(true), 1000);
             } catch (error) {
