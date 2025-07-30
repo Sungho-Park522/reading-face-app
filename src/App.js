@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import * as Tone from 'tone';
+// [FIXED] 'tone' 라이브러리는 동적으로 로드하므로 import 문을 제거합니다.
+// import * as Tone from 'tone';
 
 // --- 아이콘 컴포넌트 ---
 const UploadCloudIcon = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"></path><path d="M12 12v9"></path><path d="m16 16-4-4-4 4"></path></svg>);
@@ -7,41 +8,72 @@ const CalendarIcon = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg"
 const Volume2Icon = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg>);
 const VolumeXIcon = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>);
 
-// --- BGM 플레이어 ---
+// --- BGM 플레이어 (수정됨) ---
 const BGMPlayer = () => {
     const [isMuted, setIsMuted] = useState(false);
+    const [isToneLoaded, setIsToneLoaded] = useState(false);
     const synth = useRef(null);
+    const loop = useRef(null);
 
     useEffect(() => {
-        // Tone.js 신디사이저 설정
-        synth.current = new Tone.AMSynth({
-            harmonicity: 1.5,
-            envelope: { attack: 0.1, decay: 0.2, sustain: 0.1, release: 1.2 },
-            modulation: { type: 'sine' },
-            modulationEnvelope: { attack: 0.5, decay: 0.01 }
-        }).toDestination();
-        
-        const loop = new Tone.Loop(time => {
-            const notes = ['C2', 'E2', 'G2', 'A2'];
-            const randomNote = notes[Math.floor(Math.random() * notes.length)];
-            synth.current.triggerAttackRelease(randomNote, '2n', time);
-        }, '2m').start(0);
-
-        Tone.Transport.start();
+        // Tone.js 스크립트가 이미 로드되었는지 확인
+        if (window.Tone) {
+            setIsToneLoaded(true);
+            return;
+        }
+        // 스크립트를 동적으로 생성하여 로드
+        const script = document.createElement('script');
+        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.77/Tone.js';
+        script.async = true;
+        script.onload = () => {
+            setIsToneLoaded(true);
+        };
+        script.onerror = () => {
+            console.error("Failed to load Tone.js from CDN.");
+        };
+        document.body.appendChild(script);
 
         return () => {
-            Tone.Transport.stop();
-            loop.dispose();
-            if(synth.current) {
-                synth.current.dispose();
-            }
+            // 컴포넌트 언마운트 시 스크립트 제거
+            document.body.removeChild(script);
         };
     }, []);
 
+    useEffect(() => {
+        // Tone.js가 성공적으로 로드된 후에만 오디오 관련 로직 실행
+        if (isToneLoaded) {
+            const Tone = window.Tone;
+            
+            synth.current = new Tone.AMSynth({
+                harmonicity: 1.5,
+                envelope: { attack: 0.1, decay: 0.2, sustain: 0.1, release: 1.2 },
+                modulation: { type: 'sine' },
+                modulationEnvelope: { attack: 0.5, decay: 0.01 }
+            }).toDestination();
+            
+            loop.current = new Tone.Loop(time => {
+                const notes = ['C2', 'E2', 'G2', 'A2'];
+                const randomNote = notes[Math.floor(Math.random() * notes.length)];
+                synth.current.triggerAttackRelease(randomNote, '2n', time);
+            }, '2m').start(0);
+
+            Tone.Transport.start();
+
+            return () => {
+                Tone.Transport.stop();
+                if (loop.current) loop.current.dispose();
+                if (synth.current) synth.current.dispose();
+            };
+        }
+    }, [isToneLoaded]);
+
     const toggleMute = () => {
-        Tone.start(); // 사용자 인터랙션으로 오디오 컨텍스트 시작
-        Tone.getDestination().mute = !isMuted;
-        setIsMuted(!isMuted);
+        if (!isToneLoaded) return;
+        const Tone = window.Tone;
+        Tone.start().then(() => {
+            Tone.getDestination().mute = !isMuted;
+            setIsMuted(!isMuted);
+        });
     };
 
     return (
