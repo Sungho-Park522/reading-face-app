@@ -80,6 +80,11 @@ const BGMPlayer = () => {
     );
 };
 
+// [NEW] 제자 대사를 이곳에서 쉽게 수정할 수 있습니다.
+const apprenticeDialogues = [
+    { type: 'bold', text: '어서 오십시오.' },
+    { type: 'normal', text: '스승님께 보여드릴 사진 한 장과 생년월일을 적어주시겠습니까?' },
+];
 
 // --- 메인 앱 컴포넌트 ---
 function App() {
@@ -91,28 +96,40 @@ function App() {
         showTitle: false,
         showApprentice: false,
         showBubble: false,
-        showNote: false, // 쪽지 보이기
-        expandNote: false, // 쪽지 펼치기 (입력폼으로 전환)
-        showFormContent: false, // 폼 내용 보이기
+        showNote: false,
+        expandNote: false,
+        showFormContent: false,
     });
+    
+    // [NEW] 대사 애니메이션 상태
+    const [displayedDialogues, setDisplayedDialogues] = useState([]);
 
     useEffect(() => {
         // 애니메이션 순차 실행
         const timers = [
             setTimeout(() => setAnimationState(s => ({ ...s, showTitle: true })), 500),
             setTimeout(() => setAnimationState(s => ({ ...s, showApprentice: true })), 2000),
-            setTimeout(() => setAnimationState(s => ({ ...s, showBubble: true })), 3500),
-            setTimeout(() => setAnimationState(s => ({ ...s, showNote: true })), 5000),
+            setTimeout(() => {
+                setAnimationState(s => ({ ...s, showBubble: true }));
+                // 말풍선이 나타난 후 대사를 순차적으로 표시
+                let dialogueTimer = 0;
+                apprenticeDialogues.forEach((dialogue, index) => {
+                    dialogueTimer += 800; // 각 대사 사이의 간격
+                    setTimeout(() => {
+                        setDisplayedDialogues(prev => [...prev, dialogue]);
+                    }, dialogueTimer);
+                });
+            }, 3500),
+            setTimeout(() => setAnimationState(s => ({ ...s, showNote: true })), 6000), // 쪽지 타이밍 조정
         ];
         return () => timers.forEach(clearTimeout);
     }, []);
 
     const handleNoteClick = () => {
         setAnimationState(s => ({ ...s, expandNote: true }));
-        setTimeout(() => setAnimationState(s => ({ ...s, showFormContent: true })), 500); // 폼 확장 후 내용 표시
+        setTimeout(() => setAnimationState(s => ({ ...s, showFormContent: true })), 500);
     };
 
-    // 정보 입력 관련 핸들러
     const [photoPreview, setPhotoPreview] = useState(null);
     const handlePhotoChange = (e) => {
         const file = e.target.files[0];
@@ -133,48 +150,59 @@ function App() {
 
     return (
         <div className="w-full h-screen bg-gray-900 overflow-hidden relative font-gowun">
+            {/* [NEW] '뿅' 애니메이션을 위한 스타일 */}
+            <style>{`
+                @keyframes pop-in {
+                    0% { opacity: 0; transform: scale(0.5); }
+                    100% { opacity: 1; transform: scale(1); }
+                }
+                .dialogue-line {
+                    animation: pop-in 0.3s ease-out forwards;
+                }
+            `}</style>
+
             <BGMPlayer />
-            {/* 배경 효과 */}
             <div className="absolute inset-0 bg-gradient-to-b from-indigo-900/50 to-black z-0"></div>
             <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-10 z-0" />
 
-            {/* 1. 페이드인 텍스트 */}
             <div className={`absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center text-white transition-opacity duration-1000 ${animationState.showTitle ? 'opacity-100' : 'opacity-0'}`}>
                 <h1 className="text-5xl md:text-6xl font-black font-gaegu mb-4 text-shadow-lg">AI 운명 비기</h1>
                 <p className="text-xl md:text-2xl text-indigo-200 text-shadow">운명의 실타래를 풀어, 그대의 길을 밝혀드립니다.</p>
             </div>
 
-            {/* 2. 제자 캐릭터 (PNG 이미지로 교체) */}
             <div className={`absolute bottom-0 right-0 transition-transform duration-1000 ease-out ${animationState.showApprentice ? 'translate-x-0' : 'translate-x-full'}`}>
                 <img 
-                    src="/apprentice.png"
+                    src="/apprentice.png" 
                     alt="점쟁이 제자" 
                     className="w-[250px] h-[400px] object-contain drop-shadow-2xl"
-                    onError={(e) => { e.target.onerror = null; e.target.src = 'https://placehold.co/250x400/png?text=Image+Error'; }}
+                    onError={(e) => { e.target.onerror = null; e.target.src = 'https://placehold.co/250x400/000000/FFFFFF?text=제자+캐릭터'; }}
                 />
 
-                {/* 말풍선 */}
                 <div className={`absolute top-20 -left-48 w-56 p-4 bg-white text-gray-800 rounded-xl shadow-2xl transition-all duration-500 origin-bottom-right ${animationState.showBubble ? 'opacity-100 scale-100' : 'opacity-0 scale-50'}`}>
-                    <p className="font-bold text-lg">어서 오십시오.</p>
-                    <p>스승님께 보여드릴 사진 한 장과 생년월일을 적어주시겠습니까?</p>
+                    {/* [NEW] 대사를 동적으로 렌더링 */}
+                    {displayedDialogues.map((dialogue, index) => (
+                        <p 
+                            key={index}
+                            className={`dialogue-line ${dialogue.type === 'bold' ? 'font-bold text-lg' : ''}`}
+                        >
+                            {dialogue.text}
+                        </p>
+                    ))}
                     <div className="absolute bottom-0 right-[-10px] w-0 h-0 border-t-[15px] border-t-transparent border-l-[15px] border-l-white"></div>
                 </div>
             </div>
             
-            {/* 3. 쪽지 및 입력 폼 애니메이션 */}
             <div 
                 className={`absolute transition-all duration-700 ease-in-out
                 ${animationState.expandNote 
                     ? 'bottom-1/2 translate-y-1/2 left-1/2 -translate-x-1/2 w-[90vw] max-w-md h-auto' 
-                    : 'bottom-1/2 left-1/2 -translate-x-1/2' // 초기 위치 (숨김)
+                    : 'bottom-1/2 left-1/2 -translate-x-1/2'
                 }`}
             >
-                {/* 쪽지를 클릭하면 expandNote가 true가 되어 아래 폼이 나타남 */}
                 <div className={`w-full h-full bg-[#fdf6e3] rounded-lg shadow-2xl border-4 border-[#eaddc7] p-8 flex flex-col items-center justify-center transition-opacity duration-300 ${animationState.expandNote ? 'opacity-100' : 'opacity-0'}`}>
                     <div className={`w-full transition-opacity duration-500 ${animationState.showFormContent ? 'opacity-100' : 'opacity-0'}`}>
                         <h3 className="text-2xl font-bold font-gaegu mb-6 text-center text-gray-800">운명의 기록</h3>
                         <div className="space-y-6 w-full">
-                            {/* 사진 업로드 */}
                             <div className="flex flex-col items-center">
                                 <label htmlFor="photo-upload-form" className="cursor-pointer">
                                     <div className="w-32 h-32 rounded-full bg-gray-200 flex items-center justify-center border-2 border-dashed border-gray-400 hover:bg-gray-300 transition-colors">
@@ -187,7 +215,6 @@ function App() {
                                 <input id="photo-upload-form" type="file" accept="image/*" className="hidden" onChange={handlePhotoChange} />
                                 <p className="text-sm text-gray-600 mt-2">사진을 올려주십시오.</p>
                             </div>
-                            {/* 생년월일 입력 */}
                             <div className="flex flex-col items-center">
                                 <div className="relative w-full max-w-xs">
                                     <CalendarIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -211,7 +238,6 @@ function App() {
                  </div>
             </div>
 
-            {/* 쪽지 (클릭 전) */}
             {!animationState.expandNote && (
                 <div 
                     onClick={handleNoteClick}
