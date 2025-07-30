@@ -80,7 +80,7 @@ const BGMPlayer = () => {
     );
 };
 
-// [NEW] 제자 대사를 이곳에서 쉽게 수정할 수 있습니다.
+// 제자 대사를 이곳에서 쉽게 수정할 수 있습니다.
 const apprenticeDialogues = [
     { type: 'bold', text: '어서 오십시오.' },
     { type: 'normal', text: '스승님께 보여드릴 사진 한 장과 생년월일을 적어주시겠습니까?' },
@@ -95,13 +95,12 @@ function App() {
     const [animationState, setAnimationState] = useState({
         showTitle: false,
         showApprentice: false,
-        showBubble: false,
         showNote: false,
         expandNote: false,
         showFormContent: false,
     });
     
-    // [NEW] 대사 애니메이션 상태
+    // 대사 애니메이션 상태
     const [displayedDialogues, setDisplayedDialogues] = useState([]);
 
     useEffect(() => {
@@ -110,17 +109,16 @@ function App() {
             setTimeout(() => setAnimationState(s => ({ ...s, showTitle: true })), 500),
             setTimeout(() => setAnimationState(s => ({ ...s, showApprentice: true })), 2000),
             setTimeout(() => {
-                setAnimationState(s => ({ ...s, showBubble: true }));
-                // 말풍선이 나타난 후 대사를 순차적으로 표시
+                // 대사를 순차적으로 표시
                 let dialogueTimer = 0;
-                apprenticeDialogues.forEach((dialogue, index) => {
+                apprenticeDialogues.forEach((dialogue) => {
                     dialogueTimer += 800; // 각 대사 사이의 간격
                     setTimeout(() => {
                         setDisplayedDialogues(prev => [...prev, dialogue]);
                     }, dialogueTimer);
                 });
             }, 3500),
-            setTimeout(() => setAnimationState(s => ({ ...s, showNote: true })), 6000), // 쪽지 타이밍 조정
+            setTimeout(() => setAnimationState(s => ({ ...s, showNote: true })), 3500 + (apprenticeDialogues.length * 800) + 500), // 쪽지 타이밍 조정
         ];
         return () => timers.forEach(clearTimeout);
     }, []);
@@ -150,13 +148,13 @@ function App() {
 
     return (
         <div className="w-full h-screen bg-gray-900 overflow-hidden relative font-gowun">
-            {/* [NEW] '뿅' 애니메이션을 위한 스타일 */}
+            {/* '뿅' 애니메이션을 위한 스타일 */}
             <style>{`
                 @keyframes pop-in {
-                    0% { opacity: 0; transform: scale(0.5); }
-                    100% { opacity: 1; transform: scale(1); }
+                    0% { opacity: 0; transform: translateY(10px) scale(0.9); }
+                    100% { opacity: 1; transform: translateY(0) scale(1); }
                 }
-                .dialogue-line {
+                .dialogue-bubble {
                     animation: pop-in 0.3s ease-out forwards;
                 }
             `}</style>
@@ -178,17 +176,16 @@ function App() {
                     onError={(e) => { e.target.onerror = null; e.target.src = 'https://placehold.co/250x400/000000/FFFFFF?text=제자+캐릭터'; }}
                 />
 
-                <div className={`absolute top-20 -left-48 w-56 p-4 bg-white text-gray-800 rounded-xl shadow-2xl transition-all duration-500 origin-bottom-right ${animationState.showBubble ? 'opacity-100 scale-100' : 'opacity-0 scale-50'}`}>
-                    {/* [NEW] 대사를 동적으로 렌더링 */}
+                {/* [REVISED] 말풍선 컨테이너 */}
+                <div className="absolute top-10 -left-64 w-64 space-y-2">
                     {displayedDialogues.map((dialogue, index) => (
-                        <p 
-                            key={index}
-                            className={`dialogue-line ${dialogue.type === 'bold' ? 'font-bold text-lg' : ''}`}
-                        >
-                            {dialogue.text}
-                        </p>
+                        <div key={index} className="dialogue-bubble relative w-fit max-w-full p-4 bg-white text-gray-800 rounded-xl shadow-2xl self-end ml-auto">
+                            <p className={`${dialogue.type === 'bold' ? 'font-bold text-lg' : ''}`}>
+                                {dialogue.text}
+                            </p>
+                            <div className="absolute bottom-0 right-[-10px] w-0 h-0 border-t-[15px] border-t-transparent border-l-[15px] border-l-white"></div>
+                        </div>
                     ))}
-                    <div className="absolute bottom-0 right-[-10px] w-0 h-0 border-t-[15px] border-t-transparent border-l-[15px] border-l-white"></div>
                 </div>
             </div>
             
