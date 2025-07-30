@@ -1,13 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
-// [FIXED] 'tone' 라이브러리는 동적으로 로드하므로 import 문을 제거합니다.
+// 'tone' 라이브러리는 동적으로 로드하므로 import 문을 제거합니다.
 
 // --- 아이콘 컴포넌트 ---
-const UploadCloudIcon = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"></path><path d="M12 12v9"></path><path d="m16 16-4-4-4 4"></path></svg>);
+// [FIXED] viewBox 속성의 오타를 수정했습니다.
+const UploadCloudIcon = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"></path><path d="M12 12v9"></path><path d="m16 16-4-4-4 4"></path></svg>);
 const CalendarIcon = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>);
 const Volume2Icon = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg>);
 const VolumeXIcon = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>);
 
-// --- BGM 플레이어 (수정됨) ---
+// --- BGM 플레이어 ---
 const BGMPlayer = () => {
     const [isMuted, setIsMuted] = useState(false);
     const [isToneLoaded, setIsToneLoaded] = useState(false);
@@ -15,25 +16,18 @@ const BGMPlayer = () => {
     const loop = useRef(null);
 
     useEffect(() => {
-        // Tone.js 스크립트가 이미 로드되었는지 확인
         if (window.Tone) {
             setIsToneLoaded(true);
             return;
         }
-        // 스크립트를 동적으로 생성하여 로드
         const script = document.createElement('script');
         script.src = 'https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.77/Tone.js';
         script.async = true;
-        script.onload = () => {
-            setIsToneLoaded(true);
-        };
-        script.onerror = () => {
-            console.error("Failed to load Tone.js from CDN.");
-        };
+        script.onload = () => setIsToneLoaded(true);
+        script.onerror = () => console.error("Failed to load Tone.js from CDN.");
         document.body.appendChild(script);
 
         return () => {
-            // 컴포넌트 언마운트 시 스크립트 제거
             if (document.body.contains(script)) {
                 document.body.removeChild(script);
             }
@@ -41,7 +35,6 @@ const BGMPlayer = () => {
     }, []);
 
     useEffect(() => {
-        // Tone.js가 성공적으로 로드된 후에만 오디오 관련 로직 실행
         if (isToneLoaded) {
             const Tone = window.Tone;
             
@@ -55,7 +48,7 @@ const BGMPlayer = () => {
             loop.current = new Tone.Loop(time => {
                 const notes = ['C2', 'E2', 'G2', 'A2'];
                 const randomNote = notes[Math.floor(Math.random() * notes.length)];
-                synth.current.triggerAttackRelease(randomNote, '2n', time);
+                if(synth.current) synth.current.triggerAttackRelease(randomNote, '2n', time);
             }, '2m').start(0);
 
             Tone.Transport.start();
@@ -74,7 +67,9 @@ const BGMPlayer = () => {
         if (!isToneLoaded) return;
         const Tone = window.Tone;
         Tone.start().then(() => {
-            Tone.getDestination().mute = !isMuted;
+            if (Tone.getDestination()) {
+                Tone.getDestination().mute = !isMuted;
+            }
             setIsMuted(!isMuted);
         });
     };
@@ -89,8 +84,7 @@ const BGMPlayer = () => {
 
 // --- 메인 앱 컴포넌트 ---
 function App() {
-    // [FIXED] 아직 사용하지 않는 scene 상태 변수 제거
-    // const [scene, setScene] = useState('intro'); // intro, input, ...
+    // const [scene, setScene] = useState('intro'); // 향후 단계에서 사용될 상태
     const [userPhoto, setUserPhoto] = useState(null);
     const [birthdate, setBirthdate] = useState('');
 
