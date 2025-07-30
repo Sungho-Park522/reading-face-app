@@ -219,16 +219,23 @@ function App() {
                     <div className="w-[250px] h-[400px]"></div>
                 )}
                 
+                {/* =================================================================
+                    [MODIFIED] 두 말풍선의 스타일을 완전히 동일하게 통일했습니다.
+                   ================================================================= */}
                 {!isReady ? (
-                    <div className="absolute top-20 -left-60 w-56 p-4 bg-white text-gray-800 rounded-xl shadow-2xl animate-[pop-in_0.5s_ease-out_forwards]">
+                    // [로딩 중 말풍선]
+                    <div className="absolute top-20 -left-56 w-56 p-4 bg-white text-gray-800 rounded-xl shadow-2xl animate-[pop-in_0.5s_ease-out_forwards]">
                         <p className="font-bold text-lg">잠시만요 나가고 있어요!</p>
-                        <div className="absolute top-1/2 -translate-y-1/2 right-[-10px] w-0 h-0 border-t-[10px] border-t-transparent border-b-[10px] border-b-transparent border-l-[10px] border-l-white"></div>
+                        {/* 꼬리 모양과 위치를 로딩 후 말풍선과 동일하게 맞춤 */}
+                        <div className="absolute bottom-0 right-[-10px] w-0 h-0 border-t-[15px] border-t-transparent border-l-[15px] border-l-white"></div>
                     </div>
                 ) : (
-                    <div className="absolute top-20 -left-48 w-56 p-4 bg-white text-gray-800 rounded-xl shadow-2xl animate-[pop-in_0.5s_ease-out_forwards]">
+                    // [로딩 완료 후 말풍선]
+                    <div className="absolute top-20 -left-56 w-56 p-4 bg-white text-gray-800 rounded-xl shadow-2xl animate-[pop-in_0.5s_ease-out_forwards]">
                         {displayedDialogues.map((dialogue, index) => (
                             <p key={index} className={`dialogue-line ${dialogue.type === 'bold' ? 'font-bold text-lg' : ''}`}>{dialogue.text}</p>
                         ))}
+                        {/* 기존 꼬리 모양과 위치 */}
                         <div className="absolute bottom-0 right-[-10px] w-0 h-0 border-t-[15px] border-t-transparent border-l-[15px] border-l-white"></div>
                     </div>
                 )}
