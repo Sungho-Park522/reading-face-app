@@ -1,16 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 // 'tone' 라이브러리는 동적으로 로드합니다.
 
-// [NEW] src/assets 폴더에서 이미지를 직접 import 합니다.
-import apprenticeStanding from './assets/apprentice-standing.png';
-import apprenticeGreeting from './assets/apprentice-greeting.png';
-import apprenticeGuiding from './assets/apprentice-guiding.png';
-
 // --- 아이콘 컴포넌트 ---
-const UploadCloudIcon = ({ className }) => (<svg xmlns="http://www.w.3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"></path><path d="M12 12v9"></path><path d="m16 16-4-4-4 4"></path></svg>);
+const UploadCloudIcon = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"></path><path d="M12 12v9"></path><path d="m16 16-4-4-4 4"></path></svg>);
 const CalendarIcon = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>);
-const Volume2Icon = ({ className }) => (<svg xmlns="http://www.w.3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg>);
-const VolumeXIcon = ({ className }) => (<svg xmlns="http://www.w.3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>);
+const Volume2Icon = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg>);
+const VolumeXIcon = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>);
 
 // --- BGM 플레이어 ---
 const BGMPlayer = () => {
@@ -85,11 +80,12 @@ const BGMPlayer = () => {
     );
 };
 
-// [REVISED] 제자 캐릭터 이미지 경로 (import된 변수 사용)
+// [FIXED] 제자 캐릭터 이미지 경로 (URL 방식으로 변경하여 빌드 에러 해결)
+// 나중에 실제 이미지가 준비되면, 'public' 폴더에 넣고 이 URL들을 '/apprentice-standing.png'와 같이 변경하세요.
 const apprenticeImages = {
-    standing: apprenticeStanding,
-    greeting: apprenticeGreeting,
-    guiding: apprenticeGuiding,
+    standing: 'https://placehold.co/250x400/000000/FFFFFF?text=Standing',
+    greeting: 'https://placehold.co/250x400/000000/FFFFFF?text=Greeting',
+    guiding: 'https://placehold.co/250x400/000000/FFFFFF?text=Guiding',
 };
 
 // 제자 대사 및 포즈 시퀀스
@@ -189,6 +185,18 @@ function App() {
         alert("정보가 접수되었습니다. 다음 단계로 진행합니다.");
     };
 
+    // [FIXED] 이미지 로딩 중일 때 "앗, 잠시만요!" 메시지 표시
+    if (!imagesLoaded) {
+        return (
+            <div className="w-full h-screen bg-gray-900 flex items-center justify-center z-50">
+                <div className="relative p-4 bg-white text-gray-800 rounded-xl shadow-2xl">
+                    <p className="font-bold text-lg">앗, 잠시만요!</p>
+                    <div className="absolute bottom-0 right-[-10px] w-0 h-0 border-t-[15px] border-t-transparent border-l-[15px] border-l-white"></div>
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div className="w-full h-screen bg-gray-900 overflow-hidden relative font-gowun">
             <style>{`
@@ -201,16 +209,6 @@ function App() {
                 }
             `}</style>
             
-            {/* [REVISED] 로딩 화면 */}
-            {!imagesLoaded && (
-                <div className="absolute inset-0 bg-gray-900 flex items-center justify-center z-50">
-                    <div className="relative p-4 bg-white text-gray-800 rounded-xl shadow-2xl">
-                        <p className="font-bold text-lg">앗, 잠시만요!</p>
-                        <div className="absolute bottom-0 right-[-10px] w-0 h-0 border-t-[15px] border-t-transparent border-l-[15px] border-l-white"></div>
-                    </div>
-                </div>
-            )}
-
             <div className={`transition-opacity duration-500 ${imagesLoaded ? 'opacity-100' : 'opacity-0'}`}>
                 <BGMPlayer />
                 <div className="absolute inset-0 bg-gradient-to-b from-indigo-900/50 to-black z-0"></div>
