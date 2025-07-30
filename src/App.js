@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
-// 'tone' 라이브러리는 동적으로 로드하므로 import 문을 제거합니다.
+// 'tone' 라이브러리는 동적으로 로드합니다.
 
 // --- 아이콘 컴포넌트 ---
-// [FIXED] viewBox 속성의 오타를 수정했습니다.
 const UploadCloudIcon = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"></path><path d="M12 12v9"></path><path d="m16 16-4-4-4 4"></path></svg>);
 const CalendarIcon = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>);
 const Volume2Icon = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg>);
@@ -84,7 +83,6 @@ const BGMPlayer = () => {
 
 // --- 메인 앱 컴포넌트 ---
 function App() {
-    // const [scene, setScene] = useState('intro'); // 향후 단계에서 사용될 상태
     const [userPhoto, setUserPhoto] = useState(null);
     const [birthdate, setBirthdate] = useState('');
 
@@ -93,8 +91,9 @@ function App() {
         showTitle: false,
         showApprentice: false,
         showBubble: false,
-        handOverPaper: false,
-        showForm: false,
+        showNote: false, // 쪽지 보이기
+        expandNote: false, // 쪽지 펼치기 (입력폼으로 전환)
+        showFormContent: false, // 폼 내용 보이기
     });
 
     useEffect(() => {
@@ -103,11 +102,15 @@ function App() {
             setTimeout(() => setAnimationState(s => ({ ...s, showTitle: true })), 500),
             setTimeout(() => setAnimationState(s => ({ ...s, showApprentice: true })), 2000),
             setTimeout(() => setAnimationState(s => ({ ...s, showBubble: true })), 3500),
-            setTimeout(() => setAnimationState(s => ({ ...s, handOverPaper: true })), 5000),
-            setTimeout(() => setAnimationState(s => ({ ...s, showForm: true })), 6000),
+            setTimeout(() => setAnimationState(s => ({ ...s, showNote: true })), 5000),
         ];
         return () => timers.forEach(clearTimeout);
     }, []);
+
+    const handleNoteClick = () => {
+        setAnimationState(s => ({ ...s, expandNote: true }));
+        setTimeout(() => setAnimationState(s => ({ ...s, showFormContent: true })), 500); // 폼 확장 후 내용 표시
+    };
 
     // 정보 입력 관련 핸들러
     const [photoPreview, setPhotoPreview] = useState(null);
@@ -125,7 +128,6 @@ function App() {
             return;
         }
         console.log("Submitted Data:", { userPhoto, birthdate });
-        // 다음 Scene으로 전환하는 로직 (예: setScene('entrance'))
         alert("정보가 접수되었습니다. 다음 단계로 진행합니다.");
     };
 
@@ -142,22 +144,14 @@ function App() {
                 <p className="text-xl md:text-2xl text-indigo-200 text-shadow">운명의 실타래를 풀어, 그대의 길을 밝혀드립니다.</p>
             </div>
 
-            {/* 2. 제자 캐릭터 */}
+            {/* 2. 제자 캐릭터 (PNG 이미지로 교체) */}
             <div className={`absolute bottom-0 right-0 transition-transform duration-1000 ease-out ${animationState.showApprentice ? 'translate-x-0' : 'translate-x-full'}`}>
-                {/* 제자 SVG */}
-                <svg width="250" height="400" viewBox="0 0 200 320" className="drop-shadow-2xl">
-                    <defs>
-                        <linearGradient id="robeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" style={{stopColor: '#4338ca', stopOpacity:1}} />
-                            <stop offset="100%" style={{stopColor: '#312e81', stopOpacity:1}} />
-                        </linearGradient>
-                    </defs>
-                    {/* Body */}
-                    <path d="M 100,320 C 50,300 40,200 60,150 L 140,150 C 160,200 150,300 100,320 Z" fill="url(#robeGradient)" />
-                    {/* Head */}
-                    <circle cx="100" cy="120" r="30" fill="#333" />
-                    <circle cx="100" cy="115" r="32" fill="transparent" stroke="#555" strokeWidth="2" />
-                </svg>
+                <img 
+                    src="https://placehold.co/250x400/000000/FFFFFF?text=제자+캐릭터" 
+                    alt="점쟁이 제자" 
+                    className="w-[250px] h-[400px] object-contain drop-shadow-2xl"
+                    onError={(e) => { e.target.onerror = null; e.target.src = 'https://placehold.co/250x400/png?text=Image+Error'; }}
+                />
 
                 {/* 말풍선 */}
                 <div className={`absolute top-20 -left-48 w-56 p-4 bg-white text-gray-800 rounded-xl shadow-2xl transition-all duration-500 origin-bottom-right ${animationState.showBubble ? 'opacity-100 scale-100' : 'opacity-0 scale-50'}`}>
@@ -167,16 +161,20 @@ function App() {
                 </div>
             </div>
             
-            {/* 3. 종이(입력 폼) 애니메이션 */}
-            <div className={`absolute transition-all duration-700 ease-in-out
-                ${animationState.handOverPaper 
+            {/* 3. 쪽지 및 입력 폼 애니메이션 */}
+            <div 
+                className={`absolute transition-all duration-700 ease-in-out
+                ${animationState.expandNote 
                     ? 'bottom-1/2 translate-y-1/2 left-1/2 -translate-x-1/2 w-[90vw] max-w-md h-auto' 
-                    : 'bottom-48 right-40 w-24 h-32'
-                }`}>
-                 <div className="w-full h-full bg-[#fdf6e3] rounded-lg shadow-2xl border-4 border-[#eaddc7] p-8 flex flex-col items-center justify-center">
-                    <div className={`w-full transition-opacity duration-500 ${animationState.showForm ? 'opacity-100' : 'opacity-0'}`}>
+                    : 'bottom-1/2 left-1/2 -translate-x-1/2' // 초기 위치 (숨김)
+                }`}
+            >
+                {/* 쪽지를 클릭하면 expandNote가 true가 되어 아래 폼이 나타남 */}
+                <div className={`w-full h-full bg-[#fdf6e3] rounded-lg shadow-2xl border-4 border-[#eaddc7] p-8 flex flex-col items-center justify-center transition-opacity duration-300 ${animationState.expandNote ? 'opacity-100' : 'opacity-0'}`}>
+                    <div className={`w-full transition-opacity duration-500 ${animationState.showFormContent ? 'opacity-100' : 'opacity-0'}`}>
                         <h3 className="text-2xl font-bold font-gaegu mb-6 text-center text-gray-800">운명의 기록</h3>
                         <div className="space-y-6 w-full">
+                            {/* 사진 업로드 */}
                             <div className="flex flex-col items-center">
                                 <label htmlFor="photo-upload-form" className="cursor-pointer">
                                     <div className="w-32 h-32 rounded-full bg-gray-200 flex items-center justify-center border-2 border-dashed border-gray-400 hover:bg-gray-300 transition-colors">
@@ -189,6 +187,7 @@ function App() {
                                 <input id="photo-upload-form" type="file" accept="image/*" className="hidden" onChange={handlePhotoChange} />
                                 <p className="text-sm text-gray-600 mt-2">사진을 올려주십시오.</p>
                             </div>
+                            {/* 생년월일 입력 */}
                             <div className="flex flex-col items-center">
                                 <div className="relative w-full max-w-xs">
                                     <CalendarIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -212,6 +211,22 @@ function App() {
                  </div>
             </div>
 
+            {/* 쪽지 (클릭 전) */}
+            {!animationState.expandNote && (
+                <div 
+                    onClick={handleNoteClick}
+                    className={`absolute bottom-1/2 left-1/2 -translate-x-1/2 cursor-pointer transition-all duration-500 ease-out
+                    ${animationState.showNote ? 'opacity-100 translate-y-1/2' : 'opacity-0 translate-y-full'}
+                `}>
+                    <img 
+                        src="https://placehold.co/100x140/fdf6e3/333333?text=쪽지" 
+                        alt="쪽지" 
+                        className="w-24 h-32 drop-shadow-2xl hover:scale-110 transition-transform"
+                        onError={(e) => { e.target.onerror = null; e.target.src = 'https://placehold.co/100x140/png?text=Note+Error'; }}
+                    />
+                    <p className="text-white text-center mt-4 font-gaegu text-lg animate-pulse">쪽지를 눌러 기록하십시오.</p>
+                </div>
+            )}
         </div>
     );
 }
