@@ -80,17 +80,10 @@ const BGMPlayer = () => {
     );
 };
 
-// 제자 캐릭터 이미지 경로 (URL 방식으로 빌드 에러 방지)
-const apprenticeImages = {
-    standing: 'https://placehold.co/250x400/000000/FFFFFF?text=Standing',
-    greeting: 'https://placehold.co/250x400/000000/FFFFFF?text=Greeting',
-    guiding: 'https://placehold.co/250x400/000000/FFFFFF?text=Guiding',
-};
-
-// 제자 대사 및 포즈 시퀀스
-const apprenticeSequence = [
-    { pose: 'greeting', dialogue: { type: 'bold', text: '어서 오십시오.' } },
-    { pose: 'guiding', dialogue: { type: 'normal', text: '스승님께 보여드릴 사진 한 장과 생년월일을 적어주시겠습니까?' } },
+// 제자 대사를 이곳에서 쉽게 수정할 수 있습니다.
+const apprenticeDialogues = [
+    { type: 'bold', text: '어서 오십시오.' },
+    { type: 'normal', text: '스승님께 보여드릴 사진 한 장과 생년월일을 적어주시겠습니까?' },
 ];
 
 // --- 메인 앱 컴포넌트 ---
@@ -98,9 +91,7 @@ function App() {
     const [userPhoto, setUserPhoto] = useState(null);
     const [birthdate, setBirthdate] = useState('');
 
-    const [imagesLoaded, setImagesLoaded] = useState(false);
-    const [showLoadingMessage, setShowLoadingMessage] = useState(false);
-
+    // 인트로 애니메이션 상태 관리
     const [animationState, setAnimationState] = useState({
         showTitle: false,
         showApprentice: false,
@@ -109,69 +100,28 @@ function App() {
         showFormContent: false,
     });
     
-    const [currentDialogueIndex, setCurrentDialogueIndex] = useState(-1);
-    const [currentPose, setCurrentPose] = useState('standing');
+    // 대사 애니메이션 상태
+    const [displayedDialogues, setDisplayedDialogues] = useState([]);
 
     useEffect(() => {
-        const preloadImages = async () => {
-            const promises = Object.values(apprenticeImages).map(src => {
-                return new Promise((resolve, reject) => {
-                    const img = new Image();
-                    img.src = src;
-                    img.onload = resolve;
-                    img.onerror = () => reject(new Error(`Failed to load image: ${src}`));
-                });
-            });
-            try {
-                await Promise.all(promises);
-                setTimeout(() => setImagesLoaded(true), 1000); // 로딩 메시지를 잠시 보여주기 위한 딜레이
-            } catch (error) {
-                console.error("Failed to load apprentice images", error);
-                setTimeout(() => setImagesLoaded(true), 1000); // 에러가 나도 일단 진행
-            }
-        };
-        
-        const titleTimer = setTimeout(() => setAnimationState(s => ({ ...s, showTitle: true })), 500);
-        const loadingMessageTimer = setTimeout(() => {
-            setShowLoadingMessage(true);
-            preloadImages();
-        }, 2500);
-
-        return () => {
-            clearTimeout(titleTimer);
-            clearTimeout(loadingMessageTimer);
-        };
-    }, []);
-
-    useEffect(() => {
-        if (!imagesLoaded) return;
-
-        setShowLoadingMessage(false);
-
+        // 애니메이션 순차 실행
         const timers = [
-            setTimeout(() => setAnimationState(s => ({ ...s, showApprentice: true })), 500),
-        ];
-        
-        let sequenceTimer = 2000;
-        apprenticeSequence.forEach((step, index) => {
-            timers.push(
-                setTimeout(() => {
-                    setCurrentPose(step.pose);
-                    setCurrentDialogueIndex(index);
-                }, sequenceTimer)
-            );
-            sequenceTimer += 1800;
-        });
-
-        timers.push(
+            setTimeout(() => setAnimationState(s => ({ ...s, showTitle: true })), 500),
+            setTimeout(() => setAnimationState(s => ({ ...s, showApprentice: true })), 2000),
             setTimeout(() => {
-                setCurrentDialogueIndex(-1);
-                setAnimationState(s => ({ ...s, showNote: true }));
-            }, sequenceTimer)
-        );
-
+                // 대사를 순차적으로 표시
+                let dialogueTimer = 0;
+                apprenticeDialogues.forEach((dialogue) => {
+                    dialogueTimer += 800; // 각 대사 사이의 간격
+                    setTimeout(() => {
+                        setDisplayedDialogues(prev => [...prev, dialogue]);
+                    }, dialogueTimer);
+                });
+            }, 3500),
+            setTimeout(() => setAnimationState(s => ({ ...s, showNote: true })), 3500 + (apprenticeDialogues.length * 800) + 500), // 쪽지 타이밍 조정
+        ];
         return () => timers.forEach(clearTimeout);
-    }, [imagesLoaded]);
+    }, []);
 
     const handleNoteClick = () => {
         setAnimationState(s => ({ ...s, expandNote: true }));
@@ -198,6 +148,7 @@ function App() {
 
     return (
         <div className="w-full h-screen bg-gray-900 overflow-hidden relative font-gowun">
+            {/* '뿅' 애니메이션을 위한 스타일 */}
             <style>{`
                 @keyframes pop-in {
                     0% { opacity: 0; transform: translateY(10px) scale(0.9); }
@@ -207,7 +158,7 @@ function App() {
                     animation: pop-in 0.3s ease-out forwards;
                 }
             `}</style>
-            
+
             <BGMPlayer />
             <div className="absolute inset-0 bg-gradient-to-b from-indigo-900/50 to-black z-0"></div>
             <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-10 z-0" />
@@ -217,101 +168,87 @@ function App() {
                 <p className="text-xl md:text-2xl text-indigo-200 text-shadow">운명의 실타래를 풀어, 그대의 길을 밝혀드립니다.</p>
             </div>
 
-            {showLoadingMessage && !imagesLoaded && (
-                <div className="absolute bottom-10 right-10 z-20">
-                    <div className="dialogue-bubble relative p-4 bg-white text-gray-800 rounded-xl shadow-2xl">
-                        <p className="font-bold text-lg">앗, 잠시만요!</p>
-                        <div className="absolute bottom-0 right-[-10px] w-0 h-0 border-t-[15px] border-t-transparent border-l-[15px] border-l-white"></div>
-                    </div>
+            <div className={`absolute bottom-0 right-0 transition-transform duration-1000 ease-out ${animationState.showApprentice ? 'translate-x-0' : 'translate-x-full'}`}>
+                <img 
+                    src="/apprentice.png" 
+                    alt="점쟁이 제자" 
+                    className="w-[250px] h-[400px] object-contain drop-shadow-2xl"
+                    onError={(e) => { e.target.onerror = null; e.target.src = 'https://placehold.co/250x400/000000/FFFFFF?text=제자+캐릭터'; }}
+                />
+
+                {/* [REVISED] 말풍선 컨테이너 */}
+                <div className="absolute top-10 -left-64 w-64 space-y-2">
+                    {displayedDialogues.map((dialogue, index) => (
+                        <div key={index} className="dialogue-bubble relative w-fit max-w-full p-4 bg-white text-gray-800 rounded-xl shadow-2xl self-end ml-auto">
+                            <p className={`${dialogue.type === 'bold' ? 'font-bold text-lg' : ''}`}>
+                                {dialogue.text}
+                            </p>
+                            <div className="absolute bottom-0 right-[-10px] w-0 h-0 border-t-[15px] border-t-transparent border-l-[15px] border-l-white"></div>
+                        </div>
+                    ))}
                 </div>
-            )}
-
-            {imagesLoaded && (
-                <>
-                    <div className={`absolute bottom-0 right-0 transition-all duration-1000 ease-out ${animationState.showApprentice ? 'translate-x-0 opacity-100' : 'translate-x-full opacity-0'}`}>
-                        {Object.entries(apprenticeImages).map(([pose, src]) => (
-                            <img
-                                key={pose}
-                                src={src}
-                                alt={`점쟁이 제자 ${pose}`}
-                                className={`absolute bottom-0 right-0 w-[250px] h-[400px] object-contain drop-shadow-2xl transition-opacity duration-500 ${currentPose === pose ? 'opacity-100' : 'opacity-0'}`}
-                            />
-                        ))}
-
-                        <div className="absolute top-10 -left-64 w-64">
-                            {currentDialogueIndex !== -1 && (
-                                <div className="dialogue-bubble relative w-fit max-w-full p-4 bg-white text-gray-800 rounded-xl shadow-2xl ml-auto">
-                                    <p className={`${apprenticeSequence[currentDialogueIndex].dialogue.type === 'bold' ? 'font-bold text-lg' : ''}`}>
-                                        {apprenticeSequence[currentDialogueIndex].dialogue.text}
-                                    </p>
-                                    <div className="absolute bottom-0 right-[-10px] w-0 h-0 border-t-[15px] border-t-transparent border-l-[15px] border-l-white"></div>
-                                </div>
-                            )}
-                        </div>
-                    </div>
-                    
-                    <div 
-                        className={`absolute transition-all duration-700 ease-in-out
-                        ${animationState.expandNote 
-                            ? 'bottom-1/2 translate-y-1/2 left-1/2 -translate-x-1/2 w-[90vw] max-w-md h-auto' 
-                            : 'bottom-1/2 left-1/2 -translate-x-1/2'
-                        }`}
-                    >
-                        <div className={`w-full h-full bg-[#fdf6e3] rounded-lg shadow-2xl border-4 border-[#eaddc7] p-8 flex flex-col items-center justify-center transition-opacity duration-300 ${animationState.expandNote ? 'opacity-100' : 'opacity-0'}`}>
-                            <div className={`w-full transition-opacity duration-500 ${animationState.showFormContent ? 'opacity-100' : 'opacity-0'}`}>
-                                <h3 className="text-2xl font-bold font-gaegu mb-6 text-center text-gray-800">운명의 기록</h3>
-                                <div className="space-y-6 w-full">
-                                    <div className="flex flex-col items-center">
-                                        <label htmlFor="photo-upload-form" className="cursor-pointer">
-                                            <div className="w-32 h-32 rounded-full bg-gray-200 flex items-center justify-center border-2 border-dashed border-gray-400 hover:bg-gray-300 transition-colors">
-                                                {photoPreview ? 
-                                                    <img src={photoPreview} alt="Preview" className="w-full h-full rounded-full object-cover" /> :
-                                                    <UploadCloudIcon className="w-8 h-8 text-gray-500" />
-                                                }
-                                            </div>
-                                        </label>
-                                        <input id="photo-upload-form" type="file" accept="image/*" className="hidden" onChange={handlePhotoChange} />
-                                        <p className="text-sm text-gray-600 mt-2">사진을 올려주십시오.</p>
+            </div>
+            
+            <div 
+                className={`absolute transition-all duration-700 ease-in-out
+                ${animationState.expandNote 
+                    ? 'bottom-1/2 translate-y-1/2 left-1/2 -translate-x-1/2 w-[90vw] max-w-md h-auto' 
+                    : 'bottom-1/2 left-1/2 -translate-x-1/2'
+                }`}
+            >
+                <div className={`w-full h-full bg-[#fdf6e3] rounded-lg shadow-2xl border-4 border-[#eaddc7] p-8 flex flex-col items-center justify-center transition-opacity duration-300 ${animationState.expandNote ? 'opacity-100' : 'opacity-0'}`}>
+                    <div className={`w-full transition-opacity duration-500 ${animationState.showFormContent ? 'opacity-100' : 'opacity-0'}`}>
+                        <h3 className="text-2xl font-bold font-gaegu mb-6 text-center text-gray-800">운명의 기록</h3>
+                        <div className="space-y-6 w-full">
+                            <div className="flex flex-col items-center">
+                                <label htmlFor="photo-upload-form" className="cursor-pointer">
+                                    <div className="w-32 h-32 rounded-full bg-gray-200 flex items-center justify-center border-2 border-dashed border-gray-400 hover:bg-gray-300 transition-colors">
+                                        {photoPreview ? 
+                                            <img src={photoPreview} alt="Preview" className="w-full h-full rounded-full object-cover" /> :
+                                            <UploadCloudIcon className="w-8 h-8 text-gray-500" />
+                                        }
                                     </div>
-                                    <div className="flex flex-col items-center">
-                                        <div className="relative w-full max-w-xs">
-                                            <CalendarIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                                            <input
-                                                type="text"
-                                                value={birthdate}
-                                                onChange={(e) => setBirthdate(e.target.value)}
-                                                placeholder="생년월일 (YYYY-MM-DD)"
-                                                className="w-full p-3 pl-10 bg-white border-2 border-gray-300 rounded-lg text-center focus:outline-none focus:border-indigo-500"
-                                            />
-                                        </div>
-                                        <p className="text-sm text-gray-600 mt-2">태어난 날을 알려주십시오.</p>
-                                    </div>
-                                </div>
-                                <div className="mt-8 text-center">
-                                     <button onClick={handleSubmit} className="px-10 py-3 bg-indigo-600 text-white font-bold rounded-lg shadow-lg hover:bg-indigo-700 transition-all transform hover:scale-105">
-                                        스승님께 올리기
-                                    </button>
-                                </div>
+                                </label>
+                                <input id="photo-upload-form" type="file" accept="image/*" className="hidden" onChange={handlePhotoChange} />
+                                <p className="text-sm text-gray-600 mt-2">사진을 올려주십시오.</p>
                             </div>
-                         </div>
-                    </div>
-
-                    {!animationState.expandNote && (
-                        <div 
-                            onClick={handleNoteClick}
-                            className={`absolute bottom-1/2 left-1/2 -translate-x-1/2 cursor-pointer transition-all duration-500 ease-out
-                            ${animationState.showNote ? 'opacity-100 translate-y-1/2' : 'opacity-0 translate-y-full'}
-                        `}>
-                            <img 
-                                src="https://placehold.co/100x140/fdf6e3/333333?text=쪽지" 
-                                alt="쪽지" 
-                                className="w-24 h-32 drop-shadow-2xl hover:scale-110 transition-transform"
-                                onError={(e) => { e.target.onerror = null; e.target.src = 'https://placehold.co/100x140/png?text=Note+Error'; }}
-                            />
-                            <p className="text-white text-center mt-4 font-gaegu text-lg animate-pulse">쪽지를 눌러 기록하십시오.</p>
+                            <div className="flex flex-col items-center">
+                                <div className="relative w-full max-w-xs">
+                                    <CalendarIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                                    <input
+                                        type="text"
+                                        value={birthdate}
+                                        onChange={(e) => setBirthdate(e.target.value)}
+                                        placeholder="생년월일 (YYYY-MM-DD)"
+                                        className="w-full p-3 pl-10 bg-white border-2 border-gray-300 rounded-lg text-center focus:outline-none focus:border-indigo-500"
+                                    />
+                                </div>
+                                <p className="text-sm text-gray-600 mt-2">태어난 날을 알려주십시오.</p>
+                            </div>
                         </div>
-                    )}
-                </>
+                        <div className="mt-8 text-center">
+                             <button onClick={handleSubmit} className="px-10 py-3 bg-indigo-600 text-white font-bold rounded-lg shadow-lg hover:bg-indigo-700 transition-all transform hover:scale-105">
+                                스승님께 올리기
+                            </button>
+                        </div>
+                    </div>
+                 </div>
+            </div>
+
+            {!animationState.expandNote && (
+                <div 
+                    onClick={handleNoteClick}
+                    className={`absolute bottom-1/2 left-1/2 -translate-x-1/2 cursor-pointer transition-all duration-500 ease-out
+                    ${animationState.showNote ? 'opacity-100 translate-y-1/2' : 'opacity-0 translate-y-full'}
+                `}>
+                    <img 
+                        src="https://placehold.co/100x140/fdf6e3/333333?text=쪽지" 
+                        alt="쪽지" 
+                        className="w-24 h-32 drop-shadow-2xl hover:scale-110 transition-transform"
+                        onError={(e) => { e.target.onerror = null; e.target.src = 'https://placehold.co/100x140/png?text=Note+Error'; }}
+                    />
+                    <p className="text-white text-center mt-4 font-gaegu text-lg animate-pulse">쪽지를 눌러 기록하십시오.</p>
+                </div>
             )}
         </div>
     );
