@@ -220,7 +220,7 @@ function App() {
                 )}
                 
                 {!isReady ? (
-                    <div className="absolute top-20 -left-48 w-56 p-4 bg-white text-gray-800 rounded-xl shadow-2xl animate-[pop-in_0.5s_ease-out_forwards]">
+                    <div className="absolute top-20 -left-60 w-56 p-4 bg-white text-gray-800 rounded-xl shadow-2xl animate-[pop-in_0.5s_ease-out_forwards]">
                         <p className="font-bold text-lg">잠시만요 나가고 있어요!</p>
                         <div className="absolute top-1/2 -translate-y-1/2 right-[-10px] w-0 h-0 border-t-[10px] border-t-transparent border-b-[10px] border-b-transparent border-l-[10px] border-l-white"></div>
                     </div>
