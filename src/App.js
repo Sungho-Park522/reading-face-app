@@ -73,7 +73,7 @@ function App() {
     const [photoPreview, setPhotoPreview] = useState(null);
     const [animationState, setAnimationState] = useState({
         showTitle: false,
-        showSubtitle: false, // 부제목 상태 추가
+        showSubtitle: false,
         showApprentice: false,
         showScrollContainer: false,
     });
@@ -83,8 +83,8 @@ function App() {
     const [sequenceStep, setSequenceStep] = useState(0);
     const [displayedDialogues, setDisplayedDialogues] = useState([]);
 
-    // [MODIFIED] 폼 위치 조정을 위한 상태 (20%가 기본값)
-    const [formBottomOffset, setFormBottomOffset] = useState(20);
+    // [MODIFIED] 폼 위치 조정을 위한 상수 (이 값을 조절하세요)
+    const formBottomOffset = 20;
 
     // 1. 이미지 프리로딩
     useEffect(() => {
@@ -96,7 +96,7 @@ function App() {
             img.onload = resolve;
             img.onerror = () => { console.error(`Failed to load image: ${path}`); resolve(); };
         })));
-        const minTimePromise = new Promise(resolve => setTimeout(resolve, 2000)); // 로딩 시간 조정
+        const minTimePromise = new Promise(resolve => setTimeout(resolve, 2000));
         Promise.all([preloadImages(imagePaths), minTimePromise]).then(() => {
             if (isMounted) setIsReady(true);
         });
@@ -107,8 +107,8 @@ function App() {
     useEffect(() => {
         const timers = [
             setTimeout(() => setAnimationState(s => ({ ...s, showTitle: true })), 500),
-            setTimeout(() => setAnimationState(s => ({ ...s, showSubtitle: true })), 1200), // 타이틀 이후 등장
-            setTimeout(() => setAnimationState(s => ({ ...s, showApprentice: true })), 2500), // 부제목 이후 등장
+            setTimeout(() => setAnimationState(s => ({ ...s, showSubtitle: true })), 1200),
+            setTimeout(() => setAnimationState(s => ({ ...s, showApprentice: true })), 2500),
         ];
         return () => timers.forEach(clearTimeout);
     }, []);
@@ -117,12 +117,11 @@ function App() {
     useEffect(() => {
         if (!isReady) return;
 
-        setSequenceStep(0); // 첫 번째 장면으로 초기화
+        setSequenceStep(0);
 
-        const timer1 = setTimeout(() => setSequenceStep(1), 4000); // 4초 후 두 번째 장면
+        const timer1 = setTimeout(() => setSequenceStep(1), 4000);
         const timer2 = setTimeout(() => {
-            setSequenceStep(2); // 8초 후 세 번째 장면 (4 + 4)
-            // 세 번째 장면의 첫 대사가 시작될 때 두루마리 등장
+            setSequenceStep(2);
             setTimeout(() => {
                 setAnimationState(s => ({...s, showScrollContainer: true}));
             }, 500);
@@ -144,7 +143,6 @@ function App() {
         const timers = currentScene.dialogue.map((dialogue, index) => {
             const timer = setTimeout(() => {
                 setDisplayedDialogues(prev => {
-                    // 장면이 바뀌면 이전 대사 초기화
                     if (index === 0) return [dialogue];
                     return [...prev, dialogue];
                 });
@@ -166,7 +164,7 @@ function App() {
         if (!userPhoto || !birthdate) { alert("사진과 생년월일을 모두 입력해주십시오."); return; }
         console.log("Submitted Data:", { userPhoto, birthdate });
         alert("정보가 접수되었습니다. 다음 단계로 진행합니다.");
-        setIsScrollUnfurled(false); // 제출 후 모달 닫기
+        setIsScrollUnfurled(false);
     };
 
     return (
@@ -177,14 +175,13 @@ function App() {
                 @keyframes fade-in { 0% { opacity: 0; } 100% { opacity: 1; } }
                 .apprentice-image-fade-in { animation: fade-in 0.7s ease-in-out forwards; }
 
-                /* 모바일 화면 대응 미디어 쿼리 */
                 @media (max-width: 768px) {
                     .apprentice-container {
-                        right: -50px; /* 제자 캐릭터 오른쪽으로 이동 */
+                        right: -50px;
                         transform: translateX(${animationState.showApprentice ? '0' : '100%'});
                     }
                     .dialogue-bubble {
-                        left: -230px; /* 말풍선 오른쪽으로 이동 */
+                        left: -230px;
                         width: 220px;
                     }
                     .title-container {
@@ -196,7 +193,6 @@ function App() {
             <div className="absolute inset-0 bg-gradient-to-b from-indigo-900/50 to-black z-0"></div>
             <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-10 z-0" />
 
-            {/* [MODIFIED] 타이틀과 부제목 컨테이너 분리 */}
             <div className={`title-container absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center text-white transition-all duration-1000 ${animationState.showTitle ? 'opacity-100' : 'opacity-0 -translate-y-10'}`}>
                 <h1 className="text-5xl md:text-6xl font-black font-gaegu mb-4 text-shadow-lg">AI 운명 비기</h1>
             </div>
@@ -213,7 +209,6 @@ function App() {
                 </div>
             </div>
 
-            {/* 닫힌 두루마리 */}
             <div
                 onClick={() => setIsScrollUnfurled(true)}
                 className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 transition-opacity duration-700
@@ -226,7 +221,6 @@ function App() {
                 </div>
             </div>
 
-            {/* 펼쳐진 두루마리 모달 */}
             {isScrollUnfurled && (
                 <div
                     className="fixed inset-0 z-40 bg-black/70 flex items-center justify-center p-4 animate-[fade-in_0.3s_ease-out]"
@@ -237,7 +231,6 @@ function App() {
                         className="relative w-auto h-full max-h-[95vh] aspect-[9/16]"
                     >
                         <div className="absolute inset-0 bg-contain bg-no-repeat bg-center" style={{ backgroundImage: `url('/scroll-unfurled.png')` }}></div>
-                        {/* [MODIFIED] 폼 위치를 bottom 속성으로 제어 */}
                         <div className="absolute left-1/2 -translate-x-1/2 w-[80%] flex flex-col items-center" style={{ bottom: `${formBottomOffset}%` }}>
                             <div className="flex flex-col items-center mb-6">
                                 <label htmlFor="photo-upload-form" className="cursor-pointer">
