@@ -57,6 +57,7 @@ const BGMPlayer = () => {
     );
 };
 
+
 // --- 제자 시퀀스 설정 ---
 const apprenticeSequence = [
   { image: '/apprentice-standing.png', dialogue: [ { type: 'bold', text: '어서 오세요!' }, { type: 'bold', text: '저는 스승님의 제자 초희입니다.' }, ] },
@@ -75,72 +76,62 @@ function App() {
         showTitle: false,
         showSubtitle: false,
         showApprentice: false,
-        showScrollContainer: false,
+        // showScrollContainer 제거
     });
+    // [MODIFIED] 마지막 대사 종료 여부를 관리하는 상태
+    const [isFinalDialogueFinished, setIsFinalDialogueFinished] = useState(false);
     const [isScrollUnfurled, setIsScrollUnfurled] = useState(false);
     const [sequenceStep, setSequenceStep] = useState(0);
     const [displayedDialogues, setDisplayedDialogues] = useState([]);
     const formBottomOffset = 20;
 
-    // 1. 로딩 단계 컨트롤러
+    // 1. 로딩 단계 컨트롤러 (변경 없음)
     useEffect(() => {
         const imagePaths = [ ...apprenticeSequence.map(s => s.image), '/scroll-unfurled.png', '/scroll-rolled.png' ];
-        const preloadImages = (paths) => Promise.all(
-            paths.map(path => new Promise((resolve) => {
-                const img = new Image();
-                img.src = path;
-                img.onload = resolve;
-                img.onerror = resolve;
-            }))
-        );
-
+        const preloadImages = (paths) => Promise.all(paths.map(path => new Promise(resolve => {
+            const img = new Image();
+            img.src = path;
+            img.onload = resolve;
+            img.onerror = resolve;
+        })));
         const imagePromise = preloadImages(imagePaths);
         const minTimePromise = new Promise(resolve => setTimeout(resolve, 3000));
-
         Promise.all([imagePromise, minTimePromise]).then(() => {
             setAppPhase('intro');
         });
     }, []);
 
-    // 2. 인트로 애니메이션 컨트롤러
+    // 2. 인트로 애니메이션 컨트롤러 (두루마리 관련 코드 제거)
     useEffect(() => {
         if (appPhase !== 'intro') return;
-
         const timers = [];
-
         timers.push(setTimeout(() => setAnimationState(s => ({ ...s, showTitle: true })), 500));
         timers.push(setTimeout(() => setAnimationState(s => ({ ...s, showSubtitle: true })), 1200));
         timers.push(setTimeout(() => setAnimationState(s => ({ ...s, showApprentice: true })), 2500));
-        
         const scene1StartTime = 2500 + 4000;
         timers.push(setTimeout(() => setSequenceStep(1), scene1StartTime));
-
         const scene2StartTime = scene1StartTime + 4000;
         timers.push(setTimeout(() => setSequenceStep(2), scene2StartTime));
-
-        const scene2DialogueCount = apprenticeSequence[2].dialogue.length;
-        const scene2DialogueDuration = scene2DialogueCount * 800;
-        const scrollAppearTime = scene2StartTime + scene2DialogueDuration;
-        
-        timers.push(setTimeout(() => {
-            setAnimationState(s => ({ ...s, showScrollContainer: true }));
-        }, scrollAppearTime));
-        
         return () => timers.forEach(clearTimeout);
     }, [appPhase]);
 
-    // 3. 분리된 대사 렌더링 로직
+    // 3. [MODIFIED] 대사 렌더링 및 '마지막 대사 종료' 상태 업데이트
     useEffect(() => {
         if (appPhase !== 'intro' || !animationState.showApprentice) return;
-        
         const currentScene = apprenticeSequence[sequenceStep];
         if (!currentScene) return;
 
         setDisplayedDialogues([]);
         let dialogueTimer = 0;
-        const timers = currentScene.dialogue.map((dialogue) => {
+        const timers = currentScene.dialogue.map((dialogue, index) => {
             const timer = setTimeout(() => {
                 setDisplayedDialogues(prev => [...prev, dialogue]);
+
+                // 마지막 장면의 마지막 대사인지 확인
+                if (sequenceStep === 2 && index === currentScene.dialogue.length - 1) {
+                    // 상태 업데이트!
+                    setIsFinalDialogueFinished(true);
+                }
             }, dialogueTimer);
             dialogueTimer += 800;
             return timer;
@@ -149,7 +140,8 @@ function App() {
         return () => timers.forEach(clearTimeout);
     }, [sequenceStep, animationState.showApprentice, appPhase]);
 
-    // 폼 관련 함수
+
+    // 폼 관련 함수 (변경 없음)
     const handlePhotoChange = (e) => {
         const file = e.target.files[0];
         if (file) { setUserPhoto(file); setPhotoPreview(URL.createObjectURL(file)); }
@@ -167,16 +159,9 @@ function App() {
                 .dialogue-line { animation: pop-in 0.3s ease-out forwards; }
                 @keyframes fade-in { 0% { opacity: 0; } 100% { opacity: 1; } }
                 .apprentice-image-fade-in { animation: fade-in 0.7s ease-in-out forwards; }
-
-                /* [MODIFIED] 모바일 화면 대응 미디어 쿼리 */
                 @media (max-width: 768px) {
-                    .apprentice-container {
-                        right: -50px; /* 제자 캐릭터 오른쪽으로 이동 */
-                    }
-                    .dialogue-bubble {
-                        left: -230px; /* 말풍선 오른쪽으로 이동 */
-                        width: 220px;
-                    }
+                    .apprentice-container { right: -50px; }
+                    .dialogue-bubble { left: -230px; width: 220px; }
                 }
             `}</style>
             <BGMPlayer />
@@ -209,7 +194,8 @@ function App() {
                         </div>
                     </div>
 
-                    <div onClick={() => setIsScrollUnfurled(true)} className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 transition-opacity duration-700 ${animationState.showScrollContainer ? 'opacity-100' : 'opacity-0 pointer-events-none'} ${isScrollUnfurled ? 'opacity-0' : 'opacity-100'}`}>
+                    {/* [MODIFIED] 두루마리 노출 조건을 isFinalDialogueFinished 상태로 변경 */}
+                    <div onClick={() => setIsScrollUnfurled(true)} className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 transition-opacity duration-700 ${isFinalDialogueFinished ? 'opacity-100' : 'opacity-0 pointer-events-none'} ${isScrollUnfurled ? 'opacity-0' : 'opacity-100'}`}>
                         <div className="flex flex-col items-center justify-center cursor-pointer">
                             <img src="/scroll-rolled.png" alt="말려있는 두루마리" className="w-24 drop-shadow-2xl transition-transform hover:scale-110" />
                             <p className="text-white text-center mt-4 font-gaegu text-lg animate-pulse">두루마리를 펼쳐주세요.</p>
