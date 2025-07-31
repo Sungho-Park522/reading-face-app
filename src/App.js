@@ -78,12 +78,9 @@ function App() {
         showScrollContainer: false,
     });
     const [isScrollUnfurled, setIsScrollUnfurled] = useState(false);
-
     const [isReady, setIsReady] = useState(false);
     const [sequenceStep, setSequenceStep] = useState(0);
     const [displayedDialogues, setDisplayedDialogues] = useState([]);
-
-    // [MODIFIED] 폼 위치 조정을 위한 상수 (이 값을 조절하세요)
     const formBottomOffset = 20;
 
     // 1. 이미지 프리로딩
@@ -113,41 +110,38 @@ function App() {
         return () => timers.forEach(clearTimeout);
     }, []);
 
-    // 3. 제자 장면 전환 및 두루마리 등장 시점 조정
+    // 3. 제자 장면 전환
     useEffect(() => {
         if (!isReady) return;
-
         setSequenceStep(0);
-
         const timer1 = setTimeout(() => setSequenceStep(1), 4000);
-        const timer2 = setTimeout(() => {
-            setSequenceStep(2);
-            setTimeout(() => {
-                setAnimationState(s => ({...s, showScrollContainer: true}));
-            }, 500);
-        }, 8000);
-
+        const timer2 = setTimeout(() => setSequenceStep(2), 8000);
         return () => { clearTimeout(timer1); clearTimeout(timer2); };
     }, [isReady]);
 
-    // 4. 대사 애니메이션
+    // 4. 대사 애니메이션 및 두루마리 등장 로직
     useEffect(() => {
         if (!isReady) return;
+        
         const currentScene = apprenticeSequence[sequenceStep];
-        if (!currentScene || currentScene.dialogue.length === 0) {
-            setDisplayedDialogues([]);
-            return;
-        }
+        if (!currentScene) return;
+
+        // 대사 초기화
+        setDisplayedDialogues([]);
 
         let dialogueTimer = 0;
         const timers = currentScene.dialogue.map((dialogue, index) => {
             const timer = setTimeout(() => {
-                setDisplayedDialogues(prev => {
-                    if (index === 0) return [dialogue];
-                    return [...prev, dialogue];
-                });
+                setDisplayedDialogues(prev => [...prev, dialogue]);
+
+                // [MODIFIED] 마지막 장면의 마지막 대사가 끝나면 두루마리 보이기
+                if (sequenceStep === 2 && index === currentScene.dialogue.length - 1) {
+                    setTimeout(() => {
+                        setAnimationState(s => ({...s, showScrollContainer: true}));
+                    }, 800); // 마지막 대사가 나타나고 잠시 후
+                }
             }, dialogueTimer);
-            dialogueTimer += 800;
+            dialogueTimer += 800; // 대사 간 간격
             return timer;
         });
 
