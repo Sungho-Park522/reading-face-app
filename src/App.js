@@ -138,7 +138,6 @@ function App() {
     }, [sequenceStep, isReady]);
 
     // 5. 폼 관련 함수
-    const handleScrollClick = () => { if (!isScrollUnfurled) { setIsScrollUnfurled(true); } };
     const handlePhotoChange = (e) => {
         const file = e.target.files[0];
         if (file) { setUserPhoto(file); setPhotoPreview(URL.createObjectURL(file)); }
@@ -147,6 +146,7 @@ function App() {
         if (!userPhoto || !birthdate) { alert("사진과 생년월일을 모두 입력해주십시오."); return; }
         console.log("Submitted Data:", { userPhoto, birthdate });
         alert("정보가 접수되었습니다. 다음 단계로 진행합니다.");
+        setIsScrollUnfurled(false); // 제출 후 모달 닫기
     };
 
     return (
@@ -157,7 +157,7 @@ function App() {
                 @keyframes fade-in { 0% { opacity: 0; } 100% { opacity: 1; } }
                 .apprentice-image-fade-in { animation: fade-in 0.7s ease-in-out forwards; }
 
-                /* [MODIFIED] 모바일 화면 대응 미디어 쿼리 */
+                /* 모바일 화면 대응 미디어 쿼리 */
                 @media (max-width: 768px) {
                     .apprentice-container {
                         right: -50px; /* 제자 캐릭터 오른쪽으로 이동 */
@@ -192,35 +192,47 @@ function App() {
                 )}
             </div>
 
+            {/* --- [MODIFIED] 닫힌 두루마리 --- */}
             <div
-                onClick={handleScrollClick}
-                className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 transition-all duration-700 ease-in-out
+                onClick={() => setIsScrollUnfurled(true)}
+                className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 transition-opacity duration-700
                     ${animationState.showScrollContainer ? 'opacity-100' : 'opacity-0 pointer-events-none'}
-                    ${isScrollUnfurled ? 'w-[90vw] max-w-md h-[70vh] max-h-[700px]' : 'w-32 h-48'}`}
+                    ${isScrollUnfurled ? 'opacity-0' : 'opacity-100'}`} // 펼쳐지면 사라짐
             >
-                <div className={`absolute inset-0 transition-opacity duration-500 ${isScrollUnfurled ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
-                    <div className="absolute inset-0 bg-contain bg-no-repeat bg-center" style={{ backgroundImage: `url('/scroll-unfurled.png')` }}></div>
-                    <div className="relative w-full h-full flex flex-col items-center justify-start pt-[20%]">
-                        <div className="flex flex-col items-center mb-6">
-                            <label htmlFor="photo-upload-form" className="cursor-pointer">
-                                <div className="w-24 h-24 rounded-full bg-black/5 flex items-center justify-center border-2 border-dashed border-yellow-800/50 hover:bg-black/10 transition-colors">
-                                    {photoPreview ? <img src={photoPreview} alt="Preview" className="w-full h-full rounded-full object-cover" /> : <UploadCloudIcon className="w-8 h-8 text-yellow-800/70" />}
-                                </div>
-                            </label>
-                            <input id="photo-upload-form" type="file" accept="image/*" className="hidden" onChange={handlePhotoChange} />
-                        </div>
-                        <div className="relative w-[70%] max-w-xs mb-8">
-                            <input type="text" value={birthdate} onChange={(e) => setBirthdate(e.target.value)} placeholder="생년월일 (YYYY-MM-DD)" className="w-full p-2 text-center text-lg text-[#4a3f35] placeholder:text-yellow-800/50 bg-transparent border-b-2 border-yellow-800/60 focus:outline-none focus:border-yellow-800" />
-                        </div>
-                        <button onClick={handleSubmit} className="px-12 py-3 bg-[#8c2c2c] text-white text-xl font-bold rounded-md shadow-lg hover:bg-[#a13a3a] transition-all transform hover:scale-105">운명 기록하기</button>
-                    </div>
-                </div>
-
-                <div className={`absolute inset-0 flex flex-col items-center justify-center cursor-pointer transition-opacity duration-500 ${!isScrollUnfurled ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+                <div className="flex flex-col items-center justify-center cursor-pointer">
                     <img src="/scroll-rolled.png" alt="말려있는 두루마리" className="w-24 drop-shadow-2xl transition-transform hover:scale-110" />
                     <p className="text-white text-center mt-4 font-gaegu text-lg animate-pulse">두루마리를 펼쳐주세요.</p>
                 </div>
             </div>
+
+            {/* --- [MODIFIED] 펼쳐진 두루마리 (모달) --- */}
+            {isScrollUnfurled && (
+                <div
+                    className="fixed inset-0 z-40 bg-black/70 flex items-center justify-center p-4 animate-[fade-in_0.3s_ease-out]"
+                    onClick={() => setIsScrollUnfurled(false)} // 배경 클릭 시 닫기
+                >
+                    <div
+                        onClick={(e) => e.stopPropagation()} // 폼 클릭 시 닫힘 방지
+                        className="relative w-auto h-full max-h-[95vh] aspect-[9/16]" // 화면 높이에 맞추고 종횡비 유지
+                    >
+                        <div className="absolute inset-0 bg-contain bg-no-repeat bg-center" style={{ backgroundImage: `url('/scroll-unfurled.png')` }}></div>
+                        <div className="relative w-full h-full flex flex-col items-center justify-start pt-[25%] sm:pt-[20%]">
+                            <div className="flex flex-col items-center mb-6">
+                                <label htmlFor="photo-upload-form" className="cursor-pointer">
+                                    <div className="w-24 h-24 rounded-full bg-black/5 flex items-center justify-center border-2 border-dashed border-yellow-800/50 hover:bg-black/10 transition-colors">
+                                        {photoPreview ? <img src={photoPreview} alt="Preview" className="w-full h-full rounded-full object-cover" /> : <UploadCloudIcon className="w-8 h-8 text-yellow-800/70" />}
+                                    </div>
+                                </label>
+                                <input id="photo-upload-form" type="file" accept="image/*" className="hidden" onChange={handlePhotoChange} />
+                            </div>
+                            <div className="relative w-[70%] max-w-xs mb-8">
+                                <input type="text" value={birthdate} onChange={(e) => setBirthdate(e.target.value)} placeholder="생년월일 (YYYY-MM-DD)" className="w-full p-2 text-center text-lg text-[#4a3f35] placeholder:text-yellow-800/50 bg-transparent border-b-2 border-yellow-800/60 focus:outline-none focus:border-yellow-800" />
+                            </div>
+                            <button onClick={handleSubmit} className="px-12 py-3 bg-[#8c2c2c] text-white text-xl font-bold rounded-md shadow-lg hover:bg-[#a13a3a] transition-all transform hover:scale-105">운명 기록하기</button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
