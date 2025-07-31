@@ -125,9 +125,9 @@ function App() {
         const scene2DialogueDuration = (scene2DialogueCount) * 800; // 각 대사 간 0.8초
         const scrollAppearTime = scene2StartTime + scene2DialogueDuration;
         
-        timers.push(setTimeout(() => {
-            setAnimationState(s => ({ ...s, showScrollContainer: true }));
-        }, scrollAppearTime));
+        // timers.push(setTimeout(() => {
+        //     setAnimationState(s => ({ ...s, showScrollContainer: true }));
+        // }, scrollAppearTime));
         
         // --- 모든 타이머 정리 ---
         return () => {
