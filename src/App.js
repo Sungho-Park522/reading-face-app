@@ -67,10 +67,7 @@ const apprenticeSequence = [
 
 // --- 메인 앱 컴포넌트 ---
 function App() {
-    // [MODIFIED] 앱의 전체 단계를 관리하는 상태 ('loading', 'intro', 'interactive')
     const [appPhase, setAppPhase] = useState('loading');
-
-    // 기존 상태들
     const [userPhoto, setUserPhoto] = useState(null);
     const [birthdate, setBirthdate] = useState('');
     const [photoPreview, setPhotoPreview] = useState(null);
@@ -85,7 +82,7 @@ function App() {
     const [displayedDialogues, setDisplayedDialogues] = useState([]);
     const formBottomOffset = 20;
 
-    // 1. [MODIFIED] 로딩 단계 컨트롤러
+    // 1. 로딩 단계 컨트롤러
     useEffect(() => {
         const imagePaths = [ ...apprenticeSequence.map(s => s.image), '/scroll-unfurled.png', '/scroll-rolled.png' ];
         const preloadImages = (paths) => Promise.all(
@@ -93,51 +90,46 @@ function App() {
                 const img = new Image();
                 img.src = path;
                 img.onload = resolve;
-                img.onerror = resolve; // 에러가 나도 진행되도록 resolve 처리
+                img.onerror = resolve;
             }))
         );
 
         const imagePromise = preloadImages(imagePaths);
-        const minTimePromise = new Promise(resolve => setTimeout(resolve, 3000)); // 최소 3초 대기
+        const minTimePromise = new Promise(resolve => setTimeout(resolve, 3000));
 
-        // 이미지 로딩과 최소 대기 시간이 모두 끝나면 'intro' 단계로 전환
         Promise.all([imagePromise, minTimePromise]).then(() => {
             setAppPhase('intro');
         });
-    }, []); // 앱 시작 시 단 한 번만 실행
+    }, []);
 
-    // 2. [MODIFIED] 인트로 애니메이션 컨트롤러
+    // 2. 인트로 애니메이션 컨트롤러
     useEffect(() => {
-        // 'intro' 단계가 아니면 아무것도 실행하지 않음
         if (appPhase !== 'intro') return;
 
         const timers = [];
 
-        // --- 제목, 부제, 제자 등장 ---
         timers.push(setTimeout(() => setAnimationState(s => ({ ...s, showTitle: true })), 500));
         timers.push(setTimeout(() => setAnimationState(s => ({ ...s, showSubtitle: true })), 1200));
         timers.push(setTimeout(() => setAnimationState(s => ({ ...s, showApprentice: true })), 2500));
         
-        // --- 제자 장면 전환 ---
-        const scene1StartTime = 2500 + 4000; // 6.5초
+        const scene1StartTime = 2500 + 4000;
         timers.push(setTimeout(() => setSequenceStep(1), scene1StartTime));
 
-        const scene2StartTime = scene1StartTime + 4000; // 10.5초
+        const scene2StartTime = scene1StartTime + 4000;
         timers.push(setTimeout(() => setSequenceStep(2), scene2StartTime));
 
-        // --- 두루마리 등장 ---
         const scene2DialogueCount = apprenticeSequence[2].dialogue.length;
-        const scene2DialogueDuration = scene2DialogueCount * 800; // 2.4초
-        const scrollAppearTime = scene2StartTime + scene2DialogueDuration; // 12.9초
+        const scene2DialogueDuration = scene2DialogueCount * 800;
+        const scrollAppearTime = scene2StartTime + scene2DialogueDuration;
         
         timers.push(setTimeout(() => {
             setAnimationState(s => ({ ...s, showScrollContainer: true }));
         }, scrollAppearTime));
         
         return () => timers.forEach(clearTimeout);
-    }, [appPhase]); // 'appPhase'가 변경될 때만 실행
+    }, [appPhase]);
 
-    // 3. [MODIFIED] 분리된 대사 렌더링 로직 (제자 등장 후 부터 동작)
+    // 3. 분리된 대사 렌더링 로직
     useEffect(() => {
         if (appPhase !== 'intro' || !animationState.showApprentice) return;
         
@@ -158,17 +150,39 @@ function App() {
     }, [sequenceStep, animationState.showApprentice, appPhase]);
 
     // 폼 관련 함수
-    const handlePhotoChange = (e) => { /* ... 코드 동일 ... */ };
-    const handleSubmit = () => { /* ... 코드 동일 ... */ };
+    const handlePhotoChange = (e) => {
+        const file = e.target.files[0];
+        if (file) { setUserPhoto(file); setPhotoPreview(URL.createObjectURL(file)); }
+    };
+    const handleSubmit = () => {
+        if (!userPhoto || !birthdate) { alert("사진과 생년월일을 모두 입력해주십시오."); return; }
+        console.log("Submitted Data:", { userPhoto, birthdate });
+        alert("정보가 접수되었습니다. 다음 단계로 진행합니다.");
+    };
 
     return (
         <div className="w-full h-screen bg-gray-900 overflow-hidden relative font-gowun">
-            <style>{/* ... 스타일 동일 ... */}</style>
+            <style>{`
+                @keyframes pop-in { 0% { opacity: 0; transform: scale(0.5); } 100% { opacity: 1; transform: scale(1); } }
+                .dialogue-line { animation: pop-in 0.3s ease-out forwards; }
+                @keyframes fade-in { 0% { opacity: 0; } 100% { opacity: 1; } }
+                .apprentice-image-fade-in { animation: fade-in 0.7s ease-in-out forwards; }
+
+                /* [MODIFIED] 모바일 화면 대응 미디어 쿼리 */
+                @media (max-width: 768px) {
+                    .apprentice-container {
+                        right: -50px; /* 제자 캐릭터 오른쪽으로 이동 */
+                    }
+                    .dialogue-bubble {
+                        left: -230px; /* 말풍선 오른쪽으로 이동 */
+                        width: 220px;
+                    }
+                }
+            `}</style>
             <BGMPlayer />
             <div className="absolute inset-0 bg-gradient-to-b from-indigo-900/50 to-black z-0"></div>
             <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-10 z-0" />
             
-            {/* --- 로딩 단계 --- */}
             {appPhase === 'loading' && (
                  <div className="absolute bottom-0 right-0 w-[250px] h-[400px] flex items-center justify-center">
                     <div className="dialogue-bubble relative w-56 p-4 bg-white text-gray-800 rounded-xl shadow-2xl animate-pulse">
@@ -178,7 +192,6 @@ function App() {
                  </div>
             )}
 
-            {/* --- 인트로 및 인터랙션 단계 --- */}
             {appPhase === 'intro' && (
                 <>
                     <div className={`absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center text-white transition-all duration-1000 ${animationState.showTitle ? 'opacity-100' : 'opacity-0 -translate-y-10'}`}>
