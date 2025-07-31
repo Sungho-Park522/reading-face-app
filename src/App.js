@@ -84,14 +84,15 @@ const apprenticeSequence = [
   {
     image: '/apprentice-greeting.png',
     dialogue: [
-        { type: 'normal', text: '먼 길 오시느라 고생 많으셨습니다.' }
+        { type: 'bold', text: '먼 길 오시느라 고생 많으셨습니다.' }
     ]
   },
   {
     image: '/apprentice-guiding.png',
     dialogue: [
-        { type: 'normal', text: '스승님께 보여드릴 사진 한 장과,'},
-        { type: 'normal', text: '생년월일을 적어주시겠습니까?' }
+        { type: 'bold', text: '이 쪽지에'},
+        { type: 'bold', text: '스승님께 보여드릴 사진 한 장과'},
+        { type: 'bold', text: '생년월일을 적어주시겠습니까?' }
     ]
   },
 ];
