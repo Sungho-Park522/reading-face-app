@@ -233,7 +233,12 @@ function App() {
                                             className="w-full p-2 text-center text-lg text-[#4a3f35] placeholder:text-yellow-800/50 bg-transparent focus:outline-none"
                                         />
                                     </div>
-                                    <button onClick={handleSubmit} className="px-12 py-3 bg-[#8c2c2c] text-white text-xl font-bold rounded-md shadow-lg hover:bg-[#a13a3a] transition-all transform hover:scale-105">운명 기록하기</button>
+                                    <button
+                                        onClick={handleSubmit}
+                                        className="px-12 py-3 bg-[#5d4037] text-[#f5e6c8] text-xl font-bold rounded-lg shadow-lg shadow-black/30 border border-black/20 hover:bg-[#795548] transition-all transform hover:scale-105 whitespace-nowrap"
+                                    >
+                                        전달하기
+                                    </button>
                                 </div>
                             </div>
                         </div>
