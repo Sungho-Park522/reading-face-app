@@ -85,7 +85,7 @@ function App() {
     // --- 스타일 및 애니메이션 조절 변수 ---
     const formBottomOffset = 20;
     const formWidthPercent = 80;
-    const initialDialogueDelay = 1000; // 대사 시작 전 지연 시간 (1000 = 1초)
+    const initialDialogueDelay = 1000;
 
     // 1. 로딩 단계 컨트롤러
     useEffect(() => {
@@ -129,7 +129,7 @@ function App() {
         if (!currentScene) return;
 
         setDisplayedDialogues([]);
-        let dialogueTimer = initialDialogueDelay; // [MODIFIED] 첫 대사 지연 적용
+        let dialogueTimer = initialDialogueDelay;
         const timers = currentScene.dialogue.map((dialogue, index) => {
             const timer = setTimeout(() => {
                 setDisplayedDialogues(prev => [...prev, dialogue]);
@@ -162,7 +162,6 @@ function App() {
         alert("정보가 접수되었습니다. 다음 단계로 진행합니다.");
     };
 
-    // [MODIFIED] 생년월일 자동 포맷 함수
     const handleBirthdateChange = (e) => {
         let value = e.target.value.replace(/[^\d]/g, '');
         if (value.length > 8) {
@@ -187,14 +186,22 @@ function App() {
 
     return (
         <div className="w-full h-screen bg-gray-900 overflow-hidden relative font-gowun">
+            {/* [MODIFIED] 모바일 화면 스타일링 수정 */}
             <style>{`
                 @keyframes pop-in { 0% { opacity: 0; transform: scale(0.5); } 100% { opacity: 1; transform: scale(1); } }
                 .dialogue-line { animation: pop-in 0.3s ease-out forwards; }
                 @keyframes fade-in { 0% { opacity: 0; } 100% { opacity: 1; } }
                 .apprentice-image-fade-in { animation: fade-in 0.7s ease-in-out forwards; }
+
+                /* 화면 너비가 768px 이하일 때 적용될 스타일 */
                 @media (max-width: 768px) {
-                    .apprentice-container { right: -50px; }
-                    .dialogue-bubble { left: -230px; width: 220px; }
+                    .apprentice-container {
+                        right: -40px; /* 캐릭터를 오른쪽으로 살짝 이동시켜 잘림 방지 및 배치 조정 */
+                    }
+                    .dialogue-bubble {
+                        left: -200px;  /* 말풍선을 캐릭터에 맞게 왼쪽으로 이동 */
+                        width: 190px;   /* 말풍선 너비 축소 */
+                    }
                 }
             `}</style>
             <BGMPlayer />
@@ -220,9 +227,15 @@ function App() {
                     </div>
 
                     <div className={`apprentice-container absolute bottom-0 right-0 transition-transform duration-1000 ease-out ${animationState.showApprentice ? 'translate-x-0' : 'translate-x-full'}`}>
-                        <img key={apprenticeSequence[sequenceStep].image} src={apprenticeSequence[sequenceStep].image} alt="점쟁이 제자" className="w-[250px] h-[400px] object-contain drop-shadow-2xl apprentice-image-fade-in" onError={(e) => { e.target.onerror = null; e.target.src = 'https://placehold.co/250x400/000000/FFFFFF?text=이미지오류'; }} />
-                        <div className={`dialogue-bubble absolute top-20 -left-56 w-56 p-4 bg-white text-gray-800 rounded-xl shadow-2xl transition-opacity duration-300 ${displayedDialogues.length > 0 ? 'opacity-100' : 'opacity-0'}`}>
-                            {displayedDialogues.map((dialogue, index) => ( <p key={index} className={`dialogue-line ${dialogue.type === 'bold' ? 'font-bold text-lg' : ''}`}>{dialogue.text}</p> ))}
+                        {/* [MODIFIED] 모바일에서 이미지 크기를 줄이고 데스크탑에서는 원래 크기를 유지하도록 수정 */}
+                        <img key={apprenticeSequence[sequenceStep].image} src={apprenticeSequence[sequenceStep].image} alt="점쟁이 제자" className="w-[200px] h-[320px] md:w-[250px] md:h-[400px] object-contain drop-shadow-2xl apprentice-image-fade-in" onError={(e) => { e.target.onerror = null; e.target.src = 'https://placehold.co/250x400/000000/FFFFFF?text=이미지오류'; }} />
+                        
+                        {/* [MODIFIED] 모바일에서 말풍선 위치를 아래로 내리고, 데스크탑에서는 원래 위치를 유지하도록 수정 */}
+                        <div className={`dialogue-bubble absolute top-40 md:top-20 -left-56 w-56 p-4 bg-white text-gray-800 rounded-xl shadow-2xl transition-opacity duration-300 ${displayedDialogues.length > 0 ? 'opacity-100' : 'opacity-0'}`}>
+                            {displayedDialogues.map((dialogue, index) => ( 
+                                /* [MODIFIED] 모바일에서 텍스트 크기를 줄이고 데스크탑에서는 원래 크기를 유지하도록 수정 */
+                                <p key={index} className={`dialogue-line ${dialogue.type === 'bold' ? 'font-bold text-base md:text-lg' : ''}`}>{dialogue.text}</p> 
+                            ))}
                             <div className="absolute top-1/2 -translate-y-1/2 right-[-5px] w-0 h-0 border-y-[10px] border-y-transparent border-l-[10px] border-l-white"></div>
                         </div>
                     </div>
@@ -248,7 +261,6 @@ function App() {
                                         <input id="photo-upload-form" type="file" accept="image/*" className="hidden" onChange={handlePhotoChange} />
                                     </div>
                                     <div className="relative w-full max-w-xs mb-8">
-                                        {/* [MODIFIED] onChange 핸들러 변경 및 maxLength 추가 */}
                                         <input
                                             type="text"
                                             value={birthdate}
