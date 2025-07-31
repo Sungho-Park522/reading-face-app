@@ -3,7 +3,6 @@ import React, { useState, useEffect, useRef } from 'react';
 
 // --- 아이콘 컴포넌트들 ---
 const UploadCloudIcon = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"></path><path d="M12 12v9"></path><path d="m16 16-4-4-4 4"></path></svg>);
-// const CalendarIcon = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>);
 const Volume2Icon = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg>);
 const VolumeXIcon = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>);
 
@@ -76,9 +75,10 @@ function App() {
     const [animationState, setAnimationState] = useState({
         showTitle: false,
         showApprentice: false,
-        showScroll: false, // [MODIFIED] 쪽지(Note) 대신 두루마리(Scroll)를 제어
+        showScrollContainer: false, // 두루마리 컨테이너의 등장 여부
     });
-    
+    const [isScrollUnfurled, setIsScrollUnfurled] = useState(false); // [NEW] 두루마리 펼침 상태
+
     const [isReady, setIsReady] = useState(false);
     const [sequenceStep, setSequenceStep] = useState(0);
     const [displayedDialogues, setDisplayedDialogues] = useState([]);
@@ -86,10 +86,10 @@ function App() {
     // 1. 이미지 프리로딩
     useEffect(() => {
         let isMounted = true;
-        // [MODIFIED] 필요한 이미지만 프리로딩하도록 수정
         const imagePaths = [
             ...apprenticeSequence.map(s => s.image),
-            '/scroll-unfurled.png' // 두루마리 배경 이미지
+            '/scroll-unfurled.png',
+            '/scroll-rolled.png', // [NEW] 말려있는 두루마리 이미지 추가
         ];
         const preloadImages = (paths) => Promise.all(paths.map(path => new Promise((resolve) => {
             const img = new Image();
@@ -120,8 +120,7 @@ function App() {
         const timer1 = setTimeout(() => setSequenceStep(1), 5000);
         const timer2 = setTimeout(() => {
             setSequenceStep(2);
-            // [MODIFIED] 마지막 대사 후 두루마리가 나타나도록 설정
-            setAnimationState(s => ({...s, showScroll: true}));
+            setAnimationState(s => ({...s, showScrollContainer: true})); // 두루마리 컨테이너 표시
         }, 10000);
         return () => { clearTimeout(timer1); clearTimeout(timer2); };
     }, [isReady]);
@@ -144,6 +143,11 @@ function App() {
     }, [sequenceStep, isReady]);
 
     // 5. 폼 관련 함수
+    const handleScrollClick = () => {
+        if (!isScrollUnfurled) {
+            setIsScrollUnfurled(true);
+        }
+    };
     const handlePhotoChange = (e) => {
         const file = e.target.files[0];
         if (file) { setUserPhoto(file); setPhotoPreview(URL.createObjectURL(file)); }
@@ -177,45 +181,37 @@ function App() {
             </div>
 
             {/* ==========================================================
-                [MODIFIED] 새로운 두루마리 UI 영역
+                [MODIFIED] 새로운 두루마리 UI 영역 (애니메이션 포함)
                ========================================================== */}
-            <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90vw] max-w-md h-[70vh] max-h-[700px] z-20 transition-opacity duration-700 ease-in-out ${animationState.showScroll ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
-                {/* 배경 두루마리 이미지 */}
-                <div
-                    className="absolute inset-0 bg-contain bg-no-repeat bg-center"
-                    style={{ backgroundImage: `url('/scroll-unfurled.png')` }}
-                ></div>
-                
-                {/* 입력 요소들을 담는 컨테이너 */}
-                <div className="relative w-full h-full flex flex-col items-center justify-start pt-[25%]">
-                    {/* 사진 업로드 */}
-                    <div className="flex flex-col items-center mb-8">
-                        <label htmlFor="photo-upload-form" className="cursor-pointer">
-                            <div className="w-28 h-28 rounded-full bg-black/5 flex items-center justify-center border-2 border-dashed border-yellow-800/50 hover:bg-black/10 transition-colors">
-                                {photoPreview ?
-                                    <img src={photoPreview} alt="Preview" className="w-full h-full rounded-full object-cover" /> :
-                                    <UploadCloudIcon className="w-8 h-8 text-yellow-800/70" />
-                                }
-                            </div>
-                        </label>
-                        <input id="photo-upload-form" type="file" accept="image/*" className="hidden" onChange={handlePhotoChange} />
+            <div
+                onClick={handleScrollClick}
+                className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 transition-all duration-700 ease-in-out
+                    ${animationState.showScrollContainer ? 'opacity-100' : 'opacity-0 pointer-events-none'}
+                    ${isScrollUnfurled ? 'w-[90vw] max-w-md h-[70vh] max-h-[700px]' : 'w-32 h-48'}`}
+            >
+                {/* 펼쳐진 상태 UI */}
+                <div className={`absolute inset-0 transition-opacity duration-500 ${isScrollUnfurled ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+                    <div className="absolute inset-0 bg-contain bg-no-repeat bg-center" style={{ backgroundImage: `url('/scroll-unfurled.png')` }}></div>
+                    <div className="relative w-full h-full flex flex-col items-center justify-start pt-[25%]">
+                        <div className="flex flex-col items-center mb-8">
+                            <label htmlFor="photo-upload-form" className="cursor-pointer">
+                                <div className="w-28 h-28 rounded-full bg-black/5 flex items-center justify-center border-2 border-dashed border-yellow-800/50 hover:bg-black/10 transition-colors">
+                                    {photoPreview ? <img src={photoPreview} alt="Preview" className="w-full h-full rounded-full object-cover" /> : <UploadCloudIcon className="w-8 h-8 text-yellow-800/70" />}
+                                </div>
+                            </label>
+                            <input id="photo-upload-form" type="file" accept="image/*" className="hidden" onChange={handlePhotoChange} />
+                        </div>
+                        <div className="relative w-[70%] max-w-xs mb-12">
+                            <input type="text" value={birthdate} onChange={(e) => setBirthdate(e.target.value)} placeholder="생년월일 (YYYY-MM-DD)" className="w-full p-2 text-center text-lg text-[#4a3f35] placeholder:text-yellow-800/50 bg-transparent border-b-2 border-yellow-800/60 focus:outline-none focus:border-yellow-800" />
+                        </div>
+                        <button onClick={handleSubmit} className="px-12 py-3 bg-[#8c2c2c] text-white text-xl font-bold rounded-md shadow-lg hover:bg-[#a13a3a] transition-all transform hover:scale-105">운명 기록하기</button>
                     </div>
+                </div>
 
-                    {/* 생년월일 입력 */}
-                    <div className="relative w-[70%] max-w-xs mb-12">
-                        <input
-                            type="text"
-                            value={birthdate}
-                            onChange={(e) => setBirthdate(e.target.value)}
-                            placeholder="생년월일 (YYYY-MM-DD)"
-                            className="w-full p-2 text-center text-lg text-[#4a3f35] placeholder:text-yellow-800/50 bg-transparent border-b-2 border-yellow-800/60 focus:outline-none focus:border-yellow-800"
-                        />
-                    </div>
-
-                    {/* 제출 버튼 */}
-                    <button onClick={handleSubmit} className="px-12 py-3 bg-[#8c2c2c] text-white text-xl font-bold rounded-md shadow-lg hover:bg-[#a13a3a] transition-all transform hover:scale-105">
-                        운명 기록하기
-                    </button>
+                {/* 말려있는 상태 UI */}
+                <div className={`absolute inset-0 flex flex-col items-center justify-center cursor-pointer transition-opacity duration-500 ${!isScrollUnfurled ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+                    <img src="/scroll-rolled.png" alt="말려있는 두루마리" className="w-24 drop-shadow-2xl" />
+                    <p className="text-white text-center mt-4 font-gaegu text-lg animate-pulse">두루마리를 펼쳐주세요.</p>
                 </div>
             </div>
         </div>
