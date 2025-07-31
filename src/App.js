@@ -144,38 +144,67 @@ function App() {
     }, [sequenceStep, animationState.showApprentice, appPhase, initialDialogueDelay]);
 
     // 4. 폼 관련 함수
-    const handlePhotoChange = (e) => { /* ... */ };
-    const handleSubmit = () => { /* ... */ };
-    const handleBirthdateChange = (e) => { /* ... */ };
+    const handlePhotoChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setUserPhoto(file);
+            setPhotoPreview(URL.createObjectURL(file));
+        }
+    };
+
+    const handleSubmit = () => {
+        if (!userPhoto || !birthdate) {
+            alert("사진과 생년월일을 모두 입력해주십시오.");
+            return;
+        }
+        console.log("Submitted Data:", { userPhoto, birthdate });
+        alert("정보가 접수되었습니다. 다음 단계로 진행합니다.");
+    };
+
+    const handleBirthdateChange = (e) => {
+        let value = e.target.value.replace(/[^\d]/g, '');
+        if (value.length > 8) {
+            value = value.slice(0, 8);
+        }
+
+        let formattedValue = '';
+        if (value.length > 4) {
+            formattedValue = value.substring(0, 4) + '-';
+            if (value.length > 6) {
+                formattedValue += value.substring(4, 6) + '-' + value.substring(6);
+            } else {
+                formattedValue += value.substring(4);
+            }
+        } else {
+            formattedValue = value;
+        }
+        setBirthdate(formattedValue);
+    };
+
     const isRolledScrollVisible = isFinalDialogueFinished && !isScrollUnfurled;
 
     return (
         <div className="w-full h-screen bg-gray-900 overflow-hidden relative font-gowun">
-            {/* [MODIFIED] 모바일 반응형 스타일 추가 */}
             <style>{`
                 @keyframes pop-in { 0% { opacity: 0; transform: scale(0.5); } 100% { opacity: 1; transform: scale(1); } }
                 .dialogue-line { animation: pop-in 0.3s ease-out forwards; }
                 @keyframes fade-in { 0% { opacity: 0; } 100% { opacity: 1; } }
                 .apprentice-image-fade-in { animation: fade-in 0.7s ease-in-out forwards; }
                 
-                /* --- 모바일 화면 (768px 이하) --- */
                 @media (max-width: 768px) {
                     .title-container h1 {
-                        /* 폰트 크기를 화면 너비에 따라 부드럽게 조절 (최소 2.25rem, 최대 3rem) */
                         font-size: clamp(2.25rem, 10vw, 3rem);
                     }
                     .subtitle-container p {
                         font-size: clamp(1rem, 4vw, 1.125rem);
                     }
                     .apprentice-container {
-                        /* 제자 캐릭터를 중앙 하단에 배치 */
                         left: 50%;
                         right: auto;
                         transform: translateX(-50%);
                         bottom: 20px;
                     }
                     .dialogue-bubble {
-                        /* 말풍선을 제자 머리 위로 이동 */
                         width: 90vw;
                         max-width: 300px;
                         top: -150px;
@@ -183,7 +212,6 @@ function App() {
                         transform: translateX(-50%);
                     }
                     .dialogue-pointer {
-                        /* 말풍선 꼬리를 아래쪽 중앙으로 이동 */
                         top: auto;
                         bottom: -8px;
                         left: 50%;
@@ -192,7 +220,6 @@ function App() {
                         border-color: white transparent transparent transparent;
                     }
                     .rolled-scroll-container {
-                        /* 두루마리를 상단으로 이동 */
                         top: 30%;
                     }
                 }
