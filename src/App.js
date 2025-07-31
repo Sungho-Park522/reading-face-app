@@ -81,7 +81,10 @@ function App() {
     const [isScrollUnfurled, setIsScrollUnfurled] = useState(false);
     const [sequenceStep, setSequenceStep] = useState(0);
     const [displayedDialogues, setDisplayedDialogues] = useState([]);
-    const formBottomOffset = 20;
+    
+    // --- 두루마리 폼 스타일 조절 변수 ---
+    const formBottomOffset = 20; // 폼 하단 여백 (%)
+    const formWidthPercent = 80; // 폼 가로 너비 (%)
 
     // 1. 로딩 단계 컨트롤러
     useEffect(() => {
@@ -103,13 +106,21 @@ function App() {
     useEffect(() => {
         if (appPhase !== 'intro') return;
         const timers = [];
+
+        const subtitleAppearTime = 1200;
+        // [MODIFIED] 부제목 등장 후 2초 뒤에 제자 등장
+        const apprenticeAppearTime = subtitleAppearTime + 2000; // 3200ms
+        
         timers.push(setTimeout(() => setAnimationState(s => ({ ...s, showTitle: true })), 500));
-        timers.push(setTimeout(() => setAnimationState(s => ({ ...s, showSubtitle: true })), 1200));
-        timers.push(setTimeout(() => setAnimationState(s => ({ ...s, showApprentice: true })), 2500));
-        const scene1StartTime = 2500 + 4000;
+        timers.push(setTimeout(() => setAnimationState(s => ({ ...s, showSubtitle: true })), subtitleAppearTime));
+        timers.push(setTimeout(() => setAnimationState(s => ({ ...s, showApprentice: true })), apprenticeAppearTime));
+        
+        // [MODIFIED] 제자 등장 시간에 맞춰 장면 전환 시간 재조정
+        const scene1StartTime = apprenticeAppearTime + 4000;
         timers.push(setTimeout(() => setSequenceStep(1), scene1StartTime));
         const scene2StartTime = scene1StartTime + 4000;
         timers.push(setTimeout(() => setSequenceStep(2), scene2StartTime));
+        
         return () => timers.forEach(clearTimeout);
     }, [appPhase]);
 
@@ -136,22 +147,14 @@ function App() {
     }, [sequenceStep, animationState.showApprentice, appPhase]);
 
     // 폼 관련 함수
-    const handlePhotoChange = (e) => {
-        const file = e.target.files[0];
-        if (file) { setUserPhoto(file); setPhotoPreview(URL.createObjectURL(file)); }
-    };
-    const handleSubmit = () => {
-        if (!userPhoto || !birthdate) { alert("사진과 생년월일을 모두 입력해주십시오."); return; }
-        console.log("Submitted Data:", { userPhoto, birthdate });
-        alert("정보가 접수되었습니다. 다음 단계로 진행합니다.");
-    };
-
-    // [MODIFIED] 두루마리 표시 여부를 결정하는 변수
+    const handlePhotoChange = (e) => { /* ... */ };
+    const handleSubmit = () => { /* ... */ };
     const isRolledScrollVisible = isFinalDialogueFinished && !isScrollUnfurled;
 
     return (
         <div className="w-full h-screen bg-gray-900 overflow-hidden relative font-gowun">
             <style>{`
+                /* ... 스타일 동일 ... */
                 @keyframes pop-in { 0% { opacity: 0; transform: scale(0.5); } 100% { opacity: 1; transform: scale(1); } }
                 .dialogue-line { animation: pop-in 0.3s ease-out forwards; }
                 @keyframes fade-in { 0% { opacity: 0; } 100% { opacity: 1; } }
@@ -191,7 +194,6 @@ function App() {
                         </div>
                     </div>
                     
-                    {/* [MODIFIED] 두루마리 표시 클래스 로직을 단순화 */}
                     <div onClick={() => setIsScrollUnfurled(true)} className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 transition-opacity duration-700 ${isRolledScrollVisible ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
                         <div className="flex flex-col items-center justify-center cursor-pointer">
                             <img src="/scroll-rolled.png" alt="말려있는 두루마리" className="w-24 drop-shadow-2xl transition-transform hover:scale-110" />
@@ -203,7 +205,8 @@ function App() {
                         <div className="fixed inset-0 z-40 bg-black/70 flex items-center justify-center p-4 animate-[fade-in_0.3s_ease-out]" onClick={() => setIsScrollUnfurled(false)}>
                             <div onClick={(e) => e.stopPropagation()} className="relative w-auto h-full max-h-[95vh] aspect-[9/16]">
                                 <div className="absolute inset-0 bg-contain bg-no-repeat bg-center" style={{ backgroundImage: `url('/scroll-unfurled.png')` }}></div>
-                                <div className="absolute left-1/2 -translate-x-1/2 w-[80%] flex flex-col items-center" style={{ bottom: `${formBottomOffset}%` }}>
+                                {/* [MODIFIED] 폼 컨테이너의 가로 사이즈를 변수로 제어 */}
+                                <div className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center" style={{ bottom: `${formBottomOffset}%`, width: `${formWidthPercent}%` }}>
                                     <div className="flex flex-col items-center mb-6">
                                         <label htmlFor="photo-upload-form" className="cursor-pointer">
                                             <div className="w-24 h-24 rounded-full bg-black/5 flex items-center justify-center border-2 border-dashed border-yellow-800/50 hover:bg-black/10 transition-colors">
