@@ -156,14 +156,26 @@ function App() {
     // 4. 장면(sequenceStep)이 바뀔 때마다 대사 애니메이션 처리
     useEffect(() => {
         if (!isReady) return;
-        setDisplayedDialogues([]);
+
         const currentScene = apprenticeSequence[sequenceStep];
-        if (!currentScene) return;
+        if (!currentScene || currentScene.dialogue.length === 0) {
+            setDisplayedDialogues([]);
+            return;
+        }
+
+        // [MODIFIED] 첫 대사는 지연 시간 없이 바로 설정합니다.
+        setDisplayedDialogues([currentScene.dialogue[0]]);
+
+        // [MODIFIED] 두 번째 대사부터 순차적으로 표시합니다.
+        const remainingDialogues = currentScene.dialogue.slice(1);
         let dialogueTimer = 0;
-        currentScene.dialogue.forEach((dialogue) => {
-            dialogueTimer += 800;
-            setTimeout(() => setDisplayedDialogues(prev => [...prev, dialogue]), dialogueTimer);
+        remainingDialogues.forEach((dialogue) => {
+            dialogueTimer += 800; // 0.8초 간격
+            setTimeout(() => {
+                setDisplayedDialogues(prev => [...prev, dialogue]);
+            }, dialogueTimer);
         });
+
     }, [sequenceStep, isReady]);
 
     const handleNoteClick = () => {
