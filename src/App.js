@@ -208,26 +208,23 @@ function App() {
 
             <div className={`absolute bottom-0 right-0 transition-transform duration-1000 ease-out ${animationState.showApprentice ? 'translate-x-0' : 'translate-x-full'}`}>
                 {isReady ? (
-                    <img 
+                    <img
                         key={apprenticeSequence[sequenceStep].image}
                         src={apprenticeSequence[sequenceStep].image}
-                        alt="점쟁이 제자" 
+                        alt="점쟁이 제자"
                         className="w-[250px] h-[400px] object-contain drop-shadow-2xl apprentice-image-fade-in"
                         onError={(e) => { e.target.onerror = null; e.target.src = 'https://placehold.co/250x400/000000/FFFFFF?text=이미지오류'; }}
                     />
                 ) : (
                     <div className="w-[250px] h-[400px]"></div>
                 )}
-                
-                {/* =================================================================
-                    [MODIFIED] 두 말풍선의 스타일을 완전히 동일하게 통일했습니다.
-                   ================================================================= */}
+
                 {!isReady ? (
                     // [로딩 중 말풍선]
                     <div className="absolute top-20 -left-56 w-56 p-4 bg-white text-gray-800 rounded-xl shadow-2xl animate-[pop-in_0.5s_ease-out_forwards]">
                         <p className="font-bold text-lg">잠시만요 나가고 있어요!</p>
-                        {/* 꼬리 모양과 위치를 로딩 후 말풍선과 동일하게 맞춤 */}
-                        <div className="absolute bottom-0 right-[-10px] w-0 h-0 border-t-[15px] border-t-transparent border-l-[15px] border-l-white"></div>
+                        {/* [MODIFIED] 꼬리 모양을 더 명확하게 수정 */}
+                        <div className="absolute bottom-4 right-[-10px] w-0 h-0 border-y-[10px] border-y-transparent border-l-[10px] border-l-white"></div>
                     </div>
                 ) : (
                     // [로딩 완료 후 말풍선]
@@ -235,19 +232,19 @@ function App() {
                         {displayedDialogues.map((dialogue, index) => (
                             <p key={index} className={`dialogue-line ${dialogue.type === 'bold' ? 'font-bold text-lg' : ''}`}>{dialogue.text}</p>
                         ))}
-                        {/* 기존 꼬리 모양과 위치 */}
-                        <div className="absolute bottom-0 right-[-10px] w-0 h-0 border-t-[15px] border-t-transparent border-l-[15px] border-l-white"></div>
+                        {/* [MODIFIED] 꼬리 모양을 더 명확하게 수정 */}
+                        <div className="absolute bottom-4 right-[-10px] w-0 h-0 border-y-[10px] border-y-transparent border-l-[10px] border-l-white"></div>
                     </div>
                 )}
             </div>
-            
+
             {!animationState.expandNote && animationState.showNote && (
-                 <div 
+                 <div
                     onClick={handleNoteClick}
                     className={`absolute bottom-1/2 left-1/2 -translate-x-1/2 cursor-pointer transition-all duration-500 ease-out opacity-100 translate-y-1/2`}>
-                    <img 
-                        src="https://placehold.co/100x140/fdf6e3/333333?text=쪽지" 
-                        alt="쪽지" 
+                    <img
+                        src="https://placehold.co/100x140/fdf6e3/333333?text=쪽지"
+                        alt="쪽지"
                         className="w-24 h-32 drop-shadow-2xl hover:scale-110 transition-transform"
                         onError={(e) => { e.target.onerror = null; e.target.src = 'https://placehold.co/100x140/png?text=Note+Error'; }}
                     />
@@ -255,10 +252,10 @@ function App() {
                 </div>
             )}
 
-            <div 
+            <div
                 className={`absolute transition-all duration-700 ease-in-out
-                ${animationState.expandNote 
-                    ? 'bottom-1/2 translate-y-1/2 left-1/2 -translate-x-1/2 w-[90vw] max-w-md h-auto z-20' 
+                ${animationState.expandNote
+                    ? 'bottom-1/2 translate-y-1/2 left-1/2 -translate-x-1/2 w-[90vw] max-w-md h-auto z-20'
                     : 'bottom-1/2 left-1/2 -translate-x-1/2 pointer-events-none'
                 }`}
             >
@@ -269,7 +266,7 @@ function App() {
                             <div className="flex flex-col items-center">
                                 <label htmlFor="photo-upload-form" className="cursor-pointer">
                                     <div className="w-32 h-32 rounded-full bg-gray-200 flex items-center justify-center border-2 border-dashed border-gray-400 hover:bg-gray-300 transition-colors">
-                                        {photoPreview ? 
+                                        {photoPreview ?
                                             <img src={photoPreview} alt="Preview" className="w-full h-full rounded-full object-cover" /> :
                                             <UploadCloudIcon className="w-8 h-8 text-gray-500" />
                                         }
