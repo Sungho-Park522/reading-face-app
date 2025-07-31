@@ -100,48 +100,56 @@ function App() {
         return () => { isMounted = false; };
     }, []);
 
-    // 2. 기본 애니메이션 순서 (순차적 등장)
-    useEffect(() => {
-        const timers = [
-            setTimeout(() => setAnimationState(s => ({ ...s, showTitle: true })), 500),
-            setTimeout(() => setAnimationState(s => ({ ...s, showSubtitle: true })), 1200),
-            setTimeout(() => setAnimationState(s => ({ ...s, showApprentice: true })), 2500),
-        ];
-        return () => timers.forEach(clearTimeout);
-    }, []);
-
-    // 3. 제자 장면 전환
+    // [MODIFIED] 통합 애니메이션 컨트롤러
     useEffect(() => {
         if (!isReady) return;
-        setSequenceStep(0);
-        const timer1 = setTimeout(() => setSequenceStep(1), 4000);
-        const timer2 = setTimeout(() => setSequenceStep(2), 8000);
-        return () => { clearTimeout(timer1); clearTimeout(timer2); };
+
+        const timers = [];
+
+        // --- 기본 UI 등장 ---
+        timers.push(setTimeout(() => setAnimationState(s => ({ ...s, showTitle: true })), 500));
+        timers.push(setTimeout(() => setAnimationState(s => ({ ...s, showSubtitle: true })), 1200));
+        timers.push(setTimeout(() => setAnimationState(s => ({ ...s, showApprentice: true })), 2500));
+        
+        // --- 제자 장면 전환 타이밍 ---
+        // 초기 sequenceStep은 0이므로 별도 설정 필요 없음 (scene 0 자동 시작)
+        const scene1StartTime = 2500 + 4000; // 제자 등장 후 4초 뒤
+        timers.push(setTimeout(() => setSequenceStep(1), scene1StartTime));
+
+        const scene2StartTime = scene1StartTime + 4000; // scene 1 시작 후 4초 뒤
+        timers.push(setTimeout(() => setSequenceStep(2), scene2StartTime));
+
+        // --- 두루마리 등장 타이밍 ---
+        // 마지막 장면(scene 2)의 대사가 모두 끝난 뒤에 두루마리 표시
+        const scene2DialogueCount = apprenticeSequence[2].dialogue.length;
+        const scene2DialogueDuration = (scene2DialogueCount) * 800; // 각 대사 간 0.8초
+        const scrollAppearTime = scene2StartTime + scene2DialogueDuration;
+        
+        timers.push(setTimeout(() => {
+            setAnimationState(s => ({ ...s, showScrollContainer: true }));
+        }, scrollAppearTime));
+        
+        // --- 모든 타이머 정리 ---
+        return () => {
+            timers.forEach(clearTimeout);
+        };
     }, [isReady]);
 
-    // 4. 대사 애니메이션 및 두루마리 등장 로직
+
+    // [MODIFIED] 분리된 대사 렌더링 로직
     useEffect(() => {
         if (!isReady) return;
         
         const currentScene = apprenticeSequence[sequenceStep];
         if (!currentScene) return;
 
-        // 대사 초기화
-        setDisplayedDialogues([]);
-
+        setDisplayedDialogues([]); // 장면 전환 시 이전 대사 초기화
         let dialogueTimer = 0;
-        const timers = currentScene.dialogue.map((dialogue, index) => {
+        const timers = currentScene.dialogue.map((dialogue) => {
             const timer = setTimeout(() => {
                 setDisplayedDialogues(prev => [...prev, dialogue]);
-
-                // [MODIFIED] 마지막 장면의 마지막 대사가 끝나면 두루마리 보이기
-                if (sequenceStep === 2 && index === currentScene.dialogue.length - 1) {
-                    setTimeout(() => {
-                        setAnimationState(s => ({...s, showScrollContainer: true}));
-                    }, 800); // 마지막 대사가 나타나고 잠시 후
-                }
             }, dialogueTimer);
-            dialogueTimer += 800; // 대사 간 간격
+            dialogueTimer += 800;
             return timer;
         });
 
@@ -149,7 +157,7 @@ function App() {
     }, [sequenceStep, isReady]);
 
 
-    // 5. 폼 관련 함수
+    // 폼 관련 함수 (변경 없음)
     const handlePhotoChange = (e) => {
         const file = e.target.files[0];
         if (file) { setUserPhoto(file); setPhotoPreview(URL.createObjectURL(file)); }
