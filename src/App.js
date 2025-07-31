@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react';
-// 'tone' 라이브러리는 동적으로 로드됩니다.
 
 // --- 아이콘 컴포넌트들 ---
 const UploadCloudIcon = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"></path><path d="M12 12v9"></path><path d="m16 16-4-4-4 4"></path></svg>);
@@ -75,9 +74,9 @@ function App() {
     const [animationState, setAnimationState] = useState({
         showTitle: false,
         showApprentice: false,
-        showScrollContainer: false, // 두루마리 컨테이너의 등장 여부
+        showScrollContainer: false,
     });
-    const [isScrollUnfurled, setIsScrollUnfurled] = useState(false); // [NEW] 두루마리 펼침 상태
+    const [isScrollUnfurled, setIsScrollUnfurled] = useState(false);
 
     const [isReady, setIsReady] = useState(false);
     const [sequenceStep, setSequenceStep] = useState(0);
@@ -86,11 +85,7 @@ function App() {
     // 1. 이미지 프리로딩
     useEffect(() => {
         let isMounted = true;
-        const imagePaths = [
-            ...apprenticeSequence.map(s => s.image),
-            '/scroll-unfurled.png',
-            '/scroll-rolled.png', // [NEW] 말려있는 두루마리 이미지 추가
-        ];
+        const imagePaths = [ ...apprenticeSequence.map(s => s.image), '/scroll-unfurled.png', '/scroll-rolled.png' ];
         const preloadImages = (paths) => Promise.all(paths.map(path => new Promise((resolve) => {
             const img = new Image();
             img.src = path;
@@ -120,7 +115,7 @@ function App() {
         const timer1 = setTimeout(() => setSequenceStep(1), 5000);
         const timer2 = setTimeout(() => {
             setSequenceStep(2);
-            setAnimationState(s => ({...s, showScrollContainer: true})); // 두루마리 컨테이너 표시
+            setAnimationState(s => ({...s, showScrollContainer: true}));
         }, 10000);
         return () => { clearTimeout(timer1); clearTimeout(timer2); };
     }, [isReady]);
@@ -143,11 +138,7 @@ function App() {
     }, [sequenceStep, isReady]);
 
     // 5. 폼 관련 함수
-    const handleScrollClick = () => {
-        if (!isScrollUnfurled) {
-            setIsScrollUnfurled(true);
-        }
-    };
+    const handleScrollClick = () => { if (!isScrollUnfurled) { setIsScrollUnfurled(true); } };
     const handlePhotoChange = (e) => {
         const file = e.target.files[0];
         if (file) { setUserPhoto(file); setPhotoPreview(URL.createObjectURL(file)); }
@@ -165,6 +156,17 @@ function App() {
                 .dialogue-line { animation: pop-in 0.3s ease-out forwards; }
                 @keyframes fade-in { 0% { opacity: 0; } 100% { opacity: 1; } }
                 .apprentice-image-fade-in { animation: fade-in 0.7s ease-in-out forwards; }
+
+                /* [MODIFIED] 모바일 화면 대응 미디어 쿼리 */
+                @media (max-width: 768px) {
+                    .apprentice-container {
+                        right: -50px; /* 제자 캐릭터 오른쪽으로 이동 */
+                    }
+                    .dialogue-bubble {
+                        left: -230px; /* 말풍선 오른쪽으로 이동 */
+                        width: 220px;
+                    }
+                }
             `}</style>
             <BGMPlayer />
             <div className="absolute inset-0 bg-gradient-to-b from-indigo-900/50 to-black z-0"></div>
@@ -175,42 +177,47 @@ function App() {
                 <p className="text-xl md:text-2xl text-indigo-200 text-shadow">운명의 실타래를 풀어, 그대의 길을 밝혀드립니다.</p>
             </div>
 
-            <div className={`absolute bottom-0 right-0 transition-transform duration-1000 ease-out ${animationState.showApprentice ? 'translate-x-0' : 'translate-x-full'}`}>
+            <div className={`apprentice-container absolute bottom-0 right-0 transition-transform duration-1000 ease-out ${animationState.showApprentice ? 'translate-x-0' : 'translate-x-full'}`}>
                 {isReady ? ( <img key={apprenticeSequence[sequenceStep].image} src={apprenticeSequence[sequenceStep].image} alt="점쟁이 제자" className="w-[250px] h-[400px] object-contain drop-shadow-2xl apprentice-image-fade-in" onError={(e) => { e.target.onerror = null; e.target.src = 'https://placehold.co/250x400/000000/FFFFFF?text=이미지오류'; }} /> ) : ( <div className="w-[250px] h-[400px]"></div> )}
-                {!isReady ? ( <div className="absolute top-20 -left-56 w-56 p-4 bg-white text-gray-800 rounded-xl shadow-2xl animate-[pop-in_0.5s_ease-out_forwards]"><p className="font-bold text-lg">잠시만요 나가고 있어요!</p><div className="absolute top-1/2 -translate-y-1/2 right-0 w-0 h-0 border-y-[10px] border-y-transparent border-l-[10px] border-l-white"></div></div> ) : ( <div className="absolute top-20 -left-56 w-56 p-4 bg-white text-gray-800 rounded-xl shadow-2xl animate-[pop-in_0.5s_ease-out_forwards]">{displayedDialogues.map((dialogue, index) => ( <p key={index} className={`dialogue-line ${dialogue.type === 'bold' ? 'font-bold text-lg' : ''}`}>{dialogue.text}</p> ))}<div className="absolute top-1/2 -translate-y-1/2 right-0 w-0 h-0 border-y-[10px] border-y-transparent border-l-[10px] border-l-white"></div></div> )}
+                {!isReady ? (
+                    <div className="dialogue-bubble absolute top-20 -left-56 w-56 p-4 bg-white text-gray-800 rounded-xl shadow-2xl animate-[pop-in_0.5s_ease-out_forwards]">
+                        <p className="font-bold text-lg">잠시만요 나가고 있어요!</p>
+                        <div className="absolute top-1/2 -translate-y-1/2 right-[-5px] w-0 h-0 border-y-[10px] border-y-transparent border-l-[10px] border-l-white"></div>
+                    </div>
+                 ) : (
+                    <div className="dialogue-bubble absolute top-20 -left-56 w-56 p-4 bg-white text-gray-800 rounded-xl shadow-2xl animate-[pop-in_0.5s_ease-out_forwards]">
+                        {displayedDialogues.map((dialogue, index) => ( <p key={index} className={`dialogue-line ${dialogue.type === 'bold' ? 'font-bold text-lg' : ''}`}>{dialogue.text}</p> ))}
+                        <div className="absolute top-1/2 -translate-y-1/2 right-[-5px] w-0 h-0 border-y-[10px] border-y-transparent border-l-[10px] border-l-white"></div>
+                    </div>
+                )}
             </div>
 
-            {/* ==========================================================
-                [MODIFIED] 새로운 두루마리 UI 영역 (애니메이션 포함)
-               ========================================================== */}
             <div
                 onClick={handleScrollClick}
                 className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 transition-all duration-700 ease-in-out
                     ${animationState.showScrollContainer ? 'opacity-100' : 'opacity-0 pointer-events-none'}
                     ${isScrollUnfurled ? 'w-[90vw] max-w-md h-[70vh] max-h-[700px]' : 'w-32 h-48'}`}
             >
-                {/* 펼쳐진 상태 UI */}
                 <div className={`absolute inset-0 transition-opacity duration-500 ${isScrollUnfurled ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
                     <div className="absolute inset-0 bg-contain bg-no-repeat bg-center" style={{ backgroundImage: `url('/scroll-unfurled.png')` }}></div>
-                    <div className="relative w-full h-full flex flex-col items-center justify-start pt-[25%]">
-                        <div className="flex flex-col items-center mb-8">
+                    <div className="relative w-full h-full flex flex-col items-center justify-start pt-[20%]">
+                        <div className="flex flex-col items-center mb-6">
                             <label htmlFor="photo-upload-form" className="cursor-pointer">
-                                <div className="w-28 h-28 rounded-full bg-black/5 flex items-center justify-center border-2 border-dashed border-yellow-800/50 hover:bg-black/10 transition-colors">
+                                <div className="w-24 h-24 rounded-full bg-black/5 flex items-center justify-center border-2 border-dashed border-yellow-800/50 hover:bg-black/10 transition-colors">
                                     {photoPreview ? <img src={photoPreview} alt="Preview" className="w-full h-full rounded-full object-cover" /> : <UploadCloudIcon className="w-8 h-8 text-yellow-800/70" />}
                                 </div>
                             </label>
                             <input id="photo-upload-form" type="file" accept="image/*" className="hidden" onChange={handlePhotoChange} />
                         </div>
-                        <div className="relative w-[70%] max-w-xs mb-12">
+                        <div className="relative w-[70%] max-w-xs mb-8">
                             <input type="text" value={birthdate} onChange={(e) => setBirthdate(e.target.value)} placeholder="생년월일 (YYYY-MM-DD)" className="w-full p-2 text-center text-lg text-[#4a3f35] placeholder:text-yellow-800/50 bg-transparent border-b-2 border-yellow-800/60 focus:outline-none focus:border-yellow-800" />
                         </div>
                         <button onClick={handleSubmit} className="px-12 py-3 bg-[#8c2c2c] text-white text-xl font-bold rounded-md shadow-lg hover:bg-[#a13a3a] transition-all transform hover:scale-105">운명 기록하기</button>
                     </div>
                 </div>
 
-                {/* 말려있는 상태 UI */}
                 <div className={`absolute inset-0 flex flex-col items-center justify-center cursor-pointer transition-opacity duration-500 ${!isScrollUnfurled ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
-                    <img src="/scroll-rolled.png" alt="말려있는 두루마리" className="w-24 drop-shadow-2xl" />
+                    <img src="/scroll-rolled.png" alt="말려있는 두루마리" className="w-24 drop-shadow-2xl transition-transform hover:scale-110" />
                     <p className="text-white text-center mt-4 font-gaegu text-lg animate-pulse">두루마리를 펼쳐주세요.</p>
                 </div>
             </div>
