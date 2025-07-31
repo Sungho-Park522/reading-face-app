@@ -224,7 +224,7 @@ function App() {
                     <div className="absolute top-20 -left-70 w-56 p-4 bg-white text-gray-800 rounded-xl shadow-2xl animate-[pop-in_0.5s_ease-out_forwards]">
                         <p className="font-bold text-lg">잠시만요 나가고 있어요!</p>
                         {/* [MODIFIED] 꼬리 모양을 더 명확하게 수정 */}
-                        <div className="absolute bottom-4 right-[-5px] w-0 h-0 border-y-[10px] border-y-transparent border-l-[10px] border-l-white"></div>
+                        <div className="absolute top-1/2 -translate-y-1/2 right-5 w-0 h-0 border-y-[10px] border-y-transparent border-l-[10px] border-l-white"></div>
                     </div>
                 ) : (
                     // [로딩 완료 후 말풍선]
@@ -233,7 +233,7 @@ function App() {
                             <p key={index} className={`dialogue-line ${dialogue.type === 'bold' ? 'font-bold text-lg' : ''}`}>{dialogue.text}</p>
                         ))}
                         {/* [MODIFIED] 꼬리 모양을 더 명확하게 수정 */}
-                        <div className="absolute bottom-4 right-[-5px] w-0 h-0 border-y-[10px] border-y-transparent border-l-[10px] border-l-white"></div>
+                        <div className="absolute top-1/2 -translate-y-1/2 right-5 w-0 h-0 border-y-[10px] border-y-transparent border-l-[10px] border-l-white"></div>
                     </div>
                 )}
             </div>
