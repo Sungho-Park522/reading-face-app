@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-// 'tone' 라이브러리는 동적으로 로드합니다.
+// 'tone' 라이브러리는 동적으로 로드됩니다.
 
 // --- 아이콘 컴포넌트들 ---
 const UploadCloudIcon = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"></path><path d="M12 12v9"></path><path d="m16 16-4-4-4 4"></path></svg>);
@@ -15,22 +15,14 @@ const BGMPlayer = () => {
     const loop = useRef(null);
 
     useEffect(() => {
-        if (window.Tone) {
-            setIsToneLoaded(true);
-            return;
-        }
+        if (window.Tone) { setIsToneLoaded(true); return; }
         const script = document.createElement('script');
         script.src = 'https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.77/Tone.js';
         script.async = true;
         script.onload = () => setIsToneLoaded(true);
         script.onerror = () => console.error("Failed to load Tone.js from CDN.");
         document.body.appendChild(script);
-
-        return () => {
-            if (document.body.contains(script)) {
-                document.body.removeChild(script);
-            }
-        };
+        return () => { if (document.body.contains(script)) { document.body.removeChild(script); }};
     }, []);
 
     useEffect(() => {
@@ -55,9 +47,7 @@ const BGMPlayer = () => {
         if (!isToneLoaded) return;
         const Tone = window.Tone;
         Tone.start().then(() => {
-            if (Tone.getDestination()) {
-                Tone.getDestination().mute = !isMuted;
-            }
+            if (Tone.getDestination()) { Tone.getDestination().mute = !isMuted; }
             setIsMuted(!isMuted);
         });
     };
@@ -72,26 +62,9 @@ const BGMPlayer = () => {
 
 // --- 제자 시퀀스 설정 ---
 const apprenticeSequence = [
-  {
-    image: '/apprentice-standing.png',
-    dialogue: [
-        { type: 'bold', text: '어서 오십시오.' },
-        { type: 'normal', text: '저는 스승님의 제자입니다.' },
-    ]
-  },
-  {
-    image: '/apprentice-greeting.png',
-    dialogue: [
-        { type: 'normal', text: '먼 길 오시느라 고생 많으셨습니다.' }
-    ]
-  },
-  {
-    image: '/apprentice-guiding.png',
-    dialogue: [
-        { type: 'normal', text: '스승님께 보여드릴 사진 한 장과,'},
-        { type: 'normal', text: '생년월일을 적어주시겠습니까?' }
-    ]
-  },
+  { image: '/apprentice-standing.png', dialogue: [ { type: 'bold', text: '어서 오세요!' }, { type: 'bold', text: '저는 스승님의 제자 초희입니다.' }, ] },
+  { image: '/apprentice-greeting.png', dialogue: [ { type: 'bold', text: '먼 길 오시느라 고생 많으셨습니다.' } ] },
+  { image: '/apprentice-guiding.png', dialogue: [ { type: 'bold', text: '이 두루마리에' }, { type: 'bold', text: '스승님께 보여드릴 사진 한 장과' }, { type: 'bold', text: '생년월일을 기록해주시겠습니까?' } ] },
 ];
 
 
@@ -103,22 +76,20 @@ function App() {
     const [animationState, setAnimationState] = useState({
         showTitle: false,
         showApprentice: false,
-        showNote: false,
-        expandNote: false, // 두루마리 펼침 상태를 이 값으로 제어
+        showScroll: false, // [MODIFIED] 쪽지(Note) 대신 두루마리(Scroll)를 제어
     });
-
+    
     const [isReady, setIsReady] = useState(false);
     const [sequenceStep, setSequenceStep] = useState(0);
     const [displayedDialogues, setDisplayedDialogues] = useState([]);
 
-    // 1. 이미지 프리로딩 및 최소 시간 보장
+    // 1. 이미지 프리로딩
     useEffect(() => {
         let isMounted = true;
+        // [MODIFIED] 필요한 이미지만 프리로딩하도록 수정
         const imagePaths = [
             ...apprenticeSequence.map(s => s.image),
-            '/scroll-rolled.png',
-            '/scroll-top.png',
-            '/scroll-bottom.png'
+            '/scroll-unfurled.png' // 두루마리 배경 이미지
         ];
         const preloadImages = (paths) => Promise.all(paths.map(path => new Promise((resolve) => {
             const img = new Image();
@@ -133,7 +104,7 @@ function App() {
         return () => { isMounted = false; };
     }, []);
 
-    // 2. 기본 애니메이션 순서 제어
+    // 2. 기본 애니메이션 순서
     useEffect(() => {
         const timers = [
             setTimeout(() => setAnimationState(s => ({ ...s, showTitle: true })), 500),
@@ -142,19 +113,20 @@ function App() {
         return () => timers.forEach(clearTimeout);
     }, []);
 
-    // 3. 제자 장면 전환 시퀀스
+    // 3. 제자 장면 전환
     useEffect(() => {
         if (!isReady) return;
         setSequenceStep(0);
         const timer1 = setTimeout(() => setSequenceStep(1), 5000);
         const timer2 = setTimeout(() => {
             setSequenceStep(2);
-            setAnimationState(s => ({...s, showNote: true}));
+            // [MODIFIED] 마지막 대사 후 두루마리가 나타나도록 설정
+            setAnimationState(s => ({...s, showScroll: true}));
         }, 10000);
         return () => { clearTimeout(timer1); clearTimeout(timer2); };
     }, [isReady]);
 
-    // 4. 대사 애니메이션 (첫 대사 즉시 표시)
+    // 4. 대사 애니메이션
     useEffect(() => {
         if (!isReady) return;
         const currentScene = apprenticeSequence[sequenceStep];
@@ -171,19 +143,13 @@ function App() {
         });
     }, [sequenceStep, isReady]);
 
-    // 5. 폼 제출 및 컨트롤 함수
+    // 5. 폼 관련 함수
     const handlePhotoChange = (e) => {
         const file = e.target.files[0];
-        if (file) {
-            setUserPhoto(file);
-            setPhotoPreview(URL.createObjectURL(file));
-        }
+        if (file) { setUserPhoto(file); setPhotoPreview(URL.createObjectURL(file)); }
     };
     const handleSubmit = () => {
-        if (!userPhoto || !birthdate) {
-            alert("사진과 생년월일을 모두 입력해주십시오.");
-            return;
-        }
+        if (!userPhoto || !birthdate) { alert("사진과 생년월일을 모두 입력해주십시오."); return; }
         console.log("Submitted Data:", { userPhoto, birthdate });
         alert("정보가 접수되었습니다. 다음 단계로 진행합니다.");
     };
@@ -195,11 +161,7 @@ function App() {
                 .dialogue-line { animation: pop-in 0.3s ease-out forwards; }
                 @keyframes fade-in { 0% { opacity: 0; } 100% { opacity: 1; } }
                 .apprentice-image-fade-in { animation: fade-in 0.7s ease-in-out forwards; }
-                .scroll-container { position: absolute; bottom: 50%; left: 50%; transform: translate(-50%, 50%); cursor: pointer; }
-                .scroll-content-wrapper { transition: all 0.7s cubic-bezier(0.25, 1, 0.5, 1); transform-origin: top; transform: scaleY(0); height: 0; overflow: hidden; }
-                .scroll-content-wrapper.unfurled { transform: scaleY(1); height: 450px; }
             `}</style>
-
             <BGMPlayer />
             <div className="absolute inset-0 bg-gradient-to-b from-indigo-900/50 to-black z-0"></div>
             <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-10 z-0" />
@@ -210,58 +172,50 @@ function App() {
             </div>
 
             <div className={`absolute bottom-0 right-0 transition-transform duration-1000 ease-out ${animationState.showApprentice ? 'translate-x-0' : 'translate-x-full'}`}>
-                {isReady ? (
-                    <img key={apprenticeSequence[sequenceStep].image} src={apprenticeSequence[sequenceStep].image} alt="점쟁이 제자" className="w-[250px] h-[400px] object-contain drop-shadow-2xl apprentice-image-fade-in" onError={(e) => { e.target.onerror = null; e.target.src = 'https://placehold.co/250x400/000000/FFFFFF?text=이미지오류'; }} />
-                ) : (
-                    <div className="w-[250px] h-[400px]"></div>
-                )}
-                {!isReady ? (
-                    <div className="absolute top-20 -left-70 w-56 p-4 bg-white text-gray-800 rounded-xl shadow-2xl animate-[pop-in_0.5s_ease-out_forwards]">
-                        <p className="font-bold text-lg">잠시만요 나가고 있어요!</p>
-                        <div className="absolute top-1/2 -translate-y-1/2 right-[-10px] w-0 h-0 border-y-[10px] border-y-transparent border-l-[10px] border-l-white"></div>
-                    </div>
-                ) : (
-                    <div className="absolute top-20 -left-70 w-56 p-4 bg-white text-gray-800 rounded-xl shadow-2xl animate-[pop-in_0.5s_ease-out_forwards]">
-                        {displayedDialogues.map((dialogue, index) => (
-                            <p key={index} className={`dialogue-line ${dialogue.type === 'bold' ? 'font-bold text-lg' : ''}`}>{dialogue.text}</p>
-                        ))}
-                        <div className="absolute top-1/2 -translate-y-1/2 right-[-10px] w-0 h-0 border-y-[10px] border-y-transparent border-l-[10px] border-l-white"></div>
-                    </div>
-                )}
+                {isReady ? ( <img key={apprenticeSequence[sequenceStep].image} src={apprenticeSequence[sequenceStep].image} alt="점쟁이 제자" className="w-[250px] h-[400px] object-contain drop-shadow-2xl apprentice-image-fade-in" onError={(e) => { e.target.onerror = null; e.target.src = 'https://placehold.co/250x400/000000/FFFFFF?text=이미지오류'; }} /> ) : ( <div className="w-[250px] h-[400px]"></div> )}
+                {!isReady ? ( <div className="absolute top-20 -left-56 w-56 p-4 bg-white text-gray-800 rounded-xl shadow-2xl animate-[pop-in_0.5s_ease-out_forwards]"><p className="font-bold text-lg">잠시만요 나가고 있어요!</p><div className="absolute top-1/2 -translate-y-1/2 right-0 w-0 h-0 border-y-[10px] border-y-transparent border-l-[10px] border-l-white"></div></div> ) : ( <div className="absolute top-20 -left-56 w-56 p-4 bg-white text-gray-800 rounded-xl shadow-2xl animate-[pop-in_0.5s_ease-out_forwards]">{displayedDialogues.map((dialogue, index) => ( <p key={index} className={`dialogue-line ${dialogue.type === 'bold' ? 'font-bold text-lg' : ''}`}>{dialogue.text}</p> ))}<div className="absolute top-1/2 -translate-y-1/2 right-0 w-0 h-0 border-y-[10px] border-y-transparent border-l-[10px] border-l-white"></div></div> )}
             </div>
 
-            <div onClick={() => !animationState.expandNote && setAnimationState(s => ({ ...s, expandNote: true }))} className={`scroll-container transition-all duration-500 ease-out ${animationState.showNote ? 'opacity-100' : 'opacity-0 -bottom-full'} ${animationState.expandNote ? 'w-[90vw] max-w-md' : 'w-24'}`}>
-                <img src="/scroll-top.png" className={`w-full transition-opacity duration-300 ${animationState.expandNote ? 'opacity-100' : 'opacity-0'}`} alt="Scroll Top" onError={(e) => { e.target.src = 'https://placehold.co/400x50/fdf6e3/333?text=Scroll+Top'; }} />
-                <div className={`scroll-content-wrapper ${animationState.expandNote ? 'unfurled' : ''}`}>
-                    <div className={`w-full bg-[#fdf6e3] border-x-4 border-[#eaddc7] p-8 flex flex-col items-center justify-center transition-opacity duration-500 delay-300 ${animationState.expandNote ? 'opacity-100' : 'opacity-0'}`}>
-                        <h3 className="text-2xl font-bold font-gaegu mb-6 text-center text-gray-800">운명의 기록</h3>
-                        <div className="space-y-6 w-full">
-                            <div className="flex flex-col items-center">
-                                <label htmlFor="photo-upload-form" className="cursor-pointer">
-                                    <div className="w-32 h-32 rounded-full bg-gray-200 flex items-center justify-center border-2 border-dashed border-gray-400 hover:bg-gray-300 transition-colors">
-                                        {photoPreview ? <img src={photoPreview} alt="Preview" className="w-full h-full rounded-full object-cover" /> : <UploadCloudIcon className="w-8 h-8 text-gray-500" />}
-                                    </div>
-                                </label>
-                                <input id="photo-upload-form" type="file" accept="image/*" className="hidden" onChange={handlePhotoChange} />
-                                <p className="text-sm text-gray-600 mt-2">사진을 올려주십시오.</p>
+            {/* ==========================================================
+                [MODIFIED] 새로운 두루마리 UI 영역
+               ========================================================== */}
+            <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90vw] max-w-md h-[70vh] max-h-[700px] z-20 transition-opacity duration-700 ease-in-out ${animationState.showScroll ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+                {/* 배경 두루마리 이미지 */}
+                <div
+                    className="absolute inset-0 bg-contain bg-no-repeat bg-center"
+                    style={{ backgroundImage: `url('/scroll-unfurled.png')` }}
+                ></div>
+                
+                {/* 입력 요소들을 담는 컨테이너 */}
+                <div className="relative w-full h-full flex flex-col items-center justify-start pt-[25%]">
+                    {/* 사진 업로드 */}
+                    <div className="flex flex-col items-center mb-8">
+                        <label htmlFor="photo-upload-form" className="cursor-pointer">
+                            <div className="w-28 h-28 rounded-full bg-black/5 flex items-center justify-center border-2 border-dashed border-yellow-800/50 hover:bg-black/10 transition-colors">
+                                {photoPreview ?
+                                    <img src={photoPreview} alt="Preview" className="w-full h-full rounded-full object-cover" /> :
+                                    <UploadCloudIcon className="w-8 h-8 text-yellow-800/70" />
+                                }
                             </div>
-                            <div className="flex flex-col items-center">
-                                <div className="relative w-full max-w-xs">
-                                    <CalendarIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                                    <input type="text" value={birthdate} onChange={(e) => setBirthdate(e.target.value)} placeholder="생년월일 (YYYY-MM-DD)" className="w-full p-3 pl-10 bg-white border-2 border-gray-300 rounded-lg text-center focus:outline-none focus:border-indigo-500" />
-                                </div>
-                                <p className="text-sm text-gray-600 mt-2">태어난 날을 알려주십시오.</p>
-                            </div>
-                        </div>
-                        <div className="mt-8 text-center">
-                             <button onClick={handleSubmit} className="px-10 py-3 bg-indigo-600 text-white font-bold rounded-lg shadow-lg hover:bg-indigo-700 transition-all transform hover:scale-105">스승님께 올리기</button>
-                        </div>
+                        </label>
+                        <input id="photo-upload-form" type="file" accept="image/*" className="hidden" onChange={handlePhotoChange} />
                     </div>
-                </div>
-                <img src="/scroll-bottom.png" className={`w-full transition-opacity duration-300 ${animationState.expandNote ? 'opacity-100' : 'opacity-0'}`} alt="Scroll Bottom" onError={(e) => { e.target.src = 'https://placehold.co/400x50/fdf6e3/333?text=Scroll+Bottom'; }} />
-                <div className={`absolute inset-0 flex flex-col items-center justify-center transition-opacity duration-300 ${!animationState.expandNote ? 'opacity-100' : 'opacity-0'}`}>
-                    <img src="/scroll-rolled.png" alt="말려있는 두루마리" className="w-24 drop-shadow-2xl hover:scale-110 transition-transform" onError={(e) => { e.target.src = 'https://placehold.co/100x100/fdf6e3/333?text=Scroll'; }} />
-                    <p className="text-white text-center mt-4 font-gaegu text-lg animate-pulse">두루마리를 눌러 기록하십시오.</p>
+
+                    {/* 생년월일 입력 */}
+                    <div className="relative w-[70%] max-w-xs mb-12">
+                        <input
+                            type="text"
+                            value={birthdate}
+                            onChange={(e) => setBirthdate(e.target.value)}
+                            placeholder="생년월일 (YYYY-MM-DD)"
+                            className="w-full p-2 text-center text-lg text-[#4a3f35] placeholder:text-yellow-800/50 bg-transparent border-b-2 border-yellow-800/60 focus:outline-none focus:border-yellow-800"
+                        />
+                    </div>
+
+                    {/* 제출 버튼 */}
+                    <button onClick={handleSubmit} className="px-12 py-3 bg-[#8c2c2c] text-white text-xl font-bold rounded-md shadow-lg hover:bg-[#a13a3a] transition-all transform hover:scale-105">
+                        운명 기록하기
+                    </button>
                 </div>
             </div>
         </div>
