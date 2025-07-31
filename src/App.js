@@ -82,9 +82,10 @@ function App() {
     const [sequenceStep, setSequenceStep] = useState(0);
     const [displayedDialogues, setDisplayedDialogues] = useState([]);
     
+    // --- 스타일 및 애니메이션 조절 변수 ---
     const formBottomOffset = 20;
     const formWidthPercent = 80;
-    const initialDialogueDelay = 1000;
+    const initialDialogueDelay = 1000; // 대사 시작 전 지연 시간 (1000 = 1초)
 
     // 1. 로딩 단계 컨트롤러
     useEffect(() => {
@@ -128,7 +129,7 @@ function App() {
         if (!currentScene) return;
 
         setDisplayedDialogues([]);
-        let dialogueTimer = initialDialogueDelay;
+        let dialogueTimer = initialDialogueDelay; // [MODIFIED] 첫 대사 지연 적용
         const timers = currentScene.dialogue.map((dialogue, index) => {
             const timer = setTimeout(() => {
                 setDisplayedDialogues(prev => [...prev, dialogue]);
@@ -161,6 +162,7 @@ function App() {
         alert("정보가 접수되었습니다. 다음 단계로 진행합니다.");
     };
 
+    // [MODIFIED] 생년월일 자동 포맷 함수
     const handleBirthdateChange = (e) => {
         let value = e.target.value.replace(/[^\d]/g, '');
         if (value.length > 8) {
@@ -190,38 +192,9 @@ function App() {
                 .dialogue-line { animation: pop-in 0.3s ease-out forwards; }
                 @keyframes fade-in { 0% { opacity: 0; } 100% { opacity: 1; } }
                 .apprentice-image-fade-in { animation: fade-in 0.7s ease-in-out forwards; }
-                
                 @media (max-width: 768px) {
-                    .title-container h1 {
-                        font-size: clamp(2.25rem, 10vw, 3rem);
-                    }
-                    .subtitle-container p {
-                        font-size: clamp(1rem, 4vw, 1.125rem);
-                    }
-                    .apprentice-container {
-                        left: 50%;
-                        right: auto;
-                        transform: translateX(-50%);
-                        bottom: 20px;
-                    }
-                    .dialogue-bubble {
-                        width: 90vw;
-                        max-width: 300px;
-                        top: -150px;
-                        left: 50%;
-                        transform: translateX(-50%);
-                    }
-                    .dialogue-pointer {
-                        top: auto;
-                        bottom: -8px;
-                        left: 50%;
-                        transform: translateX(-50%);
-                        border-width: 10px 10px 0 10px;
-                        border-color: white transparent transparent transparent;
-                    }
-                    .rolled-scroll-container {
-                        top: 30%;
-                    }
+                    .apprentice-container { right: -50px; }
+                    .dialogue-bubble { left: -230px; width: 220px; }
                 }
             `}</style>
             <BGMPlayer />
@@ -229,19 +202,20 @@ function App() {
             <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-10 z-0" />
             
             {appPhase === 'loading' && (
-                 <div className="absolute bottom-0 right-0 w-full h-[400px] flex items-center justify-center">
-                    <div className="relative w-56 p-4 bg-white text-gray-800 rounded-xl shadow-2xl animate-pulse">
-                        <p className="font-bold text-lg text-center">잠시만요 나가고 있어요!</p>
+                 <div className="absolute bottom-0 right-0 w-[250px] h-[400px] flex items-center justify-center">
+                    <div className="dialogue-bubble relative w-56 p-4 bg-white text-gray-800 rounded-xl shadow-2xl animate-pulse">
+                        <p className="font-bold text-lg">잠시만요 나가고 있어요!</p>
+                        <div className="absolute top-1/2 -translate-y-1/2 right-[-5px] w-0 h-0 border-y-[10px] border-y-transparent border-l-[10px] border-l-white"></div>
                     </div>
                  </div>
             )}
 
             {appPhase === 'intro' && (
                 <>
-                    <div className={`title-container absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center text-white transition-all duration-1000 ${animationState.showTitle ? 'opacity-100' : 'opacity-0 -translate-y-10'}`}>
+                    <div className={`absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center text-white transition-all duration-1000 ${animationState.showTitle ? 'opacity-100' : 'opacity-0 -translate-y-10'}`}>
                         <h1 className="text-5xl md:text-6xl font-black font-gaegu mb-4 text-shadow-lg">AI 운명 비기</h1>
                     </div>
-                    <div className={`subtitle-container absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center text-white transition-all duration-1000 delay-500 mt-20 md:mt-24`}>
+                    <div className={`absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center text-white transition-all duration-1000 delay-500 mt-20 ${animationState.showSubtitle ? 'opacity-100' : 'opacity-0 translate-y-10'}`}>
                         <p className="text-xl md:text-2xl text-indigo-200 text-shadow">운명의 실타래를 풀어, 그대의 길을 밝혀드립니다.</p>
                     </div>
 
@@ -249,11 +223,11 @@ function App() {
                         <img key={apprenticeSequence[sequenceStep].image} src={apprenticeSequence[sequenceStep].image} alt="점쟁이 제자" className="w-[250px] h-[400px] object-contain drop-shadow-2xl apprentice-image-fade-in" onError={(e) => { e.target.onerror = null; e.target.src = 'https://placehold.co/250x400/000000/FFFFFF?text=이미지오류'; }} />
                         <div className={`dialogue-bubble absolute top-20 -left-56 w-56 p-4 bg-white text-gray-800 rounded-xl shadow-2xl transition-opacity duration-300 ${displayedDialogues.length > 0 ? 'opacity-100' : 'opacity-0'}`}>
                             {displayedDialogues.map((dialogue, index) => ( <p key={index} className={`dialogue-line ${dialogue.type === 'bold' ? 'font-bold text-lg' : ''}`}>{dialogue.text}</p> ))}
-                            <div className="dialogue-pointer absolute top-1/2 -translate-y-1/2 right-[-5px] w-0 h-0 border-y-[10px] border-y-transparent border-l-[10px] border-l-white"></div>
+                            <div className="absolute top-1/2 -translate-y-1/2 right-[-5px] w-0 h-0 border-y-[10px] border-y-transparent border-l-[10px] border-l-white"></div>
                         </div>
                     </div>
                     
-                    <div onClick={() => setIsScrollUnfurled(true)} className={`rolled-scroll-container absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 transition-opacity duration-700 ${isRolledScrollVisible ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+                    <div onClick={() => setIsScrollUnfurled(true)} className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 transition-opacity duration-700 ${isRolledScrollVisible ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
                         <div className="flex flex-col items-center justify-center cursor-pointer">
                             <img src="/scroll-rolled.png" alt="말려있는 두루마리" className="w-24 drop-shadow-2xl transition-transform hover:scale-110" />
                             <p className="text-white text-center mt-4 font-gaegu text-lg animate-pulse">두루마리를 펼쳐주세요.</p>
@@ -274,9 +248,20 @@ function App() {
                                         <input id="photo-upload-form" type="file" accept="image/*" className="hidden" onChange={handlePhotoChange} />
                                     </div>
                                     <div className="relative w-full max-w-xs mb-8">
-                                        <input type="text" value={birthdate} onChange={handleBirthdateChange} maxLength="10" className="w-full p-2 text-center text-lg text-[#4a3f35] placeholder:text-yellow-800/50 bg-transparent focus:outline-none" />
+                                        {/* [MODIFIED] onChange 핸들러 변경 및 maxLength 추가 */}
+                                        <input
+                                            type="text"
+                                            value={birthdate}
+                                            onChange={handleBirthdateChange}
+                                            placeholder="생년월일 (YYYY-MM-DD)"
+                                            maxLength="10"
+                                            className="w-full p-2 text-center text-lg text-[#4a3f35] placeholder:text-yellow-800/50 bg-transparent focus:outline-none"
+                                        />
                                     </div>
-                                    <button onClick={handleSubmit} className="px-12 py-3 bg-[#5d4037] text-[#f5e6c8] text-xl font-bold rounded-lg shadow-lg shadow-black/30 border border-black/20 hover:bg-[#795548] transition-all transform hover:scale-105 whitespace-nowrap">
+                                    <button
+                                        onClick={handleSubmit}
+                                        className="px-12 py-3 bg-[#5d4037] text-[#f5e6c8] text-xl font-bold rounded-lg shadow-lg shadow-black/30 border border-black/20 hover:bg-[#795548] transition-all transform hover:scale-105 whitespace-nowrap"
+                                    >
                                         전달하기
                                     </button>
                                 </div>
