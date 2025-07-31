@@ -82,9 +82,8 @@ function App() {
     const [sequenceStep, setSequenceStep] = useState(0);
     const [displayedDialogues, setDisplayedDialogues] = useState([]);
     
-    // --- 두루마리 폼 스타일 조절 변수 ---
-    const formBottomOffset = 20; // 폼 하단 여백 (%)
-    const formWidthPercent = 80; // 폼 가로 너비 (%)
+    const formBottomOffset = 20;
+    const formWidthPercent = 80;
 
     // 1. 로딩 단계 컨트롤러
     useEffect(() => {
@@ -108,14 +107,12 @@ function App() {
         const timers = [];
 
         const subtitleAppearTime = 1200;
-        // [MODIFIED] 부제목 등장 후 2초 뒤에 제자 등장
-        const apprenticeAppearTime = subtitleAppearTime + 2000; // 3200ms
+        const apprenticeAppearTime = subtitleAppearTime + 2000;
         
         timers.push(setTimeout(() => setAnimationState(s => ({ ...s, showTitle: true })), 500));
         timers.push(setTimeout(() => setAnimationState(s => ({ ...s, showSubtitle: true })), subtitleAppearTime));
         timers.push(setTimeout(() => setAnimationState(s => ({ ...s, showApprentice: true })), apprenticeAppearTime));
         
-        // [MODIFIED] 제자 등장 시간에 맞춰 장면 전환 시간 재조정
         const scene1StartTime = apprenticeAppearTime + 4000;
         timers.push(setTimeout(() => setSequenceStep(1), scene1StartTime));
         const scene2StartTime = scene1StartTime + 4000;
@@ -146,15 +143,28 @@ function App() {
         return () => timers.forEach(clearTimeout);
     }, [sequenceStep, animationState.showApprentice, appPhase]);
 
-    // 폼 관련 함수
-    const handlePhotoChange = (e) => { /* ... */ };
-    const handleSubmit = () => { /* ... */ };
+    // [MODIFIED] 폼 관련 함수 내용 복원
+    const handlePhotoChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setUserPhoto(file);
+            setPhotoPreview(URL.createObjectURL(file));
+        }
+    };
+    const handleSubmit = () => {
+        if (!userPhoto || !birthdate) {
+            alert("사진과 생년월일을 모두 입력해주십시오.");
+            return;
+        }
+        console.log("Submitted Data:", { userPhoto, birthdate });
+        alert("정보가 접수되었습니다. 다음 단계로 진행합니다.");
+    };
+
     const isRolledScrollVisible = isFinalDialogueFinished && !isScrollUnfurled;
 
     return (
         <div className="w-full h-screen bg-gray-900 overflow-hidden relative font-gowun">
             <style>{`
-                /* ... 스타일 동일 ... */
                 @keyframes pop-in { 0% { opacity: 0; transform: scale(0.5); } 100% { opacity: 1; transform: scale(1); } }
                 .dialogue-line { animation: pop-in 0.3s ease-out forwards; }
                 @keyframes fade-in { 0% { opacity: 0; } 100% { opacity: 1; } }
@@ -205,7 +215,6 @@ function App() {
                         <div className="fixed inset-0 z-40 bg-black/70 flex items-center justify-center p-4 animate-[fade-in_0.3s_ease-out]" onClick={() => setIsScrollUnfurled(false)}>
                             <div onClick={(e) => e.stopPropagation()} className="relative w-auto h-full max-h-[95vh] aspect-[9/16]">
                                 <div className="absolute inset-0 bg-contain bg-no-repeat bg-center" style={{ backgroundImage: `url('/scroll-unfurled.png')` }}></div>
-                                {/* [MODIFIED] 폼 컨테이너의 가로 사이즈를 변수로 제어 */}
                                 <div className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center" style={{ bottom: `${formBottomOffset}%`, width: `${formWidthPercent}%` }}>
                                     <div className="flex flex-col items-center mb-6">
                                         <label htmlFor="photo-upload-form" className="cursor-pointer">
