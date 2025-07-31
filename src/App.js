@@ -76,16 +76,14 @@ function App() {
         showTitle: false,
         showSubtitle: false,
         showApprentice: false,
-        // showScrollContainer 제거
     });
-    // [MODIFIED] 마지막 대사 종료 여부를 관리하는 상태
     const [isFinalDialogueFinished, setIsFinalDialogueFinished] = useState(false);
     const [isScrollUnfurled, setIsScrollUnfurled] = useState(false);
     const [sequenceStep, setSequenceStep] = useState(0);
     const [displayedDialogues, setDisplayedDialogues] = useState([]);
     const formBottomOffset = 20;
 
-    // 1. 로딩 단계 컨트롤러 (변경 없음)
+    // 1. 로딩 단계 컨트롤러
     useEffect(() => {
         const imagePaths = [ ...apprenticeSequence.map(s => s.image), '/scroll-unfurled.png', '/scroll-rolled.png' ];
         const preloadImages = (paths) => Promise.all(paths.map(path => new Promise(resolve => {
@@ -101,7 +99,7 @@ function App() {
         });
     }, []);
 
-    // 2. 인트로 애니메이션 컨트롤러 (두루마리 관련 코드 제거)
+    // 2. 인트로 애니메이션 컨트롤러
     useEffect(() => {
         if (appPhase !== 'intro') return;
         const timers = [];
@@ -115,7 +113,7 @@ function App() {
         return () => timers.forEach(clearTimeout);
     }, [appPhase]);
 
-    // 3. [MODIFIED] 대사 렌더링 및 '마지막 대사 종료' 상태 업데이트
+    // 3. 대사 렌더링 및 '마지막 대사 종료' 상태 업데이트
     useEffect(() => {
         if (appPhase !== 'intro' || !animationState.showApprentice) return;
         const currentScene = apprenticeSequence[sequenceStep];
@@ -126,10 +124,7 @@ function App() {
         const timers = currentScene.dialogue.map((dialogue, index) => {
             const timer = setTimeout(() => {
                 setDisplayedDialogues(prev => [...prev, dialogue]);
-
-                // 마지막 장면의 마지막 대사인지 확인
                 if (sequenceStep === 2 && index === currentScene.dialogue.length - 1) {
-                    // 상태 업데이트!
                     setIsFinalDialogueFinished(true);
                 }
             }, dialogueTimer);
@@ -140,8 +135,7 @@ function App() {
         return () => timers.forEach(clearTimeout);
     }, [sequenceStep, animationState.showApprentice, appPhase]);
 
-
-    // 폼 관련 함수 (변경 없음)
+    // 폼 관련 함수
     const handlePhotoChange = (e) => {
         const file = e.target.files[0];
         if (file) { setUserPhoto(file); setPhotoPreview(URL.createObjectURL(file)); }
@@ -151,6 +145,9 @@ function App() {
         console.log("Submitted Data:", { userPhoto, birthdate });
         alert("정보가 접수되었습니다. 다음 단계로 진행합니다.");
     };
+
+    // [MODIFIED] 두루마리 표시 여부를 결정하는 변수
+    const isRolledScrollVisible = isFinalDialogueFinished && !isScrollUnfurled;
 
     return (
         <div className="w-full h-screen bg-gray-900 overflow-hidden relative font-gowun">
@@ -193,9 +190,9 @@ function App() {
                             <div className="absolute top-1/2 -translate-y-1/2 right-[-5px] w-0 h-0 border-y-[10px] border-y-transparent border-l-[10px] border-l-white"></div>
                         </div>
                     </div>
-
-                    {/* [MODIFIED] 두루마리 노출 조건을 isFinalDialogueFinished 상태로 변경 */}
-                    <div onClick={() => setIsScrollUnfurled(true)} className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 transition-opacity duration-700 ${isFinalDialogueFinished ? 'opacity-100' : 'opacity-0 pointer-events-none'} ${isScrollUnfurled ? 'opacity-0' : 'opacity-100'}`}>
+                    
+                    {/* [MODIFIED] 두루마리 표시 클래스 로직을 단순화 */}
+                    <div onClick={() => setIsScrollUnfurled(true)} className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 transition-opacity duration-700 ${isRolledScrollVisible ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
                         <div className="flex flex-col items-center justify-center cursor-pointer">
                             <img src="/scroll-rolled.png" alt="말려있는 두루마리" className="w-24 drop-shadow-2xl transition-transform hover:scale-110" />
                             <p className="text-white text-center mt-4 font-gaegu text-lg animate-pulse">두루마리를 펼쳐주세요.</p>
