@@ -192,23 +192,17 @@ function App() {
                 @keyframes fade-in { 0% { opacity: 0; } 100% { opacity: 1; } }
                 .apprentice-image-fade-in { animation: fade-in 0.7s ease-in-out forwards; }
 
-                /* [MODIFIED] 제목 폰트 크기를 반응형으로 설정 */
                 .responsive-title {
-                    /* 모바일: 화면 너비의 9%를 기준, 최소 2.5rem, 최대 3rem (text-4xl ~ text-5xl) */
-                    font-size: clamp(2.5rem, 9vw, 3rem);
+                    /* [MODIFIED] 폰트 크기 최소값을 줄여 줄바꿈 방지 강화 */
+                    font-size: clamp(2rem, 8.5vw, 3rem);
                 }
                 @media (min-width: 768px) {
                     .responsive-title {
-                        font-size: 3.75rem; /* 데스크탑: md:text-6xl 와 동일 */
+                        font-size: 3.75rem;
                     }
                 }
-
-                /* 화면 너비가 768px 이하일 때 적용될 스타일 */
+                
                 @media (max-width: 768px) {
-                    /* [MODIFIED] 로딩 컨테이너 위치 조정 */
-                    .loading-container {
-                        right: -40px; 
-                    }
                     .apprentice-container {
                         right: -40px;
                     }
@@ -222,10 +216,10 @@ function App() {
             <div className="absolute inset-0 bg-gradient-to-b from-indigo-900/50 to-black z-0"></div>
             <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-10 z-0" />
             
+            {/* [MODIFIED] 로딩 말풍선 구조 변경 및 위치 재설정 */ }
             {appPhase === 'loading' && (
-                 /* [MODIFIED] 로딩 컨테이너에 클래스 추가 */
-                 <div className="loading-container absolute bottom-0 right-0 w-[250px] h-[400px] flex items-center justify-center">
-                    <div className="dialogue-bubble relative w-56 p-4 bg-white text-gray-800 rounded-xl shadow-2xl animate-pulse">
+                 <div className="absolute bottom-40 right-5 z-10 animate-pulse">
+                    <div className="relative w-56 p-4 bg-white text-gray-800 rounded-xl shadow-2xl">
                         <p className="font-bold text-lg">잠시만요 나가고 있어요!</p>
                         <div className="absolute top-1/2 -translate-y-1/2 right-[-5px] w-0 h-0 border-y-[10px] border-y-transparent border-l-[10px] border-l-white"></div>
                     </div>
@@ -234,11 +228,12 @@ function App() {
 
             {appPhase === 'intro' && (
                 <>
-                    <div className={`absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center text-white transition-all duration-1000 ${animationState.showTitle ? 'opacity-100' : 'opacity-0 -translate-y-10'}`}>
-                        {/* [MODIFIED] 제목에 반응형 클래스 적용, 기존 크기 클래스 제거 */}
+                    {/* [MODIFIED] 제목/부제 컨테이너 위치를 위로 조정 (top-1/4 -> top-[18%]) */ }
+                    <div className={`absolute top-[18%] left-1/2 -translate-x-1/2 -translate-y-1/2 text-center text-white transition-all duration-1000 ${animationState.showTitle ? 'opacity-100' : 'opacity-0 -translate-y-10'}`}>
                         <h1 className="responsive-title font-black font-gaegu mb-4 text-shadow-lg">AI 운명 비기</h1>
                     </div>
-                    <div className={`absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center text-white transition-all duration-1000 delay-500 mt-20 ${animationState.showSubtitle ? 'opacity-100' : 'opacity-0 translate-y-10'}`}>
+                    {/* [MODIFIED] 부제 컨테이너 위치도 함께 조정 */ }
+                    <div className={`absolute top-[18%] left-1/2 -translate-x-1/2 -translate-y-1/2 text-center text-white transition-all duration-1000 delay-500 mt-20 ${animationState.showSubtitle ? 'opacity-100' : 'opacity-0 translate-y-10'}`}>
                         <p className="text-xl md:text-2xl text-indigo-200 text-shadow">운명의 실타래를 풀어, 그대의 길을 밝혀드립니다.</p>
                     </div>
 
