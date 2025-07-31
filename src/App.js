@@ -73,6 +73,7 @@ function App() {
     const [photoPreview, setPhotoPreview] = useState(null);
     const [animationState, setAnimationState] = useState({
         showTitle: false,
+        showSubtitle: false, // 부제목 상태 추가
         showApprentice: false,
         showScrollContainer: false,
     });
@@ -81,6 +82,9 @@ function App() {
     const [isReady, setIsReady] = useState(false);
     const [sequenceStep, setSequenceStep] = useState(0);
     const [displayedDialogues, setDisplayedDialogues] = useState([]);
+
+    // [MODIFIED] 폼 위치 조정을 위한 상태 (20%가 기본값)
+    const [formBottomOffset, setFormBottomOffset] = useState(20);
 
     // 1. 이미지 프리로딩
     useEffect(() => {
@@ -92,31 +96,38 @@ function App() {
             img.onload = resolve;
             img.onerror = () => { console.error(`Failed to load image: ${path}`); resolve(); };
         })));
-        const minTimePromise = new Promise(resolve => setTimeout(resolve, 3000));
+        const minTimePromise = new Promise(resolve => setTimeout(resolve, 2000)); // 로딩 시간 조정
         Promise.all([preloadImages(imagePaths), minTimePromise]).then(() => {
             if (isMounted) setIsReady(true);
         });
         return () => { isMounted = false; };
     }, []);
 
-    // 2. 기본 애니메이션 순서
+    // 2. 기본 애니메이션 순서 (순차적 등장)
     useEffect(() => {
         const timers = [
             setTimeout(() => setAnimationState(s => ({ ...s, showTitle: true })), 500),
-            setTimeout(() => setAnimationState(s => ({ ...s, showApprentice: true })), 2000),
+            setTimeout(() => setAnimationState(s => ({ ...s, showSubtitle: true })), 1200), // 타이틀 이후 등장
+            setTimeout(() => setAnimationState(s => ({ ...s, showApprentice: true })), 2500), // 부제목 이후 등장
         ];
         return () => timers.forEach(clearTimeout);
     }, []);
 
-    // 3. 제자 장면 전환
+    // 3. 제자 장면 전환 및 두루마리 등장 시점 조정
     useEffect(() => {
         if (!isReady) return;
-        setSequenceStep(0);
-        const timer1 = setTimeout(() => setSequenceStep(1), 5000);
+
+        setSequenceStep(0); // 첫 번째 장면으로 초기화
+
+        const timer1 = setTimeout(() => setSequenceStep(1), 4000); // 4초 후 두 번째 장면
         const timer2 = setTimeout(() => {
-            setSequenceStep(2);
-            setAnimationState(s => ({...s, showScrollContainer: true}));
-        }, 10000);
+            setSequenceStep(2); // 8초 후 세 번째 장면 (4 + 4)
+            // 세 번째 장면의 첫 대사가 시작될 때 두루마리 등장
+            setTimeout(() => {
+                setAnimationState(s => ({...s, showScrollContainer: true}));
+            }, 500);
+        }, 8000);
+
         return () => { clearTimeout(timer1); clearTimeout(timer2); };
     }, [isReady]);
 
@@ -128,14 +139,23 @@ function App() {
             setDisplayedDialogues([]);
             return;
         }
-        setDisplayedDialogues([currentScene.dialogue[0]]);
-        const remainingDialogues = currentScene.dialogue.slice(1);
+
         let dialogueTimer = 0;
-        remainingDialogues.forEach((dialogue) => {
+        const timers = currentScene.dialogue.map((dialogue, index) => {
+            const timer = setTimeout(() => {
+                setDisplayedDialogues(prev => {
+                    // 장면이 바뀌면 이전 대사 초기화
+                    if (index === 0) return [dialogue];
+                    return [...prev, dialogue];
+                });
+            }, dialogueTimer);
             dialogueTimer += 800;
-            setTimeout(() => setDisplayedDialogues(prev => [...prev, dialogue]), dialogueTimer);
+            return timer;
         });
+
+        return () => timers.forEach(clearTimeout);
     }, [sequenceStep, isReady]);
+
 
     // 5. 폼 관련 함수
     const handlePhotoChange = (e) => {
@@ -161,10 +181,14 @@ function App() {
                 @media (max-width: 768px) {
                     .apprentice-container {
                         right: -50px; /* 제자 캐릭터 오른쪽으로 이동 */
+                        transform: translateX(${animationState.showApprentice ? '0' : '100%'});
                     }
                     .dialogue-bubble {
                         left: -230px; /* 말풍선 오른쪽으로 이동 */
                         width: 220px;
+                    }
+                    .title-container {
+                        top: 25%;
                     }
                 }
             `}</style>
@@ -172,32 +196,29 @@ function App() {
             <div className="absolute inset-0 bg-gradient-to-b from-indigo-900/50 to-black z-0"></div>
             <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-10 z-0" />
 
-            <div className={`absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center text-white transition-opacity duration-1000 ${animationState.showTitle ? 'opacity-100' : 'opacity-0'}`}>
+            {/* [MODIFIED] 타이틀과 부제목 컨테이너 분리 */}
+            <div className={`title-container absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center text-white transition-all duration-1000 ${animationState.showTitle ? 'opacity-100' : 'opacity-0 -translate-y-10'}`}>
                 <h1 className="text-5xl md:text-6xl font-black font-gaegu mb-4 text-shadow-lg">AI 운명 비기</h1>
+            </div>
+            <div className={`title-container absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center text-white transition-all duration-1000 delay-500 mt-20 ${animationState.showSubtitle ? 'opacity-100' : 'opacity-0 translate-y-10'}`}>
                 <p className="text-xl md:text-2xl text-indigo-200 text-shadow">운명의 실타래를 풀어, 그대의 길을 밝혀드립니다.</p>
             </div>
 
+
             <div className={`apprentice-container absolute bottom-0 right-0 transition-transform duration-1000 ease-out ${animationState.showApprentice ? 'translate-x-0' : 'translate-x-full'}`}>
                 {isReady ? ( <img key={apprenticeSequence[sequenceStep].image} src={apprenticeSequence[sequenceStep].image} alt="점쟁이 제자" className="w-[250px] h-[400px] object-contain drop-shadow-2xl apprentice-image-fade-in" onError={(e) => { e.target.onerror = null; e.target.src = 'https://placehold.co/250x400/000000/FFFFFF?text=이미지오류'; }} /> ) : ( <div className="w-[250px] h-[400px]"></div> )}
-                {!isReady ? (
-                    <div className="dialogue-bubble absolute top-20 -left-56 w-56 p-4 bg-white text-gray-800 rounded-xl shadow-2xl animate-[pop-in_0.5s_ease-out_forwards]">
-                        <p className="font-bold text-lg">잠시만요 나가고 있어요!</p>
-                        <div className="absolute top-1/2 -translate-y-1/2 right-[-5px] w-0 h-0 border-y-[10px] border-y-transparent border-l-[10px] border-l-white"></div>
-                    </div>
-                 ) : (
-                    <div className="dialogue-bubble absolute top-20 -left-56 w-56 p-4 bg-white text-gray-800 rounded-xl shadow-2xl animate-[pop-in_0.5s_ease-out_forwards]">
-                        {displayedDialogues.map((dialogue, index) => ( <p key={index} className={`dialogue-line ${dialogue.type === 'bold' ? 'font-bold text-lg' : ''}`}>{dialogue.text}</p> ))}
-                        <div className="absolute top-1/2 -translate-y-1/2 right-[-5px] w-0 h-0 border-y-[10px] border-y-transparent border-l-[10px] border-l-white"></div>
-                    </div>
-                )}
+                <div className={`dialogue-bubble absolute top-20 -left-56 w-56 p-4 bg-white text-gray-800 rounded-xl shadow-2xl transition-opacity duration-300 ${displayedDialogues.length > 0 ? 'opacity-100' : 'opacity-0'}`}>
+                    {displayedDialogues.map((dialogue, index) => ( <p key={index} className={`dialogue-line ${dialogue.type === 'bold' ? 'font-bold text-lg' : ''}`}>{dialogue.text}</p> ))}
+                    <div className="absolute top-1/2 -translate-y-1/2 right-[-5px] w-0 h-0 border-y-[10px] border-y-transparent border-l-[10px] border-l-white"></div>
+                </div>
             </div>
 
-            {/* --- [MODIFIED] 닫힌 두루마리 --- */}
+            {/* 닫힌 두루마리 */}
             <div
                 onClick={() => setIsScrollUnfurled(true)}
                 className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 transition-opacity duration-700
                     ${animationState.showScrollContainer ? 'opacity-100' : 'opacity-0 pointer-events-none'}
-                    ${isScrollUnfurled ? 'opacity-0' : 'opacity-100'}`} // 펼쳐지면 사라짐
+                    ${isScrollUnfurled ? 'opacity-0' : 'opacity-100'}`}
             >
                 <div className="flex flex-col items-center justify-center cursor-pointer">
                     <img src="/scroll-rolled.png" alt="말려있는 두루마리" className="w-24 drop-shadow-2xl transition-transform hover:scale-110" />
@@ -205,18 +226,19 @@ function App() {
                 </div>
             </div>
 
-            {/* --- [MODIFIED] 펼쳐진 두루마리 (모달) --- */}
+            {/* 펼쳐진 두루마리 모달 */}
             {isScrollUnfurled && (
                 <div
                     className="fixed inset-0 z-40 bg-black/70 flex items-center justify-center p-4 animate-[fade-in_0.3s_ease-out]"
-                    onClick={() => setIsScrollUnfurled(false)} // 배경 클릭 시 닫기
+                    onClick={() => setIsScrollUnfurled(false)}
                 >
                     <div
-                        onClick={(e) => e.stopPropagation()} // 폼 클릭 시 닫힘 방지
-                        className="relative w-auto h-full max-h-[95vh] aspect-[9/16]" // 화면 높이에 맞추고 종횡비 유지
+                        onClick={(e) => e.stopPropagation()}
+                        className="relative w-auto h-full max-h-[95vh] aspect-[9/16]"
                     >
                         <div className="absolute inset-0 bg-contain bg-no-repeat bg-center" style={{ backgroundImage: `url('/scroll-unfurled.png')` }}></div>
-                        <div className="relative w-full h-full flex flex-col items-center justify-start pt-[25%] sm:pt-[20%]">
+                        {/* [MODIFIED] 폼 위치를 bottom 속성으로 제어 */}
+                        <div className="absolute left-1/2 -translate-x-1/2 w-[80%] flex flex-col items-center" style={{ bottom: `${formBottomOffset}%` }}>
                             <div className="flex flex-col items-center mb-6">
                                 <label htmlFor="photo-upload-form" className="cursor-pointer">
                                     <div className="w-24 h-24 rounded-full bg-black/5 flex items-center justify-center border-2 border-dashed border-yellow-800/50 hover:bg-black/10 transition-colors">
@@ -225,7 +247,7 @@ function App() {
                                 </label>
                                 <input id="photo-upload-form" type="file" accept="image/*" className="hidden" onChange={handlePhotoChange} />
                             </div>
-                            <div className="relative w-[70%] max-w-xs mb-8">
+                            <div className="relative w-full max-w-xs mb-8">
                                 <input type="text" value={birthdate} onChange={(e) => setBirthdate(e.target.value)} placeholder="생년월일 (YYYY-MM-DD)" className="w-full p-2 text-center text-lg text-[#4a3f35] placeholder:text-yellow-800/50 bg-transparent border-b-2 border-yellow-800/60 focus:outline-none focus:border-yellow-800" />
                             </div>
                             <button onClick={handleSubmit} className="px-12 py-3 bg-[#8c2c2c] text-white text-xl font-bold rounded-md shadow-lg hover:bg-[#a13a3a] transition-all transform hover:scale-105">운명 기록하기</button>
