@@ -83,7 +83,7 @@ function App() {
     const [displayedDialogues, setDisplayedDialogues] = useState([]);
     
     const formBottomOffset = 20;
-    const formWidthPercent = 80;
+    const formWidthPercent = 50;
 
     // 1. 로딩 단계 컨트롤러
     useEffect(() => {
