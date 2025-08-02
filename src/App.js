@@ -81,15 +81,13 @@ function App() {
     const [isScrollUnfurled, setIsScrollUnfurled] = useState(false);
     const [sequenceStep, setSequenceStep] = useState(0);
     const [displayedDialogues, setDisplayedDialogues] = useState([]);
-    
-    // [MODIFIED] 말풍선 표시 여부를 제어하는 상태 추가
     const [isBubbleShown, setIsBubbleShown] = useState(false);
     
     // --- 스타일 및 애니메이션 조절 변수 ---
     const formBottomOffset = 20;
     const formWidthPercent = 80;
     const initialDialogueDelay = 1000;
-    const FADE_DURATION = 300; // 트랜지션 시간
+    const FADE_DURATION = 300; 
 
     // 1. 로딩 단계 컨트롤러
     useEffect(() => {
@@ -126,7 +124,8 @@ function App() {
         return () => timers.forEach(clearTimeout);
     }, [appPhase]);
 
-    // [MODIFIED] 3. 대사 렌더링 로직 전체 수정
+    // 3. 대사 렌더링 로직
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(() => {
         if (appPhase !== 'intro' || !animationState.showApprentice) return;
 
@@ -136,26 +135,21 @@ function App() {
         const wasBubbleShowing = displayedDialogues.length > 0;
         const allTimers = [];
 
-        // 1. 이전 대사가 있었다면, 먼저 말풍선을 사라지게 한다.
         if (wasBubbleShowing) {
             setIsBubbleShown(false);
         }
 
-        // 2. 말풍선이 사라지는 시간(FADE_DURATION)을 기다린 후, 내용을 업데이트한다.
         const contentUpdateTimer = setTimeout(() => {
-            setDisplayedDialogues([]); // 내용물이 사라진 후에 텍스트를 비운다.
+            setDisplayedDialogues([]); 
 
-            // 3. 새로운 대사를 순차적으로 표시한다.
             let typingDelay = 0;
             scene.dialogue.forEach((dialogue, index) => {
                 const typingTimer = setTimeout(() => {
-                    // 첫 대사가 표시되기 직전에 말풍선을 나타나게 한다.
                     if (index === 0) {
                         setIsBubbleShown(true);
                     }
                     setDisplayedDialogues(prev => [...prev, dialogue]);
 
-                    // 마지막 대사인지 확인
                     if (sequenceStep === apprenticeSequence.length - 1 && index === scene.dialogue.length - 1) {
                         setIsFinalDialogueFinished(true);
                     }
@@ -164,11 +158,10 @@ function App() {
                 typingDelay += 800;
                 allTimers.push(typingTimer);
             });
-        }, wasBubbleShowing ? FADE_DURATION : initialDialogueDelay); // 이전 대사가 없었다면(최초) 바로 시작
+        }, wasBubbleShowing ? FADE_DURATION : initialDialogueDelay);
 
         allTimers.push(contentUpdateTimer);
 
-        // 컴포넌트가 언마운트되거나 재실행될 때 모든 타이머를 정리
         return () => allTimers.forEach(clearTimeout);
 
     }, [sequenceStep, animationState.showApprentice, appPhase]);
@@ -266,7 +259,6 @@ function App() {
                     <div className={`apprentice-container absolute bottom-0 right-0 transition-transform duration-1000 ease-out ${animationState.showApprentice ? 'translate-x-0' : 'translate-x-full'}`}>
                         <img key={apprenticeSequence[sequenceStep].image} src={apprenticeSequence[sequenceStep].image} alt="점쟁이 제자" className="w-[200px] h-[320px] md:w-[250px] md:h-[400px] object-contain drop-shadow-2xl apprentice-image-fade-in" onError={(e) => { e.target.onerror = null; e.target.src = 'https://placehold.co/250x400/000000/FFFFFF?text=이미지오류'; }} />
                         
-                        {/* [MODIFIED] 말풍선 표시 여부를 isBubbleShown 상태에 따라 결정 */ }
                         <div className={`dialogue-bubble absolute top-40 md:top-20 -left-56 w-56 p-4 bg-white text-gray-800 rounded-xl shadow-2xl transition-opacity duration-300 ${isBubbleShown ? 'opacity-100' : 'opacity-0'}`}>
                             {displayedDialogues.map((dialogue, index) => ( 
                                 <p key={index} className={`dialogue-line ${dialogue.type === 'bold' ? 'font-bold text-base md:text-lg' : ''}`}>{dialogue.text}</p> 
