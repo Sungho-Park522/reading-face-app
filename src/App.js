@@ -80,8 +80,8 @@ function App() {
     const [sequenceStep, setSequenceStep] = useState(0);
     const [displayedDialogues, setDisplayedDialogues] = useState([]);
     const [isBubbleShown, setIsBubbleShown] = useState(false);
-    
-    // [MODIFIED] 이전 bubble의 표시 상태를 기억하기 위한 ref
+    const [showLoadingBubble, setShowLoadingBubble] = useState(false); // 로딩 말풍선 표시 상태
+
     const wasBubbleShowingRef = useRef(isBubbleShown);
     useEffect(() => {
         wasBubbleShowingRef.current = isBubbleShown;
@@ -92,9 +92,11 @@ function App() {
     const formWidthPercent = 80;
     const initialDialogueDelay = 1000;
     const FADE_DURATION = 300; 
+    const SCROLL_APPEAR_DELAY = 500; // 마지막 대사 후 두루마리 등장까지의 딜레이 (ms)
 
     // 1. 로딩 단계 컨트롤러
     useEffect(() => {
+        // 이미지 프리로딩
         const imagePaths = [ ...apprenticeSequence.map(s => s.image), '/scroll-unfurled.png', '/scroll-rolled.png' ];
         const preloadImages = (paths) => Promise.all(paths.map(path => new Promise(resolve => {
             const img = new Image();
@@ -107,6 +109,13 @@ function App() {
         Promise.all([imagePromise, minTimePromise]).then(() => {
             setAppPhase('intro');
         });
+
+        // 로딩 말풍선 딜레이
+        const loadingBubbleTimer = setTimeout(() => {
+            setShowLoadingBubble(true);
+        }, 1500); // 1.5초 딜레이
+
+        return () => clearTimeout(loadingBubbleTimer);
     }, []);
 
     // 2. 인트로 애니메이션 컨트롤러
@@ -128,7 +137,7 @@ function App() {
         return () => timers.forEach(clearTimeout);
     }, [appPhase]);
 
-    // [MODIFIED] 3. 대사 렌더링 로직 (useRef를 사용하여 의존성 문제 해결)
+    // 3. 대사 렌더링 로직
     useEffect(() => {
         if (appPhase !== 'intro' || !animationState.showApprentice) return;
 
@@ -152,8 +161,12 @@ function App() {
                     }
                     setDisplayedDialogues(prev => [...prev, dialogue]);
 
+                    // 마지막 대사인지 확인하고, 설정된 딜레이 후 두루마리 표시
                     if (sequenceStep === apprenticeSequence.length - 1 && index === scene.dialogue.length - 1) {
-                        setIsFinalDialogueFinished(true);
+                        const scrollTimer = setTimeout(() => {
+                            setIsFinalDialogueFinished(true);
+                        }, SCROLL_APPEAR_DELAY);
+                        allTimers.push(scrollTimer);
                     }
                 }, typingDelay);
                 
@@ -240,7 +253,7 @@ function App() {
             <div className="absolute inset-0 bg-gradient-to-b from-indigo-900/50 to-black z-0"></div>
             <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-10 z-0" />
             
-            {appPhase === 'loading' && (
+            {appPhase === 'loading' && showLoadingBubble && (
                  <div className="absolute bottom-40 right-5 z-10 animate-pulse">
                     <div className="relative w-56 p-4 bg-white text-gray-800 rounded-xl shadow-2xl">
                         <p className="font-bold text-lg">잠시만요 나가고 있어요!</p>
