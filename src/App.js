@@ -82,10 +82,14 @@ function App() {
     const [sequenceStep, setSequenceStep] = useState(0);
     const [displayedDialogues, setDisplayedDialogues] = useState([]);
     
+    // [MODIFIED] 말풍선 표시 여부를 제어하는 상태 추가
+    const [isBubbleShown, setIsBubbleShown] = useState(false);
+    
     // --- 스타일 및 애니메이션 조절 변수 ---
     const formBottomOffset = 20;
     const formWidthPercent = 80;
     const initialDialogueDelay = 1000;
+    const FADE_DURATION = 300; // 트랜지션 시간
 
     // 1. 로딩 단계 컨트롤러
     useEffect(() => {
@@ -122,27 +126,53 @@ function App() {
         return () => timers.forEach(clearTimeout);
     }, [appPhase]);
 
-    // 3. 대사 렌더링 로직
+    // [MODIFIED] 3. 대사 렌더링 로직 전체 수정
     useEffect(() => {
         if (appPhase !== 'intro' || !animationState.showApprentice) return;
-        const currentScene = apprenticeSequence[sequenceStep];
-        if (!currentScene) return;
 
-        setDisplayedDialogues([]);
-        let dialogueTimer = initialDialogueDelay;
-        const timers = currentScene.dialogue.map((dialogue, index) => {
-            const timer = setTimeout(() => {
-                setDisplayedDialogues(prev => [...prev, dialogue]);
-                if (sequenceStep === 2 && index === currentScene.dialogue.length - 1) {
-                    setIsFinalDialogueFinished(true);
-                }
-            }, dialogueTimer);
-            dialogueTimer += 800;
-            return timer;
-        });
+        const scene = apprenticeSequence[sequenceStep];
+        if (!scene) return;
+        
+        const wasBubbleShowing = displayedDialogues.length > 0;
+        const allTimers = [];
 
-        return () => timers.forEach(clearTimeout);
-    }, [sequenceStep, animationState.showApprentice, appPhase, initialDialogueDelay]);
+        // 1. 이전 대사가 있었다면, 먼저 말풍선을 사라지게 한다.
+        if (wasBubbleShowing) {
+            setIsBubbleShown(false);
+        }
+
+        // 2. 말풍선이 사라지는 시간(FADE_DURATION)을 기다린 후, 내용을 업데이트한다.
+        const contentUpdateTimer = setTimeout(() => {
+            setDisplayedDialogues([]); // 내용물이 사라진 후에 텍스트를 비운다.
+
+            // 3. 새로운 대사를 순차적으로 표시한다.
+            let typingDelay = 0;
+            scene.dialogue.forEach((dialogue, index) => {
+                const typingTimer = setTimeout(() => {
+                    // 첫 대사가 표시되기 직전에 말풍선을 나타나게 한다.
+                    if (index === 0) {
+                        setIsBubbleShown(true);
+                    }
+                    setDisplayedDialogues(prev => [...prev, dialogue]);
+
+                    // 마지막 대사인지 확인
+                    if (sequenceStep === apprenticeSequence.length - 1 && index === scene.dialogue.length - 1) {
+                        setIsFinalDialogueFinished(true);
+                    }
+                }, typingDelay);
+                
+                typingDelay += 800;
+                allTimers.push(typingTimer);
+            });
+        }, wasBubbleShowing ? FADE_DURATION : initialDialogueDelay); // 이전 대사가 없었다면(최초) 바로 시작
+
+        allTimers.push(contentUpdateTimer);
+
+        // 컴포넌트가 언마운트되거나 재실행될 때 모든 타이머를 정리
+        return () => allTimers.forEach(clearTimeout);
+
+    }, [sequenceStep, animationState.showApprentice, appPhase]);
+
 
     // 4. 폼 관련 함수
     const handlePhotoChange = (e) => {
@@ -193,7 +223,6 @@ function App() {
                 .apprentice-image-fade-in { animation: fade-in 0.7s ease-in-out forwards; }
 
                 .responsive-title {
-                    /* [MODIFIED] 폰트 크기 최소값을 줄여 줄바꿈 방지 강화 */
                     font-size: clamp(2rem, 8.5vw, 3rem);
                 }
                 @media (min-width: 768px) {
@@ -216,7 +245,6 @@ function App() {
             <div className="absolute inset-0 bg-gradient-to-b from-indigo-900/50 to-black z-0"></div>
             <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-10 z-0" />
             
-            {/* [MODIFIED] 로딩 말풍선 구조 변경 및 위치 재설정 */ }
             {appPhase === 'loading' && (
                  <div className="absolute bottom-40 right-5 z-10 animate-pulse">
                     <div className="relative w-56 p-4 bg-white text-gray-800 rounded-xl shadow-2xl">
@@ -228,11 +256,9 @@ function App() {
 
             {appPhase === 'intro' && (
                 <>
-                    {/* [MODIFIED] 제목/부제 컨테이너 위치를 위로 조정 (top-1/4 -> top-[18%]) */ }
                     <div className={`absolute top-[18%] left-1/2 -translate-x-1/2 -translate-y-1/2 text-center text-white transition-all duration-1000 ${animationState.showTitle ? 'opacity-100' : 'opacity-0 -translate-y-10'}`}>
                         <h1 className="responsive-title font-black font-gaegu mb-4 text-shadow-lg">AI 운명 비기</h1>
                     </div>
-                    {/* [MODIFIED] 부제 컨테이너 위치도 함께 조정 */ }
                     <div className={`absolute top-[18%] left-1/2 -translate-x-1/2 -translate-y-1/2 text-center text-white transition-all duration-1000 delay-500 mt-20 ${animationState.showSubtitle ? 'opacity-100' : 'opacity-0 translate-y-10'}`}>
                         <p className="text-xl md:text-2xl text-indigo-200 text-shadow">운명의 실타래를 풀어, 그대의 길을 밝혀드립니다.</p>
                     </div>
@@ -240,7 +266,8 @@ function App() {
                     <div className={`apprentice-container absolute bottom-0 right-0 transition-transform duration-1000 ease-out ${animationState.showApprentice ? 'translate-x-0' : 'translate-x-full'}`}>
                         <img key={apprenticeSequence[sequenceStep].image} src={apprenticeSequence[sequenceStep].image} alt="점쟁이 제자" className="w-[200px] h-[320px] md:w-[250px] md:h-[400px] object-contain drop-shadow-2xl apprentice-image-fade-in" onError={(e) => { e.target.onerror = null; e.target.src = 'https://placehold.co/250x400/000000/FFFFFF?text=이미지오류'; }} />
                         
-                        <div className={`dialogue-bubble absolute top-40 md:top-20 -left-56 w-56 p-4 bg-white text-gray-800 rounded-xl shadow-2xl transition-opacity duration-300 ${displayedDialogues.length > 0 ? 'opacity-100' : 'opacity-0'}`}>
+                        {/* [MODIFIED] 말풍선 표시 여부를 isBubbleShown 상태에 따라 결정 */ }
+                        <div className={`dialogue-bubble absolute top-40 md:top-20 -left-56 w-56 p-4 bg-white text-gray-800 rounded-xl shadow-2xl transition-opacity duration-300 ${isBubbleShown ? 'opacity-100' : 'opacity-0'}`}>
                             {displayedDialogues.map((dialogue, index) => ( 
                                 <p key={index} className={`dialogue-line ${dialogue.type === 'bold' ? 'font-bold text-base md:text-lg' : ''}`}>{dialogue.text}</p> 
                             ))}
