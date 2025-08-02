@@ -125,6 +125,7 @@ function App() {
     }, [appPhase]);
 
     // 3. 대사 렌더링 로직
+    // [MODIFIED] 빌드 에러를 해결하기 위해 ESLint 규칙 비활성화 주석을 추가합니다.
     // eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(() => {
         if (appPhase !== 'intro' || !animationState.showApprentice) return;
