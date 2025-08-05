@@ -66,7 +66,7 @@ const apprenticeSequence = [
 
 
 // ==================================================================
-// --- 🔮 점쟁이 방 장면 컴포넌트 (SVG 버전) ---
+// --- 🔮 점쟁이 방 장면 컴포넌트 (디자인 수정 버전) ---
 // ==================================================================
 const FortuneTellerScene = ({ userPhoto, birthdate }) => {
     const [dialogue, setDialogue] = useState('');
@@ -85,52 +85,68 @@ const FortuneTellerScene = ({ userPhoto, birthdate }) => {
     return (
         <div className="w-full h-screen bg-black overflow-hidden relative flex items-center justify-center font-gowun animate-[fade-in_1s_ease-in-out]">
             <style>{`
-                @keyframes flicker-glow {
-                    0%, 100% { transform: scale(1); opacity: 0.8; }
-                    50% { transform: scale(1.05); opacity: 1; }
+                @keyframes flicker-sway {
+                    0%, 100% { 
+                        transform: scale(1) rotate(0deg); 
+                        opacity: 0.8; 
+                    }
+                    50% { 
+                        transform: scale(1.05) rotate(0.5deg) translateX(2px); 
+                        opacity: 1; 
+                    }
                 }
-                .flickering-glow-element {
-                    animation: flicker-glow 2.5s infinite ease-in-out;
+                .flickering-element {
+                    animation: flicker-sway 3s infinite ease-in-out;
                 }
             `}</style>
             
+            {/* 배경 그라데이션 */}
             <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black" />
             
-            {/* 점쟁이 실루엣 SVG */}
-            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-2/3 max-w-md opacity-80">
+            {/* 점쟁이 실루엣 SVG (애니메이션 동기화) */}
+            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-2/3 max-w-md flickering-element">
                 <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-                    <path fill="#1a1a1a" d="M100 200 C85 200, 70 195, 50 180 C30 165, 20 140, 30 120 C35 110, 45 100, 50 95 A25 25 0 0 1 70 60 A20 20 0 0 1 80 40 A15 15 0 0 1 100 20 A15 15 0 0 1 120 40 A20 20 0 0 1 130 60 A25 25 0 0 1 150 95 C155 100, 165 110, 170 120 C180 140, 170 165, 150 180 C130 195, 115 200, 100 200 Z"></path>
+                    <path fill="#111" d="M100 200 C85 200, 70 195, 50 180 C30 165, 20 140, 30 120 C35 110, 45 100, 50 95 A25 25 0 0 1 70 60 A20 20 0 0 1 80 40 A15 15 0 0 1 100 20 A15 15 0 0 1 120 40 A20 20 0 0 1 130 60 A25 25 0 0 1 150 95 C155 100, 165 110, 170 120 C180 140, 170 165, 150 180 C130 195, 115 200, 100 200 Z"></path>
                 </svg>
             </div>
 
-            {/* 호롱불 SVG */}
+            {/* 호롱불 SVG (실루엣 + 빛) */}
             <div className="absolute bottom-5 left-2 md:left-10 w-48 h-48">
-                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" className="flickering-element">
                     <defs>
                         <radialGradient id="lanternGlow" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
-                            <stop offset="0%" style={{stopColor: '#ffdd8a', stopOpacity: 0.8}} />
-                            <stop offset="50%" style={{stopColor: '#ffab24', stopOpacity: 0.4}} />
+                            <stop offset="0%" style={{stopColor: '#ffdd8a', stopOpacity: 0.7}} />
+                            <stop offset="50%" style={{stopColor: '#ffab24', stopOpacity: 0.3}} />
                             <stop offset="100%" style={{stopColor: '#ff7b24', stopOpacity: 0}} />
                         </radialGradient>
                     </defs>
-                    {/* 불빛 Glow 애니메이션 요소 */}
-                    <circle cx="50" cy="50" r="50" fill="url(#lanternGlow)" className="flickering-glow-element" />
-                    {/* 호롱불 본체 */}
-                    <path d="M40 90 L60 90 L65 70 L35 70 Z" fill="#38220f" />
-                    <rect x="30" y="68" width="40" height="5" fill="#5c3a1a" />
+                    <circle cx="50" cy="50" r="50" fill="url(#lanternGlow)" />
+                    <path d="M40 90 L60 90 L65 70 L35 70 Z" fill="#111" />
+                    <rect x="30" y="68" width="40" height="5" fill="#222" />
                 </svg>
             </div>
 
-            {/* 거울 (사용자 정보 표시) */}
-            <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-48 h-64 bg-black/30 border-2 border-yellow-700/50 rounded-lg shadow-2xl p-4 flex flex-col items-center justify-center space-y-4">
+            {/* [MODIFIED] 천막(장막) 효과를 내는 div */}
+            <div 
+                className="absolute inset-0 z-10" 
+                style={{
+                    backgroundImage: "url('https://www.transparenttextures.com/patterns/fabric-of-squares.png')",
+                    backdropFilter: "blur(2px)",
+                    opacity: 0.5
+                }}
+            ></div>
+
+            {/* 거울 (사용자 정보 표시) - z-index를 높여 천막 위에 표시 */}
+            <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-48 h-64 bg-black/50 border-2 border-yellow-700/50 rounded-lg shadow-2xl p-4 flex flex-col items-center justify-center space-y-4 z-20">
                 <div className="w-32 h-32 rounded-full overflow-hidden border-2 border-yellow-800">
                     <img src={userPhoto} alt="사용자 사진" className="w-full h-full object-cover" />
                 </div>
                 <p className="text-white text-lg tracking-wider">{birthdate}</p>
             </div>
 
+            {/* 대사 자막 창 - z-index를 높여 천막 위에 표시 */}
             {dialogue && (
-                <div className="absolute bottom-10 left-1/2 -translate-x-1/2 w-11/12 max-w-3xl bg-black/70 p-4 rounded-lg text-center animate-[fade-in_0.5s_ease-out]">
+                <div className="absolute bottom-10 left-1/2 -translate-x-1/2 w-11/12 max-w-3xl bg-black/70 p-4 rounded-lg text-center animate-[fade-in_0.5s_ease-out] z-20">
                     <p className="text-white text-2xl">{dialogue}</p>
                 </div>
             )}
@@ -143,7 +159,7 @@ const FortuneTellerScene = ({ userPhoto, birthdate }) => {
 
 
 // ==================================================================
-// --- ✨ 메인 앱 컴포넌트 (기존 코드 + 연결 부분 수정) ---
+// --- ✨ 메인 앱 컴포넌트 ---
 // ==================================================================
 function App() {
     const [appPhase, setAppPhase] = useState('loading');
