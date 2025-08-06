@@ -300,7 +300,7 @@ function App() {
             </>}
             
             {appPhase === 'loading' && showLoadingBubble && (
-                 <div className="absolute bottom-40 right-5 z-10 animate-pulse">
+                 <div className="absolute bottom-40 right-5 z-10">
                     <div className="relative w-56 p-4 bg-white text-gray-800 rounded-xl shadow-2xl">
                         <p className="font-bold text-lg">잠시만요 나가고 있어요!</p>
                         <div className="absolute top-1/2 -translate-y-1/2 right-[-5px] w-0 h-0 border-y-[10px] border-y-transparent border-l-[10px] border-l-white"></div>
