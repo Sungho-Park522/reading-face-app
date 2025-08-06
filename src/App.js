@@ -59,14 +59,14 @@ const BGMPlayer = () => {
 
 // --- 제자 시퀀스 설정 ---
 const apprenticeSequence = [
-  { image: '/apprentice-standing.png', dialogue: [ { type: 'bold', text: '어서 오세요!' }, { type: 'bold', text: '저는 스승님의 제자 초희입니다.' }, ] },
-  { image: '/apprentice-greeting.png', dialogue: [ { type: 'bold', text: '먼 길 오시느라 고생 많으셨습니다.' } ] },
-  { image: '/apprentice-guiding.png', dialogue: [ { type: 'bold', text: '이 두루마리에' }, { type: 'bold', text: '스승님께 보여드릴 사진 한 장과' }, { type: 'bold', text: '생년월일을 기록해주시겠습니까?' } ] },
+  { image: '/assets/images/apprentice-standing.png', dialogue: [ { type: 'bold', text: '어서 오세요!' }, { type: 'bold', text: '저는 스승님의 제자 초희입니다.' }, ] },
+  { image: '/assets/images/apprentice-greeting.png', dialogue: [ { type: 'bold', text: '먼 길 오시느라 고생 많으셨습니다.' } ] },
+  { image: '/assets/images/apprentice-guiding.png', dialogue: [ { type: 'bold', text: '이 두루마리에' }, { type: 'bold', text: '스승님께 보여드릴 사진 한 장과' }, { type: 'bold', text: '생년월일을 기록해주시겠습니까?' } ] },
 ];
 
 
 // ==================================================================
-// --- 🔮 점쟁이 방 장면 컴포넌트 (디자인 최종 수정) ---
+// --- 🔮 점쟁이 방 장면 컴포넌트 ---
 // ==================================================================
 const FortuneTellerScene = ({ userPhoto, birthdate }) => {
     const [dialogue, setDialogue] = useState('');
@@ -83,7 +83,7 @@ const FortuneTellerScene = ({ userPhoto, birthdate }) => {
     }, []);
 
     return (
-        <div className="w-full h-screen bg-black overflow-hidden relative flex items-center justify-center font-gowun animate-[fade-in_1s_ease-in-out]">
+        <div className="w-full h-screen bg-[#0d0d0d] overflow-hidden relative flex items-center justify-center font-gowun animate-[fade-in_1s_ease-in-out]">
             <style>{`
                 @keyframes flicker-effect {
                     0%, 100% {
@@ -100,9 +100,8 @@ const FortuneTellerScene = ({ userPhoto, birthdate }) => {
                 }
             `}</style>
             
-            <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black opacity-80" />
             
-            {/* 점쟁이 실루엣 SVG (새로운 경로와 그라데이션 적용) */}
             <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-2/3 max-w-sm flickering-element" style={{animationDelay: '0.1s'}}>
                 <svg viewBox="0 0 200 220" xmlns="http://www.w3.org/2000/svg">
                     <defs>
@@ -115,7 +114,6 @@ const FortuneTellerScene = ({ userPhoto, birthdate }) => {
                 </svg>
             </div>
 
-            {/* 호롱불 SVG */}
             <div className="absolute bottom-5 left-2 md:left-10 w-48 h-48 flickering-element">
                 <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
                     <defs>
@@ -131,7 +129,6 @@ const FortuneTellerScene = ({ userPhoto, birthdate }) => {
                 </svg>
             </div>
             
-            {/* 천막(장막) 효과 */}
             <div 
                 className="absolute inset-0 z-10" 
                 style={{
@@ -141,7 +138,6 @@ const FortuneTellerScene = ({ userPhoto, birthdate }) => {
                 }}
             ></div>
 
-            {/* 거울 (z-index 추가) */}
             <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-48 h-64 bg-black/50 border-2 border-yellow-700/50 rounded-lg shadow-2xl p-4 flex flex-col items-center justify-center space-y-4 z-20">
                 <div className="w-32 h-32 rounded-full overflow-hidden border-2 border-yellow-800">
                     <img src={userPhoto} alt="사용자 사진" className="w-full h-full object-cover" />
@@ -149,7 +145,6 @@ const FortuneTellerScene = ({ userPhoto, birthdate }) => {
                 <p className="text-white text-lg tracking-wider">{birthdate}</p>
             </div>
 
-            {/* 대사 자막 창 (z-index 추가) */}
             {dialogue && (
                 <div className="absolute bottom-10 left-1/2 -translate-x-1/2 w-11/12 max-w-3xl bg-black/70 p-4 rounded-lg text-center animate-[fade-in_0.5s_ease-out] z-20">
                     <p className="text-white text-2xl">{dialogue}</p>
