@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, [ useState, useEffect, useRef } from 'react';
 
 // --- 아이콘 컴포넌트들 ---
 const UploadCloudIcon = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"></path><path d="M12 12v9"></path><path d="m16 16-4-4-4 4"></path></svg>);
@@ -59,111 +59,97 @@ const BGMPlayer = () => {
 
 // --- 제자 시퀀스 설정 ---
 const apprenticeSequence = [
-  { image: '/apprentice-standing.png', dialogue: [ { type: 'bold', text: '어서 오세요!' }, { type: 'bold', text: '저는 스승님의 제자 초희입니다.' }, ] },
-  { image: '/apprentice-greeting.png', dialogue: [ { type: 'bold', text: '먼 길 오시느라 고생 많으셨습니다.' } ] },
-  { image: '/apprentice-guiding.png', dialogue: [ { type: 'bold', text: '이 두루마리에' }, { type: 'bold', text: '스승님께 보여드릴 사진 한 장과' }, { type: 'bold', text: '생년월일을 기록해주시겠습니까?' } ] },
+  { image: '/assets/images/apprentice-standing.png', dialogue: [ { type: 'bold', text: '어서 오세요!' }, { type: 'bold', text: '저는 스승님의 제자 초희입니다.' }, ] },
+  { image: '/assets/images/apprentice-greeting.png', dialogue: [ { type: 'bold', text: '먼 길 오시느라 고생 많으셨습니다.' } ] },
+  { image: '/assets/images/apprentice-guiding.png', dialogue: [ { type: 'bold', text: '이 두루마리에' }, { type: 'bold', text: '스승님께 보여드릴 사진 한 장과' }, { type: 'bold', text: '생년월일을 기록해주시겠습니까?' } ] },
 ];
 
 
 // ==================================================================
-// --- 🔮 점쟁이 방 장면 컴포넌트 (연기 점 버전) ---
+// --- 🔮 점쟁이 방 장면 컴포넌트 (디자인 최종 수정) ---
 // ==================================================================
 const FortuneTellerScene = ({ userPhoto, birthdate }) => {
     const [dialogue, setDialogue] = useState('');
-    const [isContentVisible, setIsContentVisible] = useState(false);
 
     const doorOpenSoundRef = useRef(null);
     const doorCloseSoundRef = useRef(null);
 
     useEffect(() => {
         const timers = [];
-        // 사운드 재생
         timers.push(setTimeout(() => { doorOpenSoundRef.current?.play().catch(e => {}); }, 500));
         timers.push(setTimeout(() => { doorCloseSoundRef.current?.play().catch(e => {}); }, 1500));
-        
-        // 연기 속 정보 표시
-        timers.push(setTimeout(() => { setIsContentVisible(true); }, 3000));
-        
-        // 정보 사라짐
-        timers.push(setTimeout(() => { setIsContentVisible(false); }, 8000));
-
-        // 점쟁이 대사 표시
-        timers.push(setTimeout(() => { setDialogue("앞에 편하게 앉아"); }, 9000));
-        
+        timers.push(setTimeout(() => { setDialogue("앞에 편하게 앉아"); }, 3000));
         return () => timers.forEach(clearTimeout);
     }, []);
 
     return (
         <div className="w-full h-screen bg-black overflow-hidden relative flex items-center justify-center font-gowun animate-[fade-in_1s_ease-in-out]">
             <style>{`
-                @keyframes smoke-turbulence {
-                    0% { transform: scale(1, 1); }
-                    50% { transform: scale(1.2, 1.2); }
-                    100% { transform: scale(1, 1); }
+                @keyframes flicker-effect {
+                    0%, 100% {
+                        transform: scale(1);
+                        opacity: 0.8;
+                    }
+                    50% {
+                        transform: scale(1.03);
+                        opacity: 1;
+                    }
                 }
-                .smoke-path {
-                    animation: smoke-turbulence 10s infinite ease-in-out alternate;
-                }
-                @keyframes reveal {
-                    0% { opacity: 0; }
-                    20% { opacity: 1; }
-                    80% { opacity: 1; }
-                    100% { opacity: 0; }
-                }
-                .content-reveal {
-                    animation: reveal 5s forwards ease-in-out;
+                .flickering-element {
+                    animation: flicker-effect 3s infinite ease-in-out;
                 }
             `}</style>
-
-            {/* 연기 효과를 위한 SVG 필터 정의 */}
-            <svg width="0" height="0">
-                <defs>
-                    <filter id="smoke-effect">
-                        <feTurbulence type="fractalNoise" baseFrequency="0.01 0.04" numOctaves="3" seed="0" result="turbulence" className="smoke-path"/>
-                        <feDisplacementMap in="SourceGraphic" in2="turbulence" scale="30" xChannelSelector="R" yChannelSelector="G" result="displacement"/>
-                        <feGaussianBlur in="displacement" stdDeviation="10" />
-                    </filter>
-                </defs>
-            </svg>
             
-            {/* 배경 그라데이션 */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black via-[#100808] to-black" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black" />
             
-            {/* 향로(Censer) SVG */}
-            <div className="absolute bottom-10 left-1/2 -translate-x-1/2 w-32 z-10">
-                <svg viewBox="0 0 100 50">
-                    <path d="M10 50 Q50 20 90 50" fill="#222" />
-                    <rect x="5" y="48" width="90" height="2" fill="#111" />
+            {/* 점쟁이 실루엣 SVG (새로운 경로와 그라데이션 적용) */}
+            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-2/3 max-w-sm flickering-element" style={{animationDelay: '0.1s'}}>
+                <svg viewBox="0 0 200 220" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="silhouetteGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" style={{stopColor: '#4a4a4a'}} />
+                            <stop offset="100%" style={{stopColor: '#1a1a1a'}} />
+                        </linearGradient>
+                    </defs>
+                    <path fill="url(#silhouetteGradient)" d="M100,22.5c-12.2,0-22.1,9.9-22.1,22.1s9.9,22.1,22.1,22.1s22.1-9.9,22.1-22.1S112.2,22.5,100,22.5z M144.4,90.3 c-6.4-3.1-15.1-4.9-24.4-4.9h-40c-9.4,0-18,1.8-24.4,4.9C33,98.1,17.9,122.2,17.9,150.1v3.8c0,14.2,36.8,25.8,82.1,25.8 s82.1-11.5,82.1-25.8v-3.8C182.1,122.2,167,98.1,144.4,90.3z"/>
                 </svg>
             </div>
 
-            {/* 연기 기둥 */}
-            <div 
-                className="absolute bottom-20 left-1/2 -translate-x-1/2 w-full h-3/4 opacity-30"
-                style={{
-                    background: "linear-gradient(to top, rgba(200, 200, 200, 0.5), transparent)",
-                    filter: "url(#smoke-effect)",
-                    mixBlendMode: 'screen'
-                }}
-            />
+            {/* 호롱불 SVG */}
+            <div className="absolute bottom-5 left-2 md:left-10 w-48 h-48 flickering-element">
+                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <radialGradient id="lanternGlow" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
+                            <stop offset="0%" style={{stopColor: '#ffefc4', stopOpacity: 0.9}} />
+                            <stop offset="30%" style={{stopColor: '#ffc94d', stopOpacity: 0.6}} />
+                            <stop offset="100%" style={{stopColor: '#ff7b24', stopOpacity: 0}} />
+                        </radialGradient>
+                    </defs>
+                    <circle cx="50" cy="50" r="50" fill="url(#lanternGlow)" />
+                    <path d="M40 90 L60 90 L65 70 L35 70 Z" fill="#2b2b2b" />
+                    <rect x="30" y="68" width="40" height="5" fill="#333" />
+                </svg>
+            </div>
             
-            {/* 연기 속에서 드러나는 정보 */}
-            {isContentVisible && (
-                 <div className="absolute inset-0 flex flex-col items-center justify-center content-reveal">
-                    <div className="w-full h-full flex flex-col items-center justify-center text-white space-y-4"
-                         style={{
-                            maskImage: 'radial-gradient(circle at center, black 20%, transparent 60%)',
-                            WebkitMaskImage: 'radial-gradient(circle at center, black 20%, transparent 60%)'
-                         }}>
-                        <div className="w-32 h-32 rounded-full overflow-hidden">
-                            <img src={userPhoto} alt="사용자 사진" className="w-full h-full object-cover" />
-                        </div>
-                        <p className="text-2xl tracking-widest">{birthdate}</p>
-                    </div>
-                </div>
-            )}
+            {/* 천막(장막) 효과 */}
+            <div 
+                className="absolute inset-0 z-10" 
+                style={{
+                    backgroundImage: "url('https://www.transparenttextures.com/patterns/fabric-of-squares.png')",
+                    backdropFilter: "blur(2px)",
+                    opacity: 0.5
+                }}
+            ></div>
 
-            {/* 대사 자막 창 */}
+            {/* 거울 (z-index 추가) */}
+            <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-48 h-64 bg-black/50 border-2 border-yellow-700/50 rounded-lg shadow-2xl p-4 flex flex-col items-center justify-center space-y-4 z-20">
+                <div className="w-32 h-32 rounded-full overflow-hidden border-2 border-yellow-800">
+                    <img src={userPhoto} alt="사용자 사진" className="w-full h-full object-cover" />
+                </div>
+                <p className="text-white text-lg tracking-wider">{birthdate}</p>
+            </div>
+
+            {/* 대사 자막 창 (z-index 추가) */}
             {dialogue && (
                 <div className="absolute bottom-10 left-1/2 -translate-x-1/2 w-11/12 max-w-3xl bg-black/70 p-4 rounded-lg text-center animate-[fade-in_0.5s_ease-out] z-20">
                     <p className="text-white text-2xl">{dialogue}</p>
