@@ -64,51 +64,13 @@ const apprenticeSequence = [
   { image: '/assets/images/apprentice-guiding.png', dialogue: [ { type: 'bold', text: '이 두루마리에' }, { type: 'bold', text: '스승님께 보여드릴 사진 한 장과' }, { type: 'bold', text: '생년월일을 기록해주시겠습니까?' } ] },
 ];
 
-// ==================================================================
-// --- 🔮 점쟁이 방 장면 컴포넌트 ---
-// ==================================================================
-const FortuneTellerScene = ({ userPhoto, birthdate, onSceneComplete }) => {
-    const [dialogue, setDialogue] = useState('');
-    const doorOpenSoundRef = useRef(null);
-    const doorCloseSoundRef = useRef(null);
-
-    useEffect(() => {
-        const timers = [];
-        timers.push(setTimeout(() => { doorOpenSoundRef.current?.play().catch(e => {}); }, 500));
-        timers.push(setTimeout(() => { doorCloseSoundRef.current?.play().catch(e => {}); }, 1500));
-        timers.push(setTimeout(() => { setDialogue("앞에 편하게 앉아"); }, 3000));
-        // 대사 후 다음 장면으로 넘어가는 타이머
-        timers.push(setTimeout(onSceneComplete, 5000));
-        return () => timers.forEach(clearTimeout);
-    }, [onSceneComplete]);
-
-    return (
-        <div className="w-full h-screen bg-[#0d0d0d] overflow-hidden relative flex items-center justify-center font-gowun animate-[fade-in_1s_ease-in-out]">
-            <style>{`@keyframes flicker-effect{0%,100%{transform:scale(1);opacity:.8}50%{transform:scale(1.03);opacity:1}}.flickering-element{animation:flicker-effect 3s infinite ease-in-out}`}</style>
-            <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black opacity-80" />
-            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-2/3 max-w-sm flickering-element" style={{animationDelay: '0.1s'}}>
-                <svg viewBox="0 0 200 220"><defs><linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" style={{stopColor:'#4a4a4a'}} /><stop offset="100%" style={{stopColor:'#1a1a1a'}} /></linearGradient></defs><path fill="url(#g)" d="M100,22.5c-12.2,0-22.1,9.9-22.1,22.1s9.9,22.1,22.1,22.1s22.1-9.9,22.1-22.1S112.2,22.5,100,22.5z M144.4,90.3 c-6.4-3.1-15.1-4.9-24.4-4.9h-40c-9.4,0-18,1.8-24.4,4.9C33,98.1,17.9,122.2,17.9,150.1v3.8c0,14.2,36.8,25.8,82.1,25.8 s82.1-11.5,82.1-25.8v-3.8C182.1,122.2,167,98.1,144.4,90.3z"/></svg>
-            </div>
-            <div className="absolute bottom-5 left-2 md:left-10 w-48 h-48 flickering-element">
-                <svg viewBox="0 0 100 100"><defs><radialGradient id="lg"><stop offset="0%" style={{stopColor:'#ffefc4',stopOpacity:.9}} /><stop offset="30%" style={{stopColor:'#ffc94d',stopOpacity:.6}} /><stop offset="100%" style={{stopColor:'#ff7b24',stopOpacity:0}} /></radialGradient></defs><circle cx="50" cy="50" r="50" fill="url(#lg)" /><path d="M40 90 L60 90 L65 70 L35 70 Z" fill="#2b2b2b" /><rect x="30" y="68" width="40" height="5" fill="#333" /></svg>
-            </div>
-            <div className="absolute inset-0 z-10" style={{backgroundImage:"url('https://www.transparenttextures.com/patterns/fabric-of-squares.png')",backdropFilter:"blur(2px)",opacity:.5}}></div>
-            <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-48 h-64 bg-black/50 border-2 border-yellow-700/50 rounded-lg shadow-2xl p-4 flex flex-col items-center justify-center space-y-4 z-20">
-                <div className="w-32 h-32 rounded-full overflow-hidden border-2 border-yellow-800"><img src={userPhoto} alt="사용자 사진" className="w-full h-full object-cover" /></div>
-                <p className="text-white text-lg tracking-wider">{birthdate}</p>
-            </div>
-            {dialogue && (<div className="absolute bottom-10 left-1/2 -translate-x-1/2 w-11/12 max-w-3xl bg-black/70 p-4 rounded-lg text-center animate-[fade-in_0.5s_ease-out] z-20"><p className="text-white text-2xl">{dialogue}</p></div>)}
-            <audio ref={doorOpenSoundRef} src="/assets/sounds/door-open.mp3" preload="auto"></audio>
-            <audio ref={doorCloseSoundRef} src="/assets/sounds/door-close.mp3" preload="auto"></audio>
-        </div>
-    );
-};
 
 // ==================================================================
-// --- 🔥 최종 장면 컴포넌트 (Canvas 기반) ---
+// --- 🔮 스승 등장 장면 (Canvas 통합 버전) ---
 // ==================================================================
-const FinalScene = () => {
+const FortuneTellerScene = () => {
     const canvasRef = useRef(null);
+    const [dialogue, setDialogue] = useState('');
 
     useEffect(() => {
         const canvas = canvasRef.current;
@@ -116,80 +78,82 @@ const FinalScene = () => {
         let animationFrameId;
 
         const characterImage = new Image();
-        // ⚠️ 중요: 아래 경로에 배경이 투명한 캐릭터 PNG 파일을 넣어주세요.
         characterImage.src = '/assets/images/final-character.png';
 
-        // 빛의 기본 속성
         let light = {
             x: window.innerWidth / 2,
-            y: window.innerHeight / 2 + 100,
-            baseRadius: window.innerWidth > 768 ? 250 : 150,
-            radius: window.innerWidth > 768 ? 250 : 150,
+            y: window.innerHeight / 2,
+            baseRadius: window.innerWidth > 768 ? 150 : 100,
+            radius: window.innerWidth > 768 ? 150 : 100,
         };
 
         const resizeCanvas = () => {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
             light.x = window.innerWidth / 2;
-            light.y = window.innerHeight / 2 + 100;
-            light.baseRadius = window.innerWidth > 768 ? 250 : 150;
+            light.y = window.innerHeight / 2;
+            light.baseRadius = window.innerWidth > 768 ? 150 : 100;
         };
 
         window.addEventListener('resize', resizeCanvas);
         resizeCanvas();
 
         const animate = () => {
-            // 빛 흔들림 시뮬레이션
-            light.radius = light.baseRadius + (Math.random() - 0.5) * 20;
-            const flickerX = light.x + (Math.random() - 0.5) * 6;
-            const flickerY = light.y + (Math.random() - 0.5) * 6;
+            light.radius = light.baseRadius + (Math.random() - 0.5) * 15;
+            const flickerX = light.x + (Math.random() - 0.5) * 4;
+            const flickerY = light.y + (Math.random() - 0.5) * 4;
 
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-            // 1. 검은 배경 그리기
             ctx.fillStyle = 'black';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // 2. 빛(그라데이션) 그리기
-            const gradient = ctx.createRadialGradient(flickerX, flickerY, 0, flickerX, flickerY, light.radius);
-            gradient.addColorStop(0, 'rgba(255, 200, 100, 0.7)');
-            gradient.addColorStop(1, 'rgba(255, 200, 100, 0)');
-            ctx.fillStyle = gradient;
+            // --- 1. 캐릭터를 밝히기 위한 '마스크용' 빛 그리기 ---
+            const maskGradient = ctx.createRadialGradient(flickerX, flickerY, 0, flickerX, flickerY, light.radius * 1.5);
+            maskGradient.addColorStop(0, 'rgba(255, 255, 255, 1)');
+            maskGradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+            ctx.fillStyle = maskGradient;
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // 3. 마스크 효과 적용 및 캐릭터 그리기
-            // 'destination-in'은 기존에 그려진 내용(빛)과 겹치는 부분에만 새 그림(캐릭터)을 남깁니다.
             ctx.globalCompositeOperation = 'destination-in';
+            const imgHeight = canvas.height * 0.9;
+            const imgWidth = imgHeight * (characterImage.width / characterImage.height);
+            ctx.drawImage(characterImage, (canvas.width - imgWidth) / 2, (canvas.height - imgHeight) / 2, imgWidth, imgHeight);
             
-            const imgWidth = characterImage.width;
-            const imgHeight = characterImage.height;
-            const aspectRatio = imgWidth / imgHeight;
-            const drawHeight = canvas.height * 0.8;
-            const drawWidth = drawHeight * aspectRatio;
-            
-            ctx.drawImage(characterImage, (canvas.width - drawWidth) / 2, (canvas.height - drawHeight) / 2, drawWidth, drawHeight);
-
-            // 4. 드로잉 모드 초기화
+            // --- 2. 광원 자체가 보이도록 '실제 빛'을 위에 한 번 더 그리기 ---
             ctx.globalCompositeOperation = 'source-over';
+            const lightGradient = ctx.createRadialGradient(flickerX, flickerY, 0, flickerX, flickerY, light.radius * 0.7);
+            lightGradient.addColorStop(0, 'rgba(255, 220, 150, 0.8)');
+            lightGradient.addColorStop(1, 'rgba(255, 180, 80, 0)');
+            ctx.fillStyle = lightGradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
 
             animationFrameId = requestAnimationFrame(animate);
         };
 
-        characterImage.onload = () => {
-            animate();
-        };
+        characterImage.onload = () => animate();
+        characterImage.onerror = () => console.error("캐릭터 이미지를 불러오는 데 실패했습니다. 'public/assets/images/final-character.png' 경로를 확인하세요.");
         
-        characterImage.onerror = () => {
-            console.error("최종 캐릭터 이미지를 불러오는 데 실패했습니다. 'public/assets/images/final-character.png' 경로를 확인하세요.");
-        }
+        const dialogueTimer = setTimeout(() => {
+            setDialogue("운명의 실타래가 그대를 이곳으로 이끌었군...");
+        }, 2000);
 
         return () => {
             window.removeEventListener('resize', resizeCanvas);
             cancelAnimationFrame(animationFrameId);
+            clearTimeout(dialogueTimer);
         };
     }, []);
 
-    return <canvas ref={canvasRef} className="animate-[fade-in_1s_ease-in-out]" />;
+    return (
+        <div className="w-full h-screen bg-black relative">
+            <canvas ref={canvasRef} className="animate-[fade-in_1s_ease-in-out]" />
+            {dialogue && (
+                <div className="absolute bottom-10 left-1/2 -translate-x-1/2 w-11/12 max-w-3xl bg-black/70 p-4 rounded-lg text-center animate-[fade-in_0.5s_ease-out] z-20">
+                    <p className="text-white text-2xl font-gowun">{dialogue}</p>
+                </div>
+            )}
+        </div>
+    );
 };
 
 
@@ -317,7 +281,7 @@ function App() {
             <style>{`@keyframes pop-in{0%{opacity:0;transform:scale(.5)}100%{opacity:1;transform:scale(1)}}.dialogue-line{animation:pop-in .3s ease-out forwards}@keyframes fade-in{0%{opacity:0}100%{opacity:1}}.apprentice-image-fade-in{animation:fade-in .7s ease-in-out forwards}.responsive-title{font-size:clamp(2rem,8.5vw,3rem)}@media (min-width:768px){.responsive-title{font-size:3.75rem}}@media (max-width:768px){.apprentice-container{right:-40px}.dialogue-bubble{left:-200px;width:190px}}`}</style>
             <BGMPlayer />
 
-            {appPhase !== 'fortuneTeller' && appPhase !== 'finalScene' && <>
+            {appPhase !== 'fortuneTeller' && <>
                 <div className="absolute inset-0 bg-gradient-to-b from-indigo-900/50 to-black z-0"></div>
                 <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-10 z-0" />
             </>}
@@ -365,15 +329,7 @@ function App() {
             )}
 
             {appPhase === 'fortuneTeller' && (
-                <FortuneTellerScene 
-                    userPhoto={photoPreview}
-                    birthdate={birthdate}
-                    onSceneComplete={() => setAppPhase('finalScene')}
-                />
-            )}
-
-            {appPhase === 'finalScene' && (
-                <FinalScene />
+                <FortuneTellerScene />
             )}
         </div>
     );
