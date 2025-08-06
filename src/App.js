@@ -64,9 +64,8 @@ const apprenticeSequence = [
   { image: '/assets/images/apprentice-guiding.png', dialogue: [ { type: 'bold', text: '이 두루마리에' }, { type: 'bold', text: '스승님께 보여드릴 사진 한 장과' }, { type: 'bold', text: '생년월일을 기록해주시겠습니까?' } ] },
 ];
 
-
 // ==================================================================
-// --- 🔮 스승 등장 장면 (새로운 불꽃 효과 적용) ---
+// --- 🔮 스승 등장 장면 (CSS 천막 효과 적용) ---
 // ==================================================================
 const FortuneTellerScene = () => {
     const canvasRef = useRef(null);
@@ -78,19 +77,21 @@ const FortuneTellerScene = () => {
         let animationFrameId;
         let time = 0;
 
-        const characterImage = new Image();
-        characterImage.src = '/assets/images/final-character.png';
+        const silhouetteImage = new Image();
+        silhouetteImage.src = '/assets/images/final-character-silhouette.png';
+        const colorImage = new Image();
+        colorImage.src = '/assets/images/final-character-color.png';
+
+        const perlin = (x) => (Math.sin(x * 1.3) + Math.sin(x * 2.7 + 10) + Math.sin(x * 0.7 + 3)) / 3;
 
         const resizeCanvas = () => {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
         };
-
         window.addEventListener('resize', resizeCanvas);
         resizeCanvas();
 
-        // 불꽃 모양 그리기 함수
-        const drawFlame = (x, y, scale) => {
+        const drawFlame = (x, y, scale, intensity) => {
             ctx.save();
             ctx.translate(x, y);
             ctx.beginPath();
@@ -98,59 +99,64 @@ const FortuneTellerScene = () => {
             ctx.bezierCurveTo(-10 * scale, -20 * scale, -5 * scale, -60 * scale, 0, -80 * scale);
             ctx.bezierCurveTo(5 * scale, -60 * scale, 10 * scale, -20 * scale, 0, 0);
             ctx.closePath();
-
             const gradient = ctx.createRadialGradient(0, -40 * scale, 5, 0, -40 * scale, 40 * scale);
-            gradient.addColorStop(0, 'rgba(255, 255, 200, 1)');
-            gradient.addColorStop(0.3, 'rgba(255, 180, 0, 0.8)');
-            gradient.addColorStop(1, 'rgba(255, 0, 0, 0)');
-
+            gradient.addColorStop(0, `rgba(255, 255, 200, ${0.9 * intensity})`);
+            gradient.addColorStop(0.3, `rgba(255, 180, 0, ${0.7 * intensity})`);
+            gradient.addColorStop(1, `rgba(255, 0, 0, 0)`);
             ctx.fillStyle = gradient;
             ctx.fill();
             ctx.restore();
         };
 
-        // 주변 빛(Glow) 그리기 함수
         const drawGlow = (x, y, intensity) => {
-            const glowRadius = window.innerWidth > 768 ? 250 : 150;
+            const glowRadius = window.innerWidth > 768 ? 300 : 200;
             const glow = ctx.createRadialGradient(x, y, 0, x, y, glowRadius * intensity);
-            glow.addColorStop(0, `rgba(255, 180, 100, ${0.2 * intensity})`);
-            glow.addColorStop(0.7, `rgba(255, 180, 100, ${0.1 * intensity})`);
+            glow.addColorStop(0, `rgba(255, 200, 100, ${0.15 * intensity})`);
             glow.addColorStop(1, 'rgba(0, 0, 0, 0)');
             return glow;
         };
-        
+
         const animate = () => {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = 'black';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
-            
-            // 불꽃 위치와 밝기 계산
-            const flameX = canvas.width / 2 + Math.sin(time * 0.05) * 5;
-            const flameY = canvas.height / 2 + 50 + Math.cos(time * 0.03) * 3;
-            const flicker = 0.8 + Math.sin(time * 0.1) * 0.2;
 
-            // 1. 캐릭터를 밝히기 위한 '마스크용' 빛 그리기
-            ctx.fillStyle = drawGlow(flameX, flameY, flicker * 1.5);
+            const noiseX = perlin(time * 0.02) * 10;
+            const noiseY = perlin((time + 1000) * 0.015) * 3;
+            const flicker = 0.85 + (perlin((time + 2000) * 0.05)) * 0.15;
+            
+            const flameX = canvas.width * 0.15 + noiseX;
+            const flameY = canvas.height * 0.85 + noiseY;
+
+            const imgHeight = canvas.height * 0.8;
+            const imgWidth = imgHeight * (silhouetteImage.width / silhouetteImage.height);
+            const masterX = (canvas.width - imgWidth) / 2;
+            const masterY = canvas.height * 0.1;
+            ctx.drawImage(silhouetteImage, masterX, masterY, imgWidth, imgHeight);
+
+            ctx.globalCompositeOperation = 'source-atop';
+            ctx.drawImage(colorImage, masterX, masterY, imgWidth, imgHeight);
+
+            ctx.globalCompositeOperation = 'lighter';
+            ctx.fillStyle = drawGlow(flameX, flameY, flicker);
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // 2. 마스크 효과 적용 및 캐릭터 그리기
-            ctx.globalCompositeOperation = 'destination-in';
-            const imgHeight = canvas.height * 0.9;
-            const imgWidth = imgHeight * (characterImage.width / characterImage.height);
-            ctx.drawImage(characterImage, (canvas.width - imgWidth) / 2, (canvas.height - imgHeight) / 2, imgWidth, imgHeight);
-            
-            // 3. 눈에 보이는 실제 불꽃과 빛을 덧그리기
             ctx.globalCompositeOperation = 'source-over';
-            drawFlame(flameX, flameY, 1 + Math.random() * 0.05);
-            ctx.fillStyle = drawGlow(flameX, flameY, flicker);
+            drawFlame(flameX, flameY, 1 + Math.random() * 0.03, flicker);
+            ctx.fillStyle = drawGlow(flameX, flameY, flicker * 0.5);
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
             time++;
             animationFrameId = requestAnimationFrame(animate);
         };
 
-        characterImage.onload = () => animate();
-        characterImage.onerror = () => console.error("캐릭터 이미지를 불러오는 데 실패했습니다. 'public/assets/images/final-character.png' 경로를 확인하세요.");
+        let loadedImages = 0;
+        const startAnimation = () => {
+            loadedImages++;
+            if (loadedImages === 2) animate();
+        };
+        silhouetteImage.onload = startAnimation;
+        colorImage.onload = startAnimation;
         
         const dialogueTimer = setTimeout(() => {
             setDialogue("운명의 실타래가 그대를 이곳으로 이끌었군...");
@@ -164,11 +170,24 @@ const FortuneTellerScene = () => {
     }, []);
 
     return (
-        <div className="w-full h-screen bg-black relative">
+        <div className="w-full h-screen bg-black relative font-gowun">
+            <style>{`
+                .tent-overlay {
+                    position: absolute;
+                    inset: 0;
+                    background: 
+                        repeating-linear-gradient(135deg, rgba(255,255,255,0.03) 0, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 3px),
+                        rgba(240, 230, 200, 0.05);
+                    backdrop-filter: blur(1.2px);
+                    pointer-events: none;
+                    z-index: 30;
+                }
+            `}</style>
             <canvas ref={canvasRef} className="animate-[fade-in_1s_ease-in-out]" />
+            <div className="tent-overlay"></div>
             {dialogue && (
-                <div className="absolute bottom-10 left-1/2 -translate-x-1/2 w-11/12 max-w-3xl bg-black/70 p-4 rounded-lg text-center animate-[fade-in_0.5s_ease-out] z-20">
-                    <p className="text-white text-2xl font-gowun">{dialogue}</p>
+                <div className="absolute bottom-10 left-1/2 -translate-x-1/2 w-11/12 max-w-3xl bg-black/70 p-4 rounded-lg text-center animate-[fade-in_0.5s_ease-out] z-40">
+                    <p className="text-white text-2xl">{dialogue}</p>
                 </div>
             )}
         </div>
