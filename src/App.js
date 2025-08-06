@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 
 // --- 아이콘 컴포넌트들 ---
-const UploadCloudIcon = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"></path><path d="M12 12v9"></path><path d="m16 16-4-4-4 4"></path></svg>);
-const Volume2Icon = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg>);
-const VolumeXIcon = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>);
+const UploadCloudIcon = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"></path><path d="M12 12v9"></path><path d="m16 16-4-4-4 4"></path></svg>);
+const Volume2Icon = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg>);
+const VolumeXIcon = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>);
 
 // --- BGM 플레이어 ---
 const BGMPlayer = () => {
@@ -103,7 +103,7 @@ const FortuneTellerScene = () => {
             const gradient = ctx.createRadialGradient(0, -40 * scale, 5, 0, -40 * scale, 40 * scale);
             gradient.addColorStop(0, `rgba(255, 255, 200, ${0.9 * intensity})`);
             gradient.addColorStop(0.3, `rgba(255, 180, 0, ${0.7 * intensity})`);
-            gradient.addColorStop(1, 'rgba(255, 0, 0, 0)');
+            gradient.addColorStop(1, `rgba(255, 0, 0, 0)`);
             ctx.fillStyle = gradient;
             ctx.fill();
             ctx.restore();
@@ -126,31 +126,25 @@ const FortuneTellerScene = () => {
             const noiseY = perlin((time + 1000) * 0.015) * 3;
             const flicker = 0.85 + (perlin((time + 2000) * 0.05)) * 0.15;
             
-            // 촛불 위치: 왼쪽 아래
             const flameX = canvas.width * 0.15 + noiseX;
             const flameY = canvas.height * 0.85 + noiseY;
 
-            // --- 그리기 순서 ---
-            // 1. 기본 실루엣 그리기
             const imgHeight = canvas.height * 0.8;
             const imgWidth = imgHeight * (silhouetteImage.width / silhouetteImage.height);
             const masterX = (canvas.width - imgWidth) / 2;
-            const masterY = canvas.height * 0.1; // 중앙 상단
+            const masterY = canvas.height * 0.1;
             ctx.drawImage(silhouetteImage, masterX, masterY, imgWidth, imgHeight);
 
-            // 2. 빛이 닿는 부분에 컬러 이미지 노출
             ctx.globalCompositeOperation = 'source-atop';
             ctx.drawImage(colorImage, masterX, masterY, imgWidth, imgHeight);
 
-            // 3. 빛 마스크 적용
             ctx.globalCompositeOperation = 'lighter';
             ctx.fillStyle = drawGlow(flameX, flameY, flicker);
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // 4. 실제 보이는 불꽃과 빛 그리기
             ctx.globalCompositeOperation = 'source-over';
             drawFlame(flameX, flameY, 1 + Math.random() * 0.03, flicker);
-            ctx.fillStyle = drawGlow(flameX, flameY, flicker * 0.5); // 보이는 빛은 조금 약하게
+            ctx.fillStyle = drawGlow(flameX, flameY, flicker * 0.5);
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
             time++;
@@ -179,7 +173,6 @@ const FortuneTellerScene = () => {
     return (
         <div className="w-full h-screen bg-black relative font-gowun">
             <canvas ref={canvasRef} className="animate-[fade-in_1s_ease-in-out]" />
-            {/* 천막 효과 */}
             <div className="absolute inset-0 z-10 pointer-events-none" style={{
                 backgroundImage: "url('https://www.transparenttextures.com/patterns/fabric-of-squares.png')",
                 opacity: 0.3,
