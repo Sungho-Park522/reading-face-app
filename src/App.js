@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 
 // --- 아이콘 컴포넌트들 ---
-const UploadCloudIcon = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"></path><path d="M12 12v9"></path><path d="m16 16-4-4-4 4"></path></svg>);
-const Volume2Icon = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg>);
-const VolumeXIcon = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>);
+const UploadCloudIcon = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"></path><path d="M12 12v9"></path><path d="m16 16-4-4-4 4"></path></svg>);
+const Volume2Icon = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg>);
+const VolumeXIcon = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>);
 
 // --- BGM 플레이어 ---
 const BGMPlayer = () => {
@@ -65,7 +65,7 @@ const apprenticeSequence = [
 ];
 
 // ==================================================================
-// --- 🔮 스승 등장 장면 (CSS 천막 효과 적용) ---
+// --- 🔮 스승 등장 장면 (Perlin Noise 촛불 효과 적용) ---
 // ==================================================================
 const FortuneTellerScene = () => {
     const canvasRef = useRef(null);
@@ -316,7 +316,18 @@ function App() {
 
     return (
         <div className="w-full h-screen bg-gray-900 overflow-hidden relative font-gowun">
-            <style>{`@keyframes pop-in{0%{opacity:0;transform:scale(.5)}100%{opacity:1;transform:scale(1)}}.dialogue-line{animation:pop-in .3s ease-out forwards}@keyframes fade-in{0%{opacity:0}100%{opacity:1}}.apprentice-image-fade-in{animation:fade-in .7s ease-in-out forwards}.responsive-title{font-size:clamp(2rem,8.5vw,3rem)}@media (min-width:768px){.responsive-title{font-size:3.75rem}}@media (max-width:768px){.apprentice-container{right:-40px}.dialogue-bubble{left:-200px;width:190px}}`}</style>
+            <style>{`
+                @keyframes pop-in { 0% { opacity: 0; transform: scale(0.5); } 100% { opacity: 1; transform: scale(1); } }
+                .dialogue-line { animation: pop-in 0.3s ease-out forwards; }
+                @keyframes fade-in { 0% { opacity: 0; } 100% { opacity: 1; } }
+                .apprentice-image-fade-in { animation: fade-in 0.7s ease-in-out forwards; }
+                .responsive-title { font-size: clamp(2rem, 8.5vw, 3rem); }
+                @media (min-width: 768px) { .responsive-title { font-size: 3.75rem; } }
+                @media (max-width: 768px) {
+                    .apprentice-container { right: -40px; }
+                    .dialogue-bubble { left: -200px; width: 190px; }
+                }
+            `}</style>
             <BGMPlayer />
 
             {appPhase !== 'fortuneTeller' && <>
@@ -325,13 +336,22 @@ function App() {
             </>}
             
             {appPhase === 'loading' && showLoadingBubble && (
-                 <div className="absolute bottom-40 right-5 z-10"><div className="relative w-56 p-4 bg-white text-gray-800 rounded-xl shadow-2xl"><p className="font-bold text-lg">잠시만요 나가고 있어요!</p><div className="absolute top-1/2 -translate-y-1/2 right-[-5px] w-0 h-0 border-y-[10px] border-y-transparent border-l-[10px] border-l-white"></div></div></div>
+                <div className="absolute bottom-40 right-5 z-10">
+                    <div className="relative w-56 p-4 bg-white text-gray-800 rounded-xl shadow-2xl">
+                        <p className="font-bold text-lg">잠시만요 나가고 있어요!</p>
+                        <div className="absolute top-1/2 -translate-y-1/2 right-[-5px] w-0 h-0 border-y-[10px] border-y-transparent border-l-[10px] border-l-white"></div>
+                    </div>
+                </div>
             )}
 
             {appPhase === 'intro' && (
                 <>
-                    <div className={`absolute top-[18%] left-1/2 -translate-x-1/2 -translate-y-1/2 text-center text-white transition-all duration-1000 ${animationState.showTitle ?'opacity-100':'opacity-0 -translate-y-10'}`}><h1 className="responsive-title font-black font-gaegu mb-4 text-shadow-lg">AI 운명 비기</h1></div>
-                    <div className={`absolute top-[18%] left-1/2 -translate-x-1/2 -translate-y-1/2 text-center text-white transition-all duration-1000 delay-500 mt-20 ${animationState.showSubtitle ?'opacity-100':'opacity-0 translate-y-10'}`}><p className="text-xl md:text-2xl text-indigo-200 text-shadow">운명의 실타래를 풀어, 그대의 길을 밝혀드립니다.</p></div>
+                    <div className={`absolute top-[18%] left-1/2 -translate-x-1/2 -translate-y-1/2 text-center text-white transition-all duration-1000 ${animationState.showTitle ?'opacity-100':'opacity-0 -translate-y-10'}`}>
+                        <h1 className="responsive-title font-black font-gaegu mb-4 text-shadow-lg">AI 운명 비기</h1>
+                    </div>
+                    <div className={`absolute top-[18%] left-1/2 -translate-x-1/2 -translate-y-1/2 text-center text-white transition-all duration-1000 delay-500 mt-20 ${animationState.showSubtitle ?'opacity-100':'opacity-0 translate-y-10'}`}>
+                        <p className="text-xl md:text-2xl text-indigo-200 text-shadow">운명의 실타래를 풀어, 그대의 길을 밝혀드립니다.</p>
+                    </div>
                     <div className={`apprentice-container absolute bottom-0 right-0 transition-transform duration-1000 ease-out ${animationState.showApprentice ?'translate-x-0':'translate-x-full'}`}>
                         <img key={apprenticeSequence[sequenceStep].image} src={apprenticeSequence[sequenceStep].image} alt="점쟁이 제자" className="w-[200px] h-[320px] md:w-[250px] md:h-[400px] object-contain drop-shadow-2xl apprentice-image-fade-in" onError={(e)=>{e.target.onerror=null;e.target.src='https://placehold.co/250x400/000000/FFFFFF?text=이미지오류';}} />
                         <div className={`dialogue-bubble absolute top-40 md:top-20 -left-56 w-56 p-4 bg-white text-gray-800 rounded-xl shadow-2xl transition-opacity duration-300 ${isBubbleShown ?'opacity-100':'opacity-0'}`}>
@@ -340,7 +360,10 @@ function App() {
                         </div>
                     </div>
                     <div onClick={()=>setIsScrollUnfurled(true)} className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 transition-opacity duration-700 ${isRolledScrollVisible ?'opacity-100':'opacity-0 pointer-events-none'}`}>
-                        <div className="flex flex-col items-center justify-center cursor-pointer"><img src="/assets/images/scroll-rolled.png" alt="말려있는 두루마리" className="w-24 drop-shadow-2xl transition-transform hover:scale-110" /><p className="text-white text-center mt-4 font-gaegu text-lg animate-pulse">두루마리를 펼쳐주세요.</p></div>
+                        <div className="flex flex-col items-center justify-center cursor-pointer">
+                            <img src="/assets/images/scroll-rolled.png" alt="말려있는 두루마리" className="w-24 drop-shadow-2xl transition-transform hover:scale-110" />
+                            <p className="text-white text-center mt-4 font-gaegu text-lg animate-pulse">두루마리를 펼쳐주세요.</p>
+                        </div>
                     </div>
                     {isScrollUnfurled && (
                         <div className="fixed inset-0 z-40 bg-black/70 flex items-center justify-center p-4 animate-[fade-in_0.3s_ease-out]" onClick={()=>setIsScrollUnfurled(false)}>
