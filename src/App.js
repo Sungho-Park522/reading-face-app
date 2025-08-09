@@ -20,7 +20,7 @@ const BGMPlayer = () => {
         script.onload = () => setIsToneLoaded(true);
         script.onerror = () => console.error("Failed to load Tone.js from CDN.");
         document.body.appendChild(script);
-        return () => { if (document.body.contains(script)) { document.body.removeChild(script); }};
+        return () => { if (document.body.contains(script)) { document.body.removeChild(script); } };
     }, []);
 
     useEffect(() => {
@@ -30,7 +30,7 @@ const BGMPlayer = () => {
             loop.current = new Tone.Loop(time => {
                 const notes = ['C2', 'E2', 'G2', 'A2'];
                 const randomNote = notes[Math.floor(Math.random() * notes.length)];
-                if(synth.current) synth.current.triggerAttackRelease(randomNote, '2n', time);
+                if (synth.current) synth.current.triggerAttackRelease(randomNote, '2n', time);
             }, '2m').start(0);
             Tone.Transport.start();
             return () => {
@@ -59,9 +59,9 @@ const BGMPlayer = () => {
 
 // --- 제자 시퀀스 설정 ---
 const apprenticeSequence = [
-  { image: '/assets/images/apprentice-standing.png', dialogue: [ { type: 'bold', text: '어서 오세요!' }, { type: 'bold', text: '저는 스승님의 제자 초희입니다.' }, ] },
-  { image: '/assets/images/apprentice-greeting.png', dialogue: [ { type: 'bold', text: '먼 길 오시느라 고생 많으셨습니다.' } ] },
-  { image: '/assets/images/apprentice-guiding.png', dialogue: [ { type: 'bold', text: '이 두루마리에' }, { type: 'bold', text: '스승님께 보여드릴 사진 한 장과' }, { type: 'bold', text: '생년월일을 기록해주시겠습니까?' } ] },
+    { image: '/assets/images/apprentice-standing.png', dialogue: [{ type: 'bold', text: '어서 오세요!' }, { type: 'bold', text: '저는 스승님의 제자 초희입니다.' },] },
+    { image: '/assets/images/apprentice-greeting.png', dialogue: [{ type: 'bold', text: '먼 길 오시느라 고생 많으셨습니다.' }] },
+    { image: '/assets/images/apprentice-guiding.png', dialogue: [{ type: 'bold', text: '이 두루마리에' }, { type: 'bold', text: '스승님께 보여드릴 사진 한 장과' }, { type: 'bold', text: '생년월일을 기록해주시겠습니까?' }] },
 ];
 
 // ==================================================================
@@ -124,7 +124,7 @@ const FortuneTellerScene = () => {
             const noiseX = perlin(time * 0.02) * 10;
             const noiseY = perlin((time + 1000) * 0.015) * 3;
             const flicker = 0.85 + (perlin((time + 2000) * 0.05)) * 0.15;
-            
+
             const flameX = canvas.width * 0.15 + noiseX;
             const flameY = canvas.height * 0.85 + noiseY;
 
@@ -157,7 +157,7 @@ const FortuneTellerScene = () => {
         };
         silhouetteImage.onload = startAnimation;
         colorImage.onload = startAnimation;
-        
+
         const dialogueTimer = setTimeout(() => {
             setDialogue("운명의 실타래가 그대를 이곳으로 이끌었군...");
         }, 2000);
@@ -199,7 +199,8 @@ const FortuneTellerScene = () => {
 // --- ✨ 메인 앱 컴포넌트 ---
 // ==================================================================
 function App() {
-    const [appPhase, setAppPhase] = useState('loading');
+    // ✅ 이렇게 수정하세요.
+    const [appPhase, setAppPhase] = useState('fortuneTeller');
     const [userPhoto, setUserPhoto] = useState(null);
     const [birthdate, setBirthdate] = useState('');
     const [photoPreview, setPhotoPreview] = useState(null);
@@ -223,11 +224,11 @@ function App() {
     const formBottomOffset = 20;
     const formWidthPercent = 80;
     const initialDialogueDelay = 1000;
-    const FADE_DURATION = 300; 
+    const FADE_DURATION = 300;
     const SCROLL_APPEAR_DELAY = 500;
 
     useEffect(() => {
-        const imagePaths = [ ...apprenticeSequence.map(s => s.image), '/assets/images/scroll-unfurled.png', '/assets/images/scroll-rolled.png' ];
+        const imagePaths = [...apprenticeSequence.map(s => s.image), '/assets/images/scroll-unfurled.png', '/assets/images/scroll-rolled.png'];
         const preloadImages = (paths) => Promise.all(paths.map(path => new Promise(resolve => {
             const img = new Image(); img.src = path; img.onload = resolve; img.onerror = resolve;
         })));
@@ -260,7 +261,7 @@ function App() {
         const allTimers = [];
         if (wasBubbleShowingRef.current) { setIsBubbleShown(false); }
         const contentUpdateTimer = setTimeout(() => {
-            setDisplayedDialogues([]); 
+            setDisplayedDialogues([]);
             let typingDelay = 0;
             scene.dialogue.forEach((dialogue, index) => {
                 const typingTimer = setTimeout(() => {
@@ -334,7 +335,7 @@ function App() {
                 <div className="absolute inset-0 bg-gradient-to-b from-indigo-900/50 to-black z-0"></div>
                 <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-10 z-0" />
             </>}
-            
+
             {appPhase === 'loading' && showLoadingBubble && (
                 <div className="absolute bottom-40 right-5 z-10">
                     <div className="relative w-56 p-4 bg-white text-gray-800 rounded-xl shadow-2xl">
@@ -346,30 +347,30 @@ function App() {
 
             {appPhase === 'intro' && (
                 <>
-                    <div className={`absolute top-[18%] left-1/2 -translate-x-1/2 -translate-y-1/2 text-center text-white transition-all duration-1000 ${animationState.showTitle ?'opacity-100':'opacity-0 -translate-y-10'}`}>
+                    <div className={`absolute top-[18%] left-1/2 -translate-x-1/2 -translate-y-1/2 text-center text-white transition-all duration-1000 ${animationState.showTitle ? 'opacity-100' : 'opacity-0 -translate-y-10'}`}>
                         <h1 className="responsive-title font-black font-gaegu mb-4 text-shadow-lg">AI 운명 비기</h1>
                     </div>
-                    <div className={`absolute top-[18%] left-1/2 -translate-x-1/2 -translate-y-1/2 text-center text-white transition-all duration-1000 delay-500 mt-20 ${animationState.showSubtitle ?'opacity-100':'opacity-0 translate-y-10'}`}>
+                    <div className={`absolute top-[18%] left-1/2 -translate-x-1/2 -translate-y-1/2 text-center text-white transition-all duration-1000 delay-500 mt-20 ${animationState.showSubtitle ? 'opacity-100' : 'opacity-0 translate-y-10'}`}>
                         <p className="text-xl md:text-2xl text-indigo-200 text-shadow">운명의 실타래를 풀어, 그대의 길을 밝혀드립니다.</p>
                     </div>
-                    <div className={`apprentice-container absolute bottom-0 right-0 transition-transform duration-1000 ease-out ${animationState.showApprentice ?'translate-x-0':'translate-x-full'}`}>
-                        <img key={apprenticeSequence[sequenceStep].image} src={apprenticeSequence[sequenceStep].image} alt="점쟁이 제자" className="w-[200px] h-[320px] md:w-[250px] md:h-[400px] object-contain drop-shadow-2xl apprentice-image-fade-in" onError={(e)=>{e.target.onerror=null;e.target.src='https://placehold.co/250x400/000000/FFFFFF?text=이미지오류';}} />
-                        <div className={`dialogue-bubble absolute top-40 md:top-20 -left-56 w-56 p-4 bg-white text-gray-800 rounded-xl shadow-2xl transition-opacity duration-300 ${isBubbleShown ?'opacity-100':'opacity-0'}`}>
-                            {displayedDialogues.map((d,i)=>(<p key={i} className={`dialogue-line ${d.type==='bold'?'font-bold text-base md:text-lg':''}`}>{d.text}</p>))}
+                    <div className={`apprentice-container absolute bottom-0 right-0 transition-transform duration-1000 ease-out ${animationState.showApprentice ? 'translate-x-0' : 'translate-x-full'}`}>
+                        <img key={apprenticeSequence[sequenceStep].image} src={apprenticeSequence[sequenceStep].image} alt="점쟁이 제자" className="w-[200px] h-[320px] md:w-[250px] md:h-[400px] object-contain drop-shadow-2xl apprentice-image-fade-in" onError={(e) => { e.target.onerror = null; e.target.src = 'https://placehold.co/250x400/000000/FFFFFF?text=이미지오류'; }} />
+                        <div className={`dialogue-bubble absolute top-40 md:top-20 -left-56 w-56 p-4 bg-white text-gray-800 rounded-xl shadow-2xl transition-opacity duration-300 ${isBubbleShown ? 'opacity-100' : 'opacity-0'}`}>
+                            {displayedDialogues.map((d, i) => (<p key={i} className={`dialogue-line ${d.type === 'bold' ? 'font-bold text-base md:text-lg' : ''}`}>{d.text}</p>))}
                             <div className="absolute top-1/2 -translate-y-1/2 right-[-5px] w-0 h-0 border-y-[10px] border-y-transparent border-l-[10px] border-l-white"></div>
                         </div>
                     </div>
-                    <div onClick={()=>setIsScrollUnfurled(true)} className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 transition-opacity duration-700 ${isRolledScrollVisible ?'opacity-100':'opacity-0 pointer-events-none'}`}>
+                    <div onClick={() => setIsScrollUnfurled(true)} className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 transition-opacity duration-700 ${isRolledScrollVisible ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
                         <div className="flex flex-col items-center justify-center cursor-pointer">
                             <img src="/assets/images/scroll-rolled.png" alt="말려있는 두루마리" className="w-24 drop-shadow-2xl transition-transform hover:scale-110" />
                             <p className="text-white text-center mt-4 font-gaegu text-lg animate-pulse">두루마리를 펼쳐주세요.</p>
                         </div>
                     </div>
                     {isScrollUnfurled && (
-                        <div className="fixed inset-0 z-40 bg-black/70 flex items-center justify-center p-4 animate-[fade-in_0.3s_ease-out]" onClick={()=>setIsScrollUnfurled(false)}>
-                            <div onClick={(e)=>e.stopPropagation()} className="relative w-auto h-full max-h-[95vh] aspect-[9/16]">
-                                <div className="absolute inset-0 bg-contain bg-no-repeat bg-center" style={{backgroundImage:`url('/assets/images/scroll-unfurled.png')`}}></div>
-                                <div className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center" style={{bottom:`${formBottomOffset}%`,width:`${formWidthPercent}%`}}>
+                        <div className="fixed inset-0 z-40 bg-black/70 flex items-center justify-center p-4 animate-[fade-in_0.3s_ease-out]" onClick={() => setIsScrollUnfurled(false)}>
+                            <div onClick={(e) => e.stopPropagation()} className="relative w-auto h-full max-h-[95vh] aspect-[9/16]">
+                                <div className="absolute inset-0 bg-contain bg-no-repeat bg-center" style={{ backgroundImage: `url('/assets/images/scroll-unfurled.png')` }}></div>
+                                <div className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center" style={{ bottom: `${formBottomOffset}%`, width: `${formWidthPercent}%` }}>
                                     <div className="flex flex-col items-center mb-6">
                                         <label htmlFor="photo-upload-form" className="cursor-pointer">
                                             <div className="w-24 h-24 rounded-full bg-black/5 flex items-center justify-center border-2 border-dashed border-yellow-800/50 hover:bg-black/10 transition-colors">
